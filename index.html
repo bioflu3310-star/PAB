@@ -1,0 +1,2591 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAB Technical Assessors & Experts Information System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ── THEME VARIABLES ── */
+[data-theme="dark"] {
+  --bg: #0d0d12;
+  --surface: #14141c;
+  --surface2: #1c1c28;
+  --surface3: #242432;
+  --border: #2a2a3a;
+  --border2: #353548;
+  --text: #e8e8f0;
+  --text2: #9090a8;
+  --text3: #5a5a72;
+  --accent: #4f8ef7;
+  --accent-bg: rgba(79,142,247,0.12);
+  --accent-border: rgba(79,142,247,0.3);
+  --success: #3ecf8e;
+  --success-bg: rgba(62,207,142,0.1);
+  --danger: #f76f6f;
+  --danger-bg: rgba(247,111,111,0.1);
+  --warning: #f5a623;
+  --warning-bg: rgba(245,166,35,0.1);
+  --section-bg: #1a1a26;
+  --input-bg: #1c1c28;
+  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --badge-new: rgba(79,142,247,0.15);
+  --badge-new-text: #4f8ef7;
+}
+[data-theme="light"] {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface2: #f8f9fb;
+  --surface3: #f0f1f4;
+  --border: #e2e4ea;
+  --border2: #d0d3dc;
+  --text: #1a1a2e;
+  --text2: #5a5d72;
+  --text3: #9598a8;
+  --accent: #1a56db;
+  --accent-bg: rgba(26,86,219,0.08);
+  --accent-border: rgba(26,86,219,0.25);
+  --success: #0d9963;
+  --success-bg: rgba(13,153,99,0.08);
+  --danger: #d93025;
+  --danger-bg: rgba(217,48,37,0.08);
+  --warning: #b06000;
+  --warning-bg: rgba(176,96,0,0.08);
+  --section-bg: #f8f9fb;
+  --input-bg: #ffffff;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --badge-new: rgba(26,86,219,0.1);
+  --badge-new-text: #1a56db;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px;transition:background 0.2s,color 0.2s;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:256px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:background 0.2s;}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border);}
+.logo-top{display:flex;align-items:center;gap:10px;}
+.logo-emblem{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.logo-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);line-height:1.2;}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.logo-ver{font-size:10px;color:var(--text3);margin-top:8px;}
+.sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto;}
+.nav-group{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);padding:0 10px;margin:14px 0 5px;}
+.nav-group:first-child{margin-top:2px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all 0.13s;border:1px solid transparent;width:100%;background:none;text-align:left;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border);font-weight:600;}
+.nav-icon{width:16px;text-align:center;font-size:14px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);}
+
+/* ── MAIN ── */
+.main{margin-left:256px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;transition:background 0.2s;}
+.topbar-left{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.topbar-sep{color:var(--border2);}
+.topbar-current{font-weight:600;color:var(--text);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+
+/* ── THEME TOGGLE ── */
+.theme-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;transition:all 0.13s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid transparent;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.13s;white-space:nowrap;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{opacity:0.88;transform:translateY(-1px);box-shadow:0 4px 14px rgba(79,142,247,0.35);}
+.btn-ghost{background:var(--surface2);color:var(--text);border-color:var(--border2);}
+.btn-ghost:hover{background:var(--surface3);border-color:var(--border2);}
+.btn-success{background:var(--success-bg);color:var(--success);border-color:rgba(62,207,142,0.3);}
+.btn-success:hover{opacity:0.85;}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border-color:rgba(247,111,111,0.3);}
+.btn-danger:hover{opacity:0.85;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-xs{padding:3px 8px;font-size:11px;}
+
+/* ── CONTENT ── */
+.content{padding:28px;flex:1;}
+.view{display:none;}
+.view.active{display:block;animation:fadeUp 0.18s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:24px;}
+.page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);}
+.page-sub{font-size:13px;color:var(--text2);margin-top:3px;}
+
+/* ── DASHBOARD STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow 0.15s;}
+.stat-card:hover{box-shadow:var(--shadow-sm);}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.stat-card:nth-child(1)::after{background:var(--accent);}
+.stat-card:nth-child(2)::after{background:#4f8ef7;}
+.stat-card:nth-child(3)::after{background:var(--success);}
+.stat-card:nth-child(4)::after{background:var(--warning);}
+.stat-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;}
+.stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1;}
+.stat-hint{font-size:11px;color:var(--text3);margin-top:4px;}
+
+/* ── TABLE ── */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.table-toolbar{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.table-title{font-size:14px;font-weight:700;flex:1;}
+.search-box{position:relative;}
+.search-box input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 12px 7px 32px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);outline:none;width:220px;transition:border-color 0.13s;}
+.search-box input:focus{border-color:var(--accent);}
+.search-box input::placeholder{color:var(--text3);}
+.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;}
+select.filter-sel{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);outline:none;cursor:pointer;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surface2);}
+tbody td{padding:12px 14px;font-size:13px;vertical-align:middle;}
+.td-ref{font-weight:700;color:var(--accent);font-size:12px;font-family:monospace;}
+.td-name strong{font-weight:600;}
+.td-name small{display:block;font-size:11px;color:var(--text3);margin-top:1px;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;border:1px solid transparent;}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;display:inline-block;}
+.badge-new{background:var(--badge-new);color:var(--badge-new-text);border-color:var(--accent-border);}
+.badge-new::before{background:var(--accent);}
+.badge-printed{background:var(--success-bg);color:var(--success);border-color:rgba(62,207,142,0.3);}
+.badge-printed::before{background:var(--success);}
+.badge-exported{background:var(--warning-bg);color:var(--warning);border-color:rgba(245,166,35,0.3);}
+.badge-exported::before{background:var(--warning);}
+.row-acts{display:flex;gap:4px;opacity:0;transition:opacity 0.13s;}
+tbody tr:hover .row-acts{opacity:1;}
+.empty-state{padding:56px 24px;text-align:center;}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.35;}
+.empty-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--text);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--text2);}
+
+/* ── FORM LAYOUT ── */
+.form-wrap{max-width:900px;}
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+.form-section-head{background:var(--section-bg);padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.fs-icon{width:30px;height:30px;background:var(--accent-bg);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.fs-title{font-size:13px;font-weight:700;color:var(--text);}
+.fs-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.form-section-body{padding:20px;}
+.admin-section .form-section-head{background:rgba(245,166,35,0.08);border-bottom-color:rgba(245,166,35,0.2);}
+.admin-section .fs-icon{background:var(--warning-bg);}
+
+/* ── FORM FIELDS ── */
+.fg-grid{display:grid;gap:14px;}
+.fg-grid.g2{grid-template-columns:1fr 1fr;}
+.fg-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.fg-grid.g1{grid-template-columns:1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg.span2{grid-column:span 2;}
+.fg.span3{grid-column:span 3;}
+.fg label{font-size:11.5px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:4px;}
+.req{color:#f76f6f;font-size:12px;}
+.hint{font-size:11px;color:var(--text3);margin-top:1px;}
+.fg input,.fg select,.fg textarea{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.13s,box-shadow 0.13s;width:100%;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.fg input.err,.fg select.err,.fg textarea.err{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-bg);}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.fg select option{background:var(--surface2);}
+.err-msg{font-size:11px;color:var(--danger);display:none;}
+.err-msg.on{display:block;}
+
+/* ── CHECKBOXES ── */
+.cb-group-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px;}
+.cb-grid.compact{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+.cb-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:5px;cursor:pointer;transition:background 0.1s;user-select:none;}
+.cb-item:hover{background:var(--surface2);}
+.cb-item input[type="checkbox"]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+.cb-item span{font-size:12.5px;color:var(--text2);}
+.cb-item.other-item{display:flex;align-items:center;gap:8px;}
+.other-input{display:none;flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:12px;font-family:'Inter',sans-serif;color:var(--text);outline:none;}
+.other-input:focus{border-color:var(--accent);}
+.other-input.show{display:block;}
+
+/* ── RADIO RATING ── */
+.rating-group{margin-bottom:16px;}
+.rating-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.rating-hint{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.rating-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.rating-opt{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.rating-opt input[type="radio"]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+.rating-opt span{font-size:11px;color:var(--text3);font-weight:600;}
+
+/* ── CODE OF ETHICS ── */
+.ethics-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12.5px;color:var(--text2);line-height:1.7;max-height:300px;overflow-y:auto;}
+.ethics-box p{margin-bottom:6px;}
+
+/* ── NOTICE BOX ── */
+.notice-box{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;padding:14px 16px;font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:14px;}
+.notice-box ol{padding-left:18px;margin-top:6px;}
+.notice-box li{margin-bottom:3px;}
+
+/* ── FORM FOOTER ── */
+.form-footer{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;justify-content:flex-end;gap:10px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+
+/* ── PRINT VIEW ── */
+.print-toolbar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.print-ref-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.print-ref-val{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
+.print-doc{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);}
+.print-banner{background:var(--accent);padding:24px 32px;display:flex;justify-content:space-between;align-items:flex-start;}
+.print-banner h1{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;}
+.print-banner .sub{font-size:12px;color:rgba(255,255,255,0.75);margin-top:3px;}
+.print-meta{text-align:right;color:rgba(255,255,255,0.85);font-size:12px;}
+.print-meta .val{font-size:15px;font-weight:700;color:#fff;margin-top:2px;}
+.print-body{padding:28px 32px;}
+.print-sec{margin-bottom:24px;}
+.print-sec-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.print-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.print-fields.g2{grid-template-columns:repeat(2,1fr);}
+.print-fields.g1{grid-template-columns:1fr;}
+.pf{display:flex;flex-direction:column;gap:3px;}
+.pf.span2{grid-column:span 2;}
+.pf.span3{grid-column:span 3;}
+.pf label{font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text3);}
+.pf .val{font-size:13px;color:var(--text);font-weight:500;padding:7px 10px;background:var(--surface2);border-radius:5px;border:1px solid var(--border);min-height:32px;line-height:1.5;word-break:break-word;}
+.pf .val.empty{color:var(--text3);font-style:italic;}
+.print-footer{padding:18px 32px;border-top:1px solid var(--border);background:var(--section-bg);display:flex;justify-content:space-between;align-items:flex-end;}
+.sig-col{display:flex;gap:40px;}
+.sig-block{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sig-line{width:140px;border-bottom:1.5px solid var(--border2);padding-top:28px;}
+.sig-label{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:0.5px;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:26px;max-width:400px;width:90%;box-shadow:var(--shadow);animation:fadeUp 0.18s ease;}
+.modal-box h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:8px;}
+.modal-box p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+.modal-acts{display:flex;gap:8px;justify-content:flex-end;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);z-index:999;min-width:270px;transform:translateY(16px);opacity:0;transition:all 0.25s ease;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;pointer-events:auto;}
+.toast-ico{font-size:18px;flex-shrink:0;}
+.toast-body .toast-title{font-size:13px;font-weight:700;}
+.toast-body .toast-sub{font-size:12px;color:var(--text2);}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:14px 0;}
+
+/* ── PRINT MEDIA ── */
+@media print{
+  .sidebar,.topbar,.no-print,.print-toolbar{display:none!important;}
+  .main{margin-left:0!important;}
+  .content{padding:0!important;}
+  body{background:#fff!important;color:#000!important;}
+  .view{display:none!important;}
+  #view-print{display:block!important;}
+  .print-doc{box-shadow:none!important;border:1px solid #ccc!important;}
+  .print-banner{background:#1a56db!important;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  .pf .val{background:#f8f8f8!important;color:#333!important;}
+}
+
+/* ── FORM BUILDER ── */
+.fb-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.fb-header{background:var(--section-bg);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.fb-header-title{font-size:14px;font-weight:700;color:var(--text);}
+.fb-header-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.fb-body{padding:20px;}
+.fb-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.fb-label{font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
+.fb-input{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.13s;width:100%;}
+.fb-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.fb-textarea{resize:vertical;min-height:70px;line-height:1.5;}
+.fb-divider{height:1px;background:var(--border);margin:16px 0;}
+.fb-section-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.fb-fields-list{display:flex;flex-direction:column;gap:8px;min-height:60px;}
+.fb-field-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;transition:border-color 0.13s;}
+.fb-field-item:hover{border-color:var(--border2);}
+.fb-field-drag{color:var(--text3);font-size:14px;cursor:grab;flex-shrink:0;}
+.fb-field-type{background:var(--accent-bg);color:var(--accent);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;flex-shrink:0;}
+.fb-field-label{font-size:13px;font-weight:500;color:var(--text);flex:1;}
+.fb-field-req{color:var(--danger);font-size:11px;flex-shrink:0;}
+.fb-field-acts{display:flex;gap:4px;flex-shrink:0;}
+.fb-add-bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding:12px;background:var(--surface2);border-radius:8px;border:1px dashed var(--border2);}
+.fb-add-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11.5px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.12s;}
+.fb-add-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+
+/* ── FORMS LIBRARY ── */
+.forms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:20px;}
+.form-lib-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;}
+.form-lib-card:hover{box-shadow:var(--shadow);border-color:var(--border2);}
+.flc-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.flc-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.flc-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+.flc-body{padding:12px 18px;}
+.flc-meta{display:flex;gap:16px;margin-bottom:10px;}
+.flc-meta-item{display:flex;flex-direction:column;gap:2px;}
+.flc-meta-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;}
+.flc-meta-val{font-size:13px;font-weight:600;color:var(--text);}
+.flc-footer{padding:10px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--section-bg);}
+.flc-acts{display:flex;gap:6px;}
+.badge-draft{background:var(--warning-bg);color:var(--warning);border:1px solid rgba(245,166,35,0.3);}
+.badge-draft::before{background:var(--warning);}
+.badge-published{background:var(--success-bg);color:var(--success);border:1px solid rgba(62,207,142,0.3);}
+.badge-published::before{background:var(--success);}
+
+/* ── PAB OFFICERS SECTION (professional) ── */
+.pab-officers-section{background:var(--surface);border:1px solid rgba(245,166,35,0.35);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+.pab-officers-head{background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(245,166,35,0.06));padding:16px 24px;border-bottom:1px solid rgba(245,166,35,0.25);display:flex;align-items:center;gap:12px;}
+.pab-officers-emblem{width:38px;height:38px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.pab-officers-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--text);}
+.pab-officers-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.pab-officers-body{padding:24px;}
+.sig-field-wrap{border:2px solid var(--border);border-radius:8px;overflow:hidden;margin-top:6px;}
+.sig-field-name{padding:10px 14px;font-size:14px;font-weight:700;color:var(--text);border:none;background:var(--input-bg);font-family:'Playfair Display',serif;width:100%;outline:none;}
+.sig-field-name:focus{background:var(--surface2);}
+.sig-field-date{padding:7px 14px 10px;font-size:12px;color:var(--text2);border:none;background:var(--input-bg);border-top:1px solid var(--border);font-family:'Inter',sans-serif;width:100%;outline:none;}
+.sig-field-date:focus{background:var(--surface2);}
+.sig-top-bar{background:rgba(245,166,35,0.06);padding:6px 14px;border-bottom:1px dashed var(--border);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--warning);}
+.rec-text-area{background:var(--input-bg);border:2px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:90px;width:100%;line-height:1.6;transition:border-color 0.13s;}
+.rec-text-area:focus{border-color:rgba(245,166,35,0.5);}
+.officers-label{font-size:12px;font-weight:700;font-style:italic;color:var(--text);margin-bottom:6px;display:block;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;}
+
+/* ── MODAL LARGE ── */
+.modal-lg{max-width:680px;width:95%;max-height:90vh;overflow-y:auto;}
+
+/* ── SHARE MODAL ── */
+.share-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;max-width:480px;width:95%;box-shadow:var(--shadow);animation:fadeUp 0.18s ease;}
+.share-modal-box h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:6px;}
+.share-modal-box p{font-size:12.5px;color:var(--text2);margin-bottom:18px;line-height:1.6;}
+.share-link-box{display:flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
+.share-link-text{font-size:12px;color:var(--accent);font-family:monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.share-notice{background:var(--warning-bg);border:1px solid rgba(245,166,35,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--warning);line-height:1.6;margin-bottom:18px;}
+/* ── PIN BADGE ── */
+.pin-badge{position:absolute;top:10px;right:12px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:1px;display:flex;align-items:center;gap:3px;}
+.pin-badge.pinned{background:var(--accent);color:#fff;}
+.pin-badge.pab-official{background:var(--accent);color:#fff;}
+
+/* ── SIGNATURE TOGGLE ── */
+.sig-toggle-btn{flex:1;padding:7px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.13s;text-align:center;}
+.sig-toggle-btn:hover{border-color:var(--accent);color:var(--accent);}
+.sig-toggle-btn.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border);font-weight:600;}
+
+.ff-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+.ff-section-head{background:var(--section-bg);padding:12px 18px;border-bottom:1px solid var(--border);}
+.ff-section-title{font-size:13px;font-weight:700;color:var(--text);}
+.ff-section-body{padding:18px;}
+.ff-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.ff-field:last-child{margin-bottom:0;}
+.ff-field label{font-size:11.5px;font-weight:600;color:var(--text2);}
+.ff-field input,.ff-field select,.ff-field textarea{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.13s;width:100%;}
+.ff-field input:focus,.ff-field select:focus,.ff-field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.ff-field textarea{resize:vertical;min-height:80px;}
+.ff-cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px;}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-top">
+      <div class="logo-emblem">🏛</div>
+      <div>
+        <div class="logo-title">PAB Information System</div>
+        <div class="logo-sub">DTI · Accreditation Bureau</div>
+      </div>
+    </div>
+    <div class="logo-ver">ver.2 &nbsp;·&nbsp; Technical Assessors & Experts</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-group">Overview</div>
+    <button class="nav-item active" id="nav-dash" onclick="goto('dashboard',this)">
+      <span class="nav-icon">⊞</span> Dashboard
+      <span class="nav-badge" id="nav-badge">0</span>
+    </button>
+    <div class="nav-group">Forms</div>
+    <button class="nav-item" id="nav-forms-lib" onclick="goto('forms-lib',this)">
+      <span class="nav-icon">📂</span> Forms Library
+      <span class="nav-badge" id="forms-badge">0</span>
+    </button>
+  </div>
+  <div class="sidebar-footer">
+    <div id="sidebar-user-name" style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Loading…</div>
+    <div id="sidebar-user-role" style="font-size:11px;color:var(--accent);margin-bottom:1px;"></div>
+    <div id="sidebar-user-email" style="font-size:10px;color:var(--text3);margin-bottom:10px;"></div>
+    <button onclick="doLogout()" style="width:100%;padding:7px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,0.3);border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">⏻ Sign Out</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span>PAB</span><span class="topbar-sep">›</span>
+      <span class="topbar-current" id="bc-current">Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark Mode</button>
+      <div id="topbar-actions"></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="view active" id="view-dashboard">
+      <div class="page-header">
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">PAB Technical Assessors and Experts — Submission Records</div>
+      </div>
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="stat-label">Total Submissions</div><div class="stat-num" id="s-total">0</div><div class="stat-hint">All records</div></div>
+        <div class="stat-card"><div class="stat-label">New</div><div class="stat-num" id="s-new">0</div><div class="stat-hint">Pending review</div></div>
+        <div class="stat-card"><div class="stat-label">Forms Created</div><div class="stat-num" id="s-forms">0</div><div class="stat-hint">Custom forms built</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="table-title">Submissions</div>
+          <div class="search-box"><span class="search-ico">🔍</span><input type="text" id="search-q" placeholder="Search name, email, ref…" oninput="renderTable()"></div>
+          <select class="filter-sel" id="filter-s" onchange="renderTable()">
+            <option value="">All Status</option>
+            <option value="new">New</option>
+          </select>
+          <button class="btn btn-success btn-sm no-print" onclick="exportAll()">⬇ Export All to Excel</button>
+        </div>
+        <div id="table-wrap"></div>
+      </div>
+    </div>
+
+    <!-- ═══ CREATE FORM ═══ -->
+    <div class="view" id="view-create">
+      <div class="page-header">
+        <div class="page-title">PAB Technical Assessors and Experts Information</div>
+        <div class="page-sub">ver.2 &nbsp;·&nbsp; Required fields marked * &nbsp;·&nbsp; Click checkbox to select / deselect</div>
+      </div>
+      <div class="form-wrap">
+
+        <!-- PERSONAL INFORMATION -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">👤</div><div><div class="fs-title">Personal Information</div></div></div>
+          <div class="form-section-body">
+            <div class="fg-grid g2">
+              <div class="fg">
+                <label>Preferred Title</label>
+                <select id="f-title">
+                  <option value="">— Select Title —</option>
+                  <option>Engr.</option>
+                  <option>Dr.</option>
+                  <option>Prof.</option>
+                  <option>Atty.</option>
+                  <option>Arch.</option>
+                  <option>Mr.</option>
+                  <option>Ms.</option>
+                  <option>Mrs.</option>
+                  <option>Hon.</option>
+                  <option>Gen.</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label>Name <span class="req">*</span></label>
+                <input type="text" id="f-name" placeholder="First Name, Middle Name, Last Name" oninput="clearE('f-name')">
+                <div class="hint">(First Name, Middle Name, Last Name)</div>
+                <span class="err-msg" id="e-f-name">Name is required.</span>
+              </div>
+              <div class="fg">
+                <label>Date of Birth <span class="req">*</span></label>
+                <input type="date" id="f-dob" oninput="clearE('f-dob')">
+                <div class="hint">Format: mm/dd/yyyy</div>
+                <span class="err-msg" id="e-f-dob">Date of birth is required.</span>
+              </div>
+              <div class="fg">
+                <label>Cellular Number <span class="req">*</span></label>
+                <input type="text" id="f-cell" placeholder="+63 912 345 6789" oninput="clearE('f-cell')">
+                <span class="err-msg" id="e-f-cell">Cellular number is required.</span>
+              </div>
+              <div class="fg span2">
+                <label>Home Address <span class="req">*</span></label>
+                <input type="text" id="f-addr" placeholder="Street Name / Subdivision, City, Province, Zip Code" oninput="clearE('f-addr')">
+                <div class="hint">Street Name / Subdivision, City, Province, Zip Code</div>
+                <span class="err-msg" id="e-f-addr">Home address is required.</span>
+              </div>
+              <div class="fg">
+                <label>Fax Number</label>
+                <input type="text" id="f-fax" placeholder="Fax Number">
+              </div>
+              <div class="fg">
+                <label>Home Number</label>
+                <input type="text" id="f-homenum" placeholder="Area Code - Phone Number">
+                <div class="hint">(Area Code - Phone Number)</div>
+              </div>
+              <div class="fg span2">
+                <label>E-mail Address <span class="req">*</span></label>
+                <input type="email" id="f-email" placeholder="email@example.com" oninput="clearE('f-email')">
+                <div class="hint">Separate by comma if multiple e-mails</div>
+                <span class="err-msg" id="e-f-email">Valid e-mail is required.</span>
+              </div>
+              <div class="fg">
+                <label>TIN <span class="req">*</span></label>
+                <input type="text" id="f-tin" placeholder="Tax Identification Number" oninput="clearE('f-tin')">
+                <span class="err-msg" id="e-f-tin">TIN is required.</span>
+              </div>
+              <div class="fg">
+                <label>Position Held</label>
+                <input type="text" id="f-position" placeholder="Your position/designation">
+              </div>
+              <div class="fg span2">
+                <label>Name of Organization <span class="req">*</span></label>
+                <input type="text" id="f-org" placeholder="Company / Organization Name" oninput="clearE('f-org')">
+                <div class="hint">Indicate the name of the company/organization where you are currently affiliated.</div>
+                <span class="err-msg" id="e-f-org">Organization name is required.</span>
+              </div>
+              <div class="fg span2">
+                <label>Company Address</label>
+                <input type="text" id="f-compaddr" placeholder="Street Name / Subdivision, City, Province, Zip Code">
+                <div class="hint">Street Name / Subdivision, City, Province, Zip Code</div>
+              </div>
+              <div class="fg">
+                <label>Telephone Number</label>
+                <input type="text" id="f-tel" placeholder="Area Code - Phone Number">
+                <div class="hint">(Area Code - Phone Number)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDUCATIONAL BACKGROUND -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">🎓</div><div><div class="fs-title">Educational Background</div></div></div>
+          <div class="form-section-body">
+            <div class="fg-grid g1">
+              <div class="fg">
+                <label>Doctorate Degree</label>
+                <input type="text" id="f-doc" placeholder="Degree, Major, School, Year Graduated">
+              </div>
+              <div class="fg">
+                <label>Masters Degree</label>
+                <input type="text" id="f-mas" placeholder="Degree, Major, School, Year Graduated">
+              </div>
+              <div class="fg">
+                <label>College Degree <span class="req">*</span></label>
+                <input type="text" id="f-col" placeholder="Degree, Major, School, Year Graduated" oninput="clearE('f-col')">
+                <span class="err-msg" id="e-f-col">College degree is required.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFESSIONAL QUALIFICATIONS -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">📜</div><div><div class="fs-title">Professional Qualifications</div></div></div>
+          <div class="form-section-body">
+            <div class="fg-grid g1">
+              <div class="fg">
+                <label>Professional Eligibility</label>
+                <textarea id="f-elig" placeholder="Indicate the title of the examination and the date it was taken."></textarea>
+                <div class="hint">Please indicate the title of the examination and the date it was taken.</div>
+              </div>
+              <div class="fg">
+                <label>Professional Membership</label>
+                <textarea id="f-memb" placeholder="Name of organization, date of membership, and position in the organization."></textarea>
+                <div class="hint">Please indicate the name of organization, date of membership, and position in the organization.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FIELD OF EXPERTISE -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">🔬</div><div><div class="fs-title">Field of Expertise <span class="req">*</span></div><div class="fs-sub">Click the checkbox to select. You may select more than one.</div></div></div>
+          <div class="form-section-body">
+
+            <div class="cb-group-label">ISO/IEC 17025 <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-17025">
+              <label class="cb-item"><input type="checkbox" value="Software"> <span>Software</span></label>
+              <label class="cb-item"><input type="checkbox" value="Dosimetry"> <span>Dosimetry</span></label>
+              <label class="cb-item"><input type="checkbox" value="Mechanical"> <span>Mechanical</span></label>
+              <label class="cb-item"><input type="checkbox" value="Biological"> <span>Biological</span></label>
+              <label class="cb-item"><input type="checkbox" value="Calibration"> <span>Calibration</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <label class="cb-item"><input type="checkbox" value="Chemical"> <span>Chemical</span></label>
+              <label class="cb-item"><input type="checkbox" value="Forensic"> <span>Forensic</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electrical"> <span>Electrical</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-17025')"> <span>Other</span> <input type="text" id="other-17025" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">ISO 9001 <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-9001">
+              <label class="cb-item"><input type="checkbox" value="Management"> <span>Management</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">ISO 15189 <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-15189">
+              <label class="cb-item"><input type="checkbox" value="Medical testing"> <span>Medical testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">ISO/IEC 17020 <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-17020">
+              <label class="cb-item"><input type="checkbox" value="Inspection"> <span>Inspection</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">ISO 17034 <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-17034">
+              <label class="cb-item"><input type="checkbox" value="Reference Material Producers"> <span>Reference Material Producers</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">ISO/IEC 17043 <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-17043">
+              <label class="cb-item"><input type="checkbox" value="Proficiency Testing"> <span>Proficiency Testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORK EXPERIENCE -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">💼</div><div><div class="fs-title">Work Experience</div></div></div>
+          <div class="form-section-body">
+            <div class="fg-grid g2">
+              <div class="fg">
+                <label>No. of years of experience in the technical field <span class="req">*</span></label>
+                <input type="number" id="f-yrs-tech" min="0" placeholder="e.g. 10" oninput="clearE('f-yrs-tech')">
+                <span class="err-msg" id="e-f-yrs-tech">This field is required.</span>
+              </div>
+              <div class="fg">
+                <label>No. of years of experience in laboratory management system, quality assurance, quality system auditing, and/or testing/inspection assessment activities <span class="req">*</span></label>
+                <input type="number" id="f-yrs-lab" min="0" placeholder="e.g. 5" oninput="clearE('f-yrs-lab')">
+                <span class="err-msg" id="e-f-yrs-lab">This field is required.</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="cb-group-label">Standards <span class="req">*</span></div>
+            <div class="hint" style="margin-bottom:8px;">Indicate if you have attended a training/seminar on the latest version of the standard/s in the "Other" option.</div>
+            <div class="cb-grid compact" id="cb-standards">
+              <label class="cb-item"><input type="checkbox" value="ISO/IEC 17025"> <span>ISO/IEC 17025</span></label>
+              <label class="cb-item"><input type="checkbox" value="ISO/IEC 17020"> <span>ISO/IEC 17020</span></label>
+              <label class="cb-item"><input type="checkbox" value="ISO 15189"> <span>ISO 15189</span></label>
+              <label class="cb-item"><input type="checkbox" value="ISO/IEC 17043"> <span>ISO/IEC 17043</span></label>
+              <label class="cb-item"><input type="checkbox" value="ISO 17034"> <span>ISO 17034</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-standards')"> <span>Other</span> <input type="text" id="other-standards" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+            <div class="cb-group-label">Other Relevant Topics <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-topics">
+              <label class="cb-item"><input type="checkbox" value="Calibration and Measurement Traceability"> <span>Calibration and Measurement Traceability</span></label>
+              <label class="cb-item"><input type="checkbox" value="Proficiency Testing"> <span>Proficiency Testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Quality Management System"> <span>Quality Management System</span></label>
+              <label class="cb-item"><input type="checkbox" value="Conduct of Assessment of Technical Competence"> <span>Conduct of Assessment of Technical Competence</span></label>
+              <label class="cb-item"><input type="checkbox" value="PAB Assessor's Forum"> <span>PAB Assessor's Forum</span></label>
+              <label class="cb-item"><input type="checkbox" value="Risk Management"> <span>Risk Management</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-topics')"> <span>Other</span> <input type="text" id="other-topics" class="other-input" placeholder="Specify…"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCOPE OF ASSESSMENT -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">🔭</div><div><div class="fs-title">Scope of Assessment</div><div class="fs-sub">Please select the scope of test you are capable to assess.</div></div></div>
+          <div class="form-section-body">
+
+            <div class="cb-group-label">Biological Testing <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-bio">
+              <label class="cb-item"><input type="checkbox" value="Tests on Human Drugs, Biological Products and Medical Devices"> <span>Tests on Human Drugs, Biological Products and Medical Devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Tests on Veterinary Pharmaceutical and Biological Products"> <span>Tests on Veterinary Pharmaceutical and Biological Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Tests on Biocides"> <span>Tests on Biocides</span></label>
+              <label class="cb-item"><input type="checkbox" value="Tests on Cosmetics, Perfumes and Essential Oils"> <span>Tests on Cosmetics, Perfumes and Essential Oils</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbiological Tests on Foods and Beverages"> <span>Microbiological Tests on Foods and Beverages</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbiological Tests of Surfaces in Abattoirs"> <span>Microbiological Tests of Surfaces in Abattoirs</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbiological Tests for Factory Hygiene / Environmental Monitoring Purposes"> <span>Microbiological Tests for Factory Hygiene / Environmental Monitoring Purposes</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbiological Tests on Diagnostic Kits"> <span>Microbiological Tests on Diagnostic Kits</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbiological Tests on Packaging Materials"> <span>Microbiological Tests on Packaging Materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbial Cultures"> <span>Microbial Cultures</span></label>
+              <label class="cb-item"><input type="checkbox" value="Identification of Pathogens in Plants/Animals"> <span>Identification of Pathogens in Plants/Animals</span></label>
+              <label class="cb-item"><input type="checkbox" value="Aquatic Biology of Specified Water Source"> <span>Aquatic Biology of Specified Water Source</span></label>
+              <label class="cb-item"><input type="checkbox" value="Microbial Test of Waters, including Effluents"> <span>Microbial Test of Waters, including Effluents</span></label>
+              <label class="cb-item"><input type="checkbox" value="Test on Substances for Potential Genetic Activity"> <span>Test on Substances for Potential Genetic Activity</span></label>
+              <label class="cb-item"><input type="checkbox" value="Analysis of GMO"> <span>Analysis of GMO</span></label>
+              <label class="cb-item"><input type="checkbox" value="Sampling"> <span>Sampling</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-bio')"> <span>Other</span> <input type="text" id="other-bio" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">Chemical Testing <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-chem">
+              <label class="cb-item"><input type="checkbox" value="Metals and alloys"> <span>Metals and alloys</span></label>
+              <label class="cb-item"><input type="checkbox" value="Metallic coatings and treatment solutions"> <span>Metallic coatings and treatment solutions</span></label>
+              <label class="cb-item"><input type="checkbox" value="Ores and Minerals"> <span>Ores and Minerals</span></label>
+              <label class="cb-item"><input type="checkbox" value="Corrosion tests"> <span>Corrosion tests</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cements, concrete and related products"> <span>Cements, concrete and related products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Clays, ceramics and related materials"> <span>Clays, ceramics and related materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Oil shale"> <span>Oil shale</span></label>
+              <label class="cb-item"><input type="checkbox" value="Crude petroleum"> <span>Crude petroleum</span></label>
+              <label class="cb-item"><input type="checkbox" value="Fuels"> <span>Fuels</span></label>
+              <label class="cb-item"><input type="checkbox" value="Lubricants"> <span>Lubricants</span></label>
+              <label class="cb-item"><input type="checkbox" value="Bituminous materials"> <span>Bituminous materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Solvents"> <span>Solvents</span></label>
+              <label class="cb-item"><input type="checkbox" value="Miscellaneous petroleum products"> <span>Miscellaneous petroleum products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Trace analyses in petroleum products"> <span>Trace analyses in petroleum products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Paints and related surface coatings"> <span>Paints and related surface coatings</span></label>
+              <label class="cb-item"><input type="checkbox" value="Resins"> <span>Resins</span></label>
+              <label class="cb-item"><input type="checkbox" value="Ink, dyes and pigments"> <span>Ink, dyes and pigments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Explosives and associated materials"> <span>Explosives and associated materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Carbon black"> <span>Carbon black</span></label>
+              <label class="cb-item"><input type="checkbox" value="Rubber"> <span>Rubber</span></label>
+              <label class="cb-item"><input type="checkbox" value="Plastics"> <span>Plastics</span></label>
+              <label class="cb-item"><input type="checkbox" value="Leather and leather products"> <span>Leather and leather products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Adhesives and sealants"> <span>Adhesives and sealants</span></label>
+              <label class="cb-item"><input type="checkbox" value="Textiles and related products"> <span>Textiles and related products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Paper, paperboard and pulp"> <span>Paper, paperboard and pulp</span></label>
+              <label class="cb-item"><input type="checkbox" value="Foods"> <span>Foods</span></label>
+              <label class="cb-item"><input type="checkbox" value="Residues in foods and agricultural materials"> <span>Residues in foods and agricultural materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Drugs and pharmaceuticals"> <span>Drugs and pharmaceuticals</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cosmetics, perfumes and essentials oils"> <span>Cosmetics, perfumes and essentials oils</span></label>
+              <label class="cb-item"><input type="checkbox" value="Fats, oils and waxes"> <span>Fats, oils and waxes</span></label>
+              <label class="cb-item"><input type="checkbox" value="Detergents and related products"> <span>Detergents and related products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Agricultural products and materials"> <span>Agricultural products and materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Waters"> <span>Waters</span></label>
+              <label class="cb-item"><input type="checkbox" value="Gases and aerosols"> <span>Gases and aerosols</span></label>
+              <label class="cb-item"><input type="checkbox" value="Biological monitoring"> <span>Biological monitoring</span></label>
+              <label class="cb-item"><input type="checkbox" value="Constituents of the environment"> <span>Constituents of the environment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Workplace environments and hazards"> <span>Workplace environments and hazards</span></label>
+              <label class="cb-item"><input type="checkbox" value="Residues in constituents of the environment"> <span>Residues in constituents of the environment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Motor vehicles"> <span>Motor vehicles</span></label>
+              <label class="cb-item"><input type="checkbox" value="Article sizing"> <span>Article sizing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Laboratory reagents"> <span>Laboratory reagents</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-chem')"> <span>Other</span> <input type="text" id="other-chem" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">Electrical Testing <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-elec">
+              <label class="cb-item"><input type="checkbox" value="Conducting materials, conductors and resistance alloys"> <span>Conducting materials, conductors and resistance alloys</span></label>
+              <label class="cb-item"><input type="checkbox" value="Resistors, resistance boxes and potential dividers"> <span>Resistors, resistance boxes and potential dividers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Insulating materials and insulators"> <span>Insulating materials and insulators</span></label>
+              <label class="cb-item"><input type="checkbox" value="Capacitors"> <span>Capacitors</span></label>
+              <label class="cb-item"><input type="checkbox" value="Magnetic materials and instruments"> <span>Magnetic materials and instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Inductors and transformers"> <span>Inductors and transformers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Voltage standards"> <span>Voltage standards</span></label>
+              <label class="cb-item"><input type="checkbox" value="Precision transfer instruments"> <span>Precision transfer instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Instrument calibrators"> <span>Instrument calibrators</span></label>
+              <label class="cb-item"><input type="checkbox" value="Indicating and recording instruments"> <span>Indicating and recording instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Frequency and time measuring instruments and standards"> <span>Frequency and time measuring instruments and standards</span></label>
+              <label class="cb-item"><input type="checkbox" value="Waveform measuring instruments"> <span>Waveform measuring instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cells and Batteries"> <span>Cells and Batteries</span></label>
+              <label class="cb-item"><input type="checkbox" value="Power Supplies and Stabilizers"> <span>Power Supplies and Stabilizers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Signal sources"> <span>Signal sources</span></label>
+              <label class="cb-item"><input type="checkbox" value="Power rectifiers"> <span>Power rectifiers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electronic components"> <span>Electronic components</span></label>
+              <label class="cb-item"><input type="checkbox" value="Communications equipment"> <span>Communications equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electronic equipment"> <span>Electronic equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electrical machines and auxiliary apparatus"> <span>Electrical machines and auxiliary apparatus</span></label>
+              <label class="cb-item"><input type="checkbox" value="Switching, control and protective equipment for power system"> <span>Switching, control and protective equipment for power system</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cables and feeders"> <span>Cables and feeders</span></label>
+              <label class="cb-item"><input type="checkbox" value="Power supply equipment and systems"> <span>Power supply equipment and systems</span></label>
+              <label class="cb-item"><input type="checkbox" value="High voltage testing"> <span>High voltage testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electromagnetic compatibility - emission testing"> <span>Electromagnetic compatibility - emission testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electromagnetic compatibility - immunity testing"> <span>Electromagnetic compatibility - immunity testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="RF and microwave radiation hazard measurement"> <span>RF and microwave radiation hazard measurement</span></label>
+              <label class="cb-item"><input type="checkbox" value="RF shielding effectiveness"> <span>RF shielding effectiveness</span></label>
+              <label class="cb-item"><input type="checkbox" value="High power and high current testing"> <span>High power and high current testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Optical fiber systems"> <span>Optical fiber systems</span></label>
+              <label class="cb-item"><input type="checkbox" value="Environmental tests"> <span>Environmental tests</span></label>
+              <label class="cb-item"><input type="checkbox" value="Miscellaneous electrical tests"> <span>Miscellaneous electrical tests</span></label>
+              <label class="cb-item"><input type="checkbox" value="Antistatic materials for industrial applications"> <span>Antistatic materials for industrial applications</span></label>
+              <label class="cb-item"><input type="checkbox" value="Approval tests on telecommunications equipment"> <span>Approval tests on telecommunications equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Approval tests on radio communications equipment"> <span>Approval tests on radio communications equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Approval tests on electrical appliances, accessories and tools"> <span>Approval tests on electrical appliances, accessories and tools</span></label>
+              <label class="cb-item"><input type="checkbox" value="Approval tests on lamps and related equipment"> <span>Approval tests on lamps and related equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Performance Tests on Electrical Appliances and Accessories"> <span>Performance Tests on Electrical Appliances and Accessories</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electrical equipment for explosive atmospheres"> <span>Electrical equipment for explosive atmospheres</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electromedical equipment"> <span>Electromedical equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Medical treatment areas"> <span>Medical treatment areas</span></label>
+              <label class="cb-item"><input type="checkbox" value="Philippine Energy Efficiency Regulatory Requirements"> <span>Philippine Energy Efficiency Regulatory Requirements</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-elec')"> <span>Other</span> <input type="text" id="other-elec" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">Mechanical Testing <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-mech">
+              <label class="cb-item"><input type="checkbox" value="Aggregates"> <span>Aggregates</span></label>
+              <label class="cb-item"><input type="checkbox" value="Bituminous Materials"> <span>Bituminous Materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cements and Pozzolanic Materials"> <span>Cements and Pozzolanic Materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Concrete"> <span>Concrete</span></label>
+              <label class="cb-item"><input type="checkbox" value="Soils"> <span>Soils</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cement Products"> <span>Cement Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Refractories"> <span>Refractories</span></label>
+              <label class="cb-item"><input type="checkbox" value="Rubber and Rubber Products"> <span>Rubber and Rubber Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Metals and Metals Products"> <span>Metals and Metals Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Timber and Timber Products"> <span>Timber and Timber Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Glass and Glass Products"> <span>Glass and Glass Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Furniture"> <span>Furniture</span></label>
+              <label class="cb-item"><input type="checkbox" value="Building boards and plywood"> <span>Building boards and plywood</span></label>
+              <label class="cb-item"><input type="checkbox" value="Fiber Rope and Cordage"> <span>Fiber Rope and Cordage</span></label>
+              <label class="cb-item"><input type="checkbox" value="Industrial Fasteners"> <span>Industrial Fasteners</span></label>
+              <label class="cb-item"><input type="checkbox" value="Paper and Paperboard"> <span>Paper and Paperboard</span></label>
+              <label class="cb-item"><input type="checkbox" value="Plastics and Plastic Products"> <span>Plastics and Plastic Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Seat Belts and Safety Equipment"> <span>Seat Belts and Safety Equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Lifting Gear, Chain, Wire Rope and Fittings"> <span>Lifting Gear, Chain, Wire Rope and Fittings</span></label>
+              <label class="cb-item"><input type="checkbox" value="Leather and Leather Products"> <span>Leather and Leather Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Adhesives and Sealant"> <span>Adhesives and Sealant</span></label>
+              <label class="cb-item"><input type="checkbox" value="Motor Vehicles Safety Tests"> <span>Motor Vehicles Safety Tests</span></label>
+              <label class="cb-item"><input type="checkbox" value="Assemblies and Structures"> <span>Assemblies and Structures</span></label>
+              <label class="cb-item"><input type="checkbox" value="Toys and Games"> <span>Toys and Games</span></label>
+              <label class="cb-item"><input type="checkbox" value="Sporting and Recreational Equipment"> <span>Sporting and Recreational Equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Packaging and Containers"> <span>Packaging and Containers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cylinders and Other Pressure Vessels"> <span>Cylinders and Other Pressure Vessels</span></label>
+              <label class="cb-item"><input type="checkbox" value="Welder Devices"> <span>Welder Devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Weighing Devices"> <span>Weighing Devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Pipelines"> <span>Pipelines</span></label>
+              <label class="cb-item"><input type="checkbox" value="Pipes, Hoses, Valves and Fittings"> <span>Pipes, Hoses, Valves and Fittings</span></label>
+              <label class="cb-item"><input type="checkbox" value="Fans and Blowers"> <span>Fans and Blowers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Compressors"> <span>Compressors</span></label>
+              <label class="cb-item"><input type="checkbox" value="Pumps"> <span>Pumps</span></label>
+              <label class="cb-item"><input type="checkbox" value="Engines"> <span>Engines</span></label>
+              <label class="cb-item"><input type="checkbox" value="Industrial Vehicles and Agricultural Vehicles"> <span>Industrial Vehicles and Agricultural Vehicles</span></label>
+              <label class="cb-item"><input type="checkbox" value="Non Destructive Tests by Radiography"> <span>Non Destructive Tests by Radiography</span></label>
+              <label class="cb-item"><input type="checkbox" value="Non Destructive Tests by Ultrasonic"> <span>Non Destructive Tests by Ultrasonic</span></label>
+              <label class="cb-item"><input type="checkbox" value="Non Destructive Tests by Visual Inspection"> <span>Non Destructive Tests by Visual Inspection</span></label>
+              <label class="cb-item"><input type="checkbox" value="Non Destructive Tests by Surface Methods"> <span>Non Destructive Tests by Surface Methods</span></label>
+              <label class="cb-item"><input type="checkbox" value="Non Destructive Tests by Eddy Currents"> <span>Non Destructive Tests by Eddy Currents</span></label>
+              <label class="cb-item"><input type="checkbox" value="Hand Tools"> <span>Hand Tools</span></label>
+              <label class="cb-item"><input type="checkbox" value="Metallographics Tests on Ferrous Materials"> <span>Metallographics Tests on Ferrous Materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Metallographics Tests on Aluminum and Aluminum Alloys"> <span>Metallographics Tests on Aluminum and Aluminum Alloys</span></label>
+              <label class="cb-item"><input type="checkbox" value="Metallographic Tests on Copper and Copper Alloys"> <span>Metallographic Tests on Copper and Copper Alloys</span></label>
+              <label class="cb-item"><input type="checkbox" value="Metallographic Tests on Other Metals and Alloys"> <span>Metallographic Tests on Other Metals and Alloys</span></label>
+              <label class="cb-item"><input type="checkbox" value="Coatings"> <span>Coatings</span></label>
+              <label class="cb-item"><input type="checkbox" value="Corrosion Tests"> <span>Corrosion Tests</span></label>
+              <label class="cb-item"><input type="checkbox" value="Servicing of Mechanical Calibration Equipment"> <span>Servicing of Mechanical Calibration Equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Textiles and Textile Products"> <span>Textiles and Textile Products</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-mech')"> <span>Other</span> <input type="text" id="other-mech" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">Calibration <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-calib">
+              <label class="cb-item"><input type="checkbox" value="Limit Gauges"> <span>Limit Gauges</span></label>
+              <label class="cb-item"><input type="checkbox" value="Jigs, Fixtures, Cutting Tools and Components"> <span>Jigs, Fixtures, Cutting Tools and Components</span></label>
+              <label class="cb-item"><input type="checkbox" value="Engineering metrology equipment"> <span>Engineering metrology equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Machine Tools"> <span>Machine Tools</span></label>
+              <label class="cb-item"><input type="checkbox" value="Surface topography"> <span>Surface topography</span></label>
+              <label class="cb-item"><input type="checkbox" value="Gears, splines and serrations"> <span>Gears, splines and serrations</span></label>
+              <label class="cb-item"><input type="checkbox" value="Length and angle standards"> <span>Length and angle standards</span></label>
+              <label class="cb-item"><input type="checkbox" value="Dimensional Precision Instruments"> <span>Dimensional Precision Instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Survey and alignment equipment"> <span>Survey and alignment equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Masses"> <span>Masses</span></label>
+              <label class="cb-item"><input type="checkbox" value="Weighing devices"> <span>Weighing devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Volumetric equipment"> <span>Volumetric equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Density Measurement"> <span>Density Measurement</span></label>
+              <label class="cb-item"><input type="checkbox" value="Hydrometers"> <span>Hydrometers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Densitometers"> <span>Densitometers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Flow measuring devices"> <span>Flow measuring devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Oil and gas measurement systems"> <span>Oil and gas measurement systems</span></label>
+              <label class="cb-item"><input type="checkbox" value="Measuring instruments on type approval tests"> <span>Measuring instruments on type approval tests</span></label>
+              <label class="cb-item"><input type="checkbox" value="Barometers"> <span>Barometers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Pressure and vacuum measuring devices"> <span>Pressure and vacuum measuring devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Pressure gauge testers"> <span>Pressure gauge testers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Force measuring devices"> <span>Force measuring devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Speed measuring devices"> <span>Speed measuring devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Torque measuring devices"> <span>Torque measuring devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Testing machines"> <span>Testing machines</span></label>
+              <label class="cb-item"><input type="checkbox" value="Ancillary Mechanical Testing Equipment"> <span>Ancillary Mechanical Testing Equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Ancillary testing equipment for construction materials"> <span>Ancillary testing equipment for construction materials</span></label>
+              <label class="cb-item"><input type="checkbox" value="Resistors, resistance boxes and potential dividers"> <span>Resistors, resistance boxes and potential dividers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Capacitors"> <span>Capacitors</span></label>
+              <label class="cb-item"><input type="checkbox" value="Magnetic materials and instruments"> <span>Magnetic materials and instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Inductors and transformers"> <span>Inductors and transformers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Voltage standards"> <span>Voltage standards</span></label>
+              <label class="cb-item"><input type="checkbox" value="Precision transfer instruments"> <span>Precision transfer instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electrical Instrument calibrators"> <span>Electrical Instrument calibrators</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electrical Indicating and Recording instruments"> <span>Electrical Indicating and Recording instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Bridges, potentiometers, test sets"> <span>Bridges, potentiometers, test sets</span></label>
+              <label class="cb-item"><input type="checkbox" value="Frequency and time measuring instruments and standards"> <span>Frequency and time measuring instruments and standards</span></label>
+              <label class="cb-item"><input type="checkbox" value="Waveform measuring instruments"> <span>Waveform measuring instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Power supplies"> <span>Power supplies</span></label>
+              <label class="cb-item"><input type="checkbox" value="Signal sources"> <span>Signal sources</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electronic equipment"> <span>Electronic equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="High voltage equipment"> <span>High voltage equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Optical fibre systems instruments"> <span>Optical fibre systems instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Calibration of temperature measurement equipment"> <span>Calibration of temperature measurement equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Calibration of ancillary temperature measuring instruments"> <span>Calibration of ancillary temperature measuring instruments</span></label>
+              <label class="cb-item"><input type="checkbox" value="Calibration of clinical thermometers"> <span>Calibration of clinical thermometers</span></label>
+              <label class="cb-item"><input type="checkbox" value="Testing of temperature-controlled enclosures"> <span>Testing of temperature-controlled enclosures</span></label>
+              <label class="cb-item"><input type="checkbox" value="Hygrometry"> <span>Hygrometry</span></label>
+              <label class="cb-item"><input type="checkbox" value="Ancillary testing equipment for paints and petroleum products"> <span>Ancillary testing equipment for paints and petroleum products</span></label>
+              <label class="cb-item"><input type="checkbox" value="Electromedical Devices"> <span>Electromedical Devices</span></label>
+              <label class="cb-item"><input type="checkbox" value="Surface Temperature Measurement"> <span>Surface Temperature Measurement</span></label>
+              <label class="cb-item"><input type="checkbox" value="Photometry Equipment"> <span>Photometry Equipment</span></label>
+              <label class="cb-item"><input type="checkbox" value="Particle Counters"> <span>Particle Counters</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-calib')"> <span>Other</span> <input type="text" id="other-calib" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">Medical <span class="req">*</span></div>
+            <div class="cb-grid" id="cb-med">
+              <label class="cb-item"><input type="checkbox" value="Microbiology"> <span>Microbiology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Bacteriology"> <span>Bacteriology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Parasitology"> <span>Parasitology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Virology"> <span>Virology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Mycology"> <span>Mycology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Mycobacteriology"> <span>Mycobacteriology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Serology of infection"> <span>Serology of infection</span></label>
+              <label class="cb-item"><input type="checkbox" value="Detection and characterization of microbial DNA"> <span>Detection and characterization of microbial DNA</span></label>
+              <label class="cb-item"><input type="checkbox" value="Tests on clinical non-human specimens"> <span>Tests on clinical non-human specimens</span></label>
+              <label class="cb-item"><input type="checkbox" value="Miscellaneous"> <span>Miscellaneous</span></label>
+              <label class="cb-item"><input type="checkbox" value="Immunohaematology"> <span>Immunohaematology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Haematology"> <span>Haematology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Immunopathology"> <span>Immunopathology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Anatomical pathology"> <span>Anatomical pathology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Histopathology"> <span>Histopathology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cytopathology"> <span>Cytopathology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Examination by Electron Microscopy"> <span>Examination by Electron Microscopy</span></label>
+              <label class="cb-item"><input type="checkbox" value="Autopsy Service"> <span>Autopsy Service</span></label>
+              <label class="cb-item"><input type="checkbox" value="Mortuary Facilities"> <span>Mortuary Facilities</span></label>
+              <label class="cb-item"><input type="checkbox" value="Chemical pathology"> <span>Chemical pathology</span></label>
+              <label class="cb-item"><input type="checkbox" value="General Chemistry"> <span>General Chemistry</span></label>
+              <label class="cb-item"><input type="checkbox" value="Biochemical genetics"> <span>Biochemical genetics</span></label>
+              <label class="cb-item"><input type="checkbox" value="Newborn Screening"> <span>Newborn Screening</span></label>
+              <label class="cb-item"><input type="checkbox" value="Genetic testing"> <span>Genetic testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Cytogenetics"> <span>Cytogenetics</span></label>
+              <label class="cb-item"><input type="checkbox" value="Molecular genetics"> <span>Molecular genetics</span></label>
+              <label class="cb-item"><input type="checkbox" value="Blood Transfusion Service"> <span>Blood Transfusion Service</span></label>
+              <label class="cb-item"><input type="checkbox" value="Medical Practice Pathology"> <span>Medical Practice Pathology</span></label>
+              <label class="cb-item"><input type="checkbox" value="Assisted reproduction procedures"> <span>Assisted reproduction procedures</span></label>
+              <label class="cb-item"><input type="checkbox" value="N/A"> <span>N/A</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Other" onchange="toggleOther(this,'other-med')"> <span>Other</span> <input type="text" id="other-med" class="other-input" placeholder="Specify…"></div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="cb-group-label">Other Scopes <span class="req">*</span></div>
+            <div class="cb-grid compact" id="cb-otherscopes">
+              <label class="cb-item"><input type="checkbox" value="Proficiency Testing"> <span>Proficiency Testing</span></label>
+              <label class="cb-item"><input type="checkbox" value="Reference Material Producer"> <span>Reference Material Producer</span></label>
+              <label class="cb-item"><input type="checkbox" value="Forensic"> <span>Forensic</span></label>
+              <label class="cb-item"><input type="checkbox" value="Inspection"> <span>Inspection</span></label>
+              <div class="cb-item other-item"><input type="checkbox" value="Others" onchange="toggleOther(this,'other-otherscopes')"> <span>Others</span> <input type="text" id="other-otherscopes" class="other-input" placeholder="Specify…"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- FAMILIARIZATION WITH PAB DOCUMENTATION -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">📚</div><div><div class="fs-title">Familiarization with PAB Documentation <span class="req">*</span></div><div class="fs-sub">Select your familiarity rating from 1 (lowest) to 10 (highest)</div></div></div>
+          <div class="form-section-body">
+            <div class="rating-group">
+              <div class="rating-label">PAB Assessment Procedures <span class="req">*</span></div>
+              <div class="rating-row" id="r-pab-proc">
+                <span style="font-size:11px;color:var(--text3);margin-right:4px;">1</span>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="1"><span>1</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="2"><span>2</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="3"><span>3</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="4"><span>4</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="5"><span>5</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="6"><span>6</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="7"><span>7</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="8"><span>8</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="9"><span>9</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-proc" value="10"><span>10</span></div>
+                <span style="font-size:11px;color:var(--text3);margin-left:4px;">10</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="rating-group">
+              <div class="rating-label">PAB Guidance Documents <span class="req">*</span></div>
+              <div class="rating-row">
+                <span style="font-size:11px;color:var(--text3);margin-right:4px;">1</span>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="1"><span>1</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="2"><span>2</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="3"><span>3</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="4"><span>4</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="5"><span>5</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="6"><span>6</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="7"><span>7</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="8"><span>8</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="9"><span>9</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-guid" value="10"><span>10</span></div>
+                <span style="font-size:11px;color:var(--text3);margin-left:4px;">10</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="rating-group">
+              <div class="rating-label">PAB Supplementary Documents <span class="req">*</span></div>
+              <div class="rating-row">
+                <span style="font-size:11px;color:var(--text3);margin-right:4px;">1</span>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="1"><span>1</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="2"><span>2</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="3"><span>3</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="4"><span>4</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="5"><span>5</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="6"><span>6</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="7"><span>7</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="8"><span>8</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="9"><span>9</span></div>
+                <div class="rating-opt"><input type="radio" name="r-pab-supp" value="10"><span>10</span></div>
+                <span style="font-size:11px;color:var(--text3);margin-left:4px;">10</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="rating-group">
+              <div class="rating-label">ILAC AND APAC Mandatory and Guidance Documents Related to Assessment and Field of Expertise <span class="req">*</span></div>
+              <div class="rating-row">
+                <span style="font-size:11px;color:var(--text3);margin-right:4px;">1</span>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="1"><span>1</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="2"><span>2</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="3"><span>3</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="4"><span>4</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="5"><span>5</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="6"><span>6</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="7"><span>7</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="8"><span>8</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="9"><span>9</span></div>
+                <div class="rating-opt"><input type="radio" name="r-ilac" value="10"><span>10</span></div>
+                <span style="font-size:11px;color:var(--text3);margin-left:4px;">10</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADDITIONAL REQUIREMENTS -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">📋</div><div><div class="fs-title">Additional Requirements</div></div></div>
+          <div class="form-section-body">
+            <div class="notice-box">
+              Please notify us at <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="116170733c787075517565783f767e673f6179">[email&#160;protected]</a></strong> once you have completed this form. A link will be sent to you for uploading of the additional requirements:
+              <ol>
+                <li>Copy of Valid ID</li>
+                <li>Copy of College Diploma and/or Transcript</li>
+                <li>Curriculum vitae</li>
+                <li>List of Trainings and Seminars Attended</li>
+                <li>List of Professional experiences based on field of expertise</li>
+                <li>Proof of completion of relevant ISO Trainings</li>
+              </ol>
+            </div>
+            <div class="fg">
+              <label>Character Reference <span class="req">*</span></label>
+              <textarea id="f-charref" placeholder="Please write the name, contact number, and/or email address of your character reference below (relatives not allowed)." oninput="clearE('f-charref')"></textarea>
+              <div class="hint">Please write the name, contact number, and/or email address of your character reference below (relatives not allowed).</div>
+              <span class="err-msg" id="e-f-charref">Character reference is required.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CODE OF ETHICS -->
+        <div class="form-section">
+          <div class="form-section-head"><div class="fs-icon">⚖️</div><div><div class="fs-title">Code of Ethics</div></div></div>
+          <div class="form-section-body">
+            <div class="ethics-box">
+              <p>1. Conduct themselves to uphold the dignity, standing and reputation of the PAB.</p>
+              <p>2. Exercise their professional and technical skills and judgement to the best of their ability; and discharge their professional and technical responsibilities with honesty and integrity.</p>
+              <p>3. Recognize and uphold their responsibilities to PAB, the laboratory/inspection body to be assessed, the public interest and their profession.</p>
+              <p>4. Maintain and strive to improve their professional competence by attention to new developments in the principles and practice of quality assurance and the assessment of technical and quality management systems.</p>
+              <p>5. Maintain current awareness of the professional literature and national and international standards relating to the quality assurance systems and good laboratory management practice and the assessment of such systems.</p>
+              <p>6. Ensure that they do not misrepresent their qualifications, competence or experience.</p>
+              <p>7. Ensure that they do not accept commission, discount, or any other profit from laboratories assessed.</p>
+              <p>8. Disclose to PAB any commercial or other relationships they may have, or have had, with the laboratory/inspection body to be assessed or related laboratories/inspection bodies or competitors.</p>
+              <p>9. Have not offered consultancy services to applicant laboratory/inspection body that might compromise their impartiality in the accreditation process and decisions and to inform PAB of any consultancy or affiliation they have with the laboratory/inspection body.</p>
+              <p>10. Honestly and impartially record and report their assessment findings and not allow them to be influenced in such findings by any pressures or considerations.</p>
+              <p>11. Ensure that they do not disclose their assessment findings or any part of them, to any third party unless authorized in writing by PAB to do so.</p>
+              <p>12. Regard as strictly confidential any information concerning the business affairs or technical processes of the laboratory/inspection body assessed and ensure they do not use this information to the disadvantage of such laboratory/inspection body or their own personal advantage.</p>
+              <p>13. Immediately notify the Division Manager or Program Manager of the PAB through the Accreditation Officer of any matters that come to their attention during an assessment that relate to possible breaches of legislation such as that relating to health and safety in the laboratory, public health and safety and/or environmental pollution.</p>
+            </div>
+            <div style="margin-top:14px;">
+              <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500;">I confirm that all the above mentioned details are factual and that I will comply at all times with the Code of Ethical Standards set by PAB. By filling up this form I give my consent to PAB for the proper handling, processing and disposal of information. <span class="req">*</span></div>
+              <div class="cb-grid compact">
+                <label class="cb-item"><input type="radio" name="r-confirm" value="Agree"> <span>Agree</span></label>
+                <label class="cb-item"><input type="radio" name="r-confirm" value="Disagree"> <span>Disagree</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAB TECHNICAL ASSESSORS AND EXPERTS INFORMATION SYSTEM — OFFICERS SECTION -->
+        <div class="pab-officers-section">
+          <div class="pab-officers-head">
+            <div class="pab-officers-emblem">🏛</div>
+            <div>
+              <div class="pab-officers-title">To Be Filled Out by PAB Officers</div>
+              <div class="pab-officers-sub">PAB Technical Assessors and Experts Information System &nbsp;·&nbsp; Leave blank if you are the applicant</div>
+            </div>
+          </div>
+          <div class="pab-officers-body">
+            <!-- 3-column layout -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start;">
+
+              <!-- Column 1: Qualified By + Signature -->
+              <div>
+                <span class="officers-label">Qualified by (Program Manager):</span>
+                <input type="text" class="sig-field-name" id="f-qualified-by" placeholder="e.g. Mr. Roderick Dela Cruz" style="margin-bottom:8px;border-radius:6px;border:1px solid var(--border);padding:9px 12px;width:100%;background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;">
+                <input type="date" class="sig-field-date" id="f-qualified-date" style="margin-bottom:12px;border-radius:6px;border:1px solid var(--border);padding:7px 12px;width:100%;background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;outline:none;">
+
+                <!-- Signature toggle -->
+                <div style="display:flex;gap:8px;margin-bottom:10px;">
+                  <button type="button" class="sig-toggle-btn active" id="sig-btn-draw" onclick="setSigMode('draw')">✍️ Draw Signature</button>
+                  <button type="button" class="sig-toggle-btn" id="sig-btn-skip" onclick="setSigMode('skip')">🖊 Sign on Print</button>
+                </div>
+
+                <!-- Canvas area -->
+                <div id="sig-canvas-wrap" style="border:2px dashed var(--border2);border-radius:8px;overflow:hidden;background:var(--input-bg);position:relative;">
+                  <canvas id="sig-canvas" width="320" height="130" style="display:block;width:100%;cursor:crosshair;touch-action:none;"></canvas>
+                  <button type="button" onclick="clearSignature()" style="position:absolute;bottom:6px;right:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:3px 9px;font-size:11px;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;">✕ Clear</button>
+                </div>
+
+                <!-- Skip area -->
+                <div id="sig-skip-wrap" style="display:none;border:2px dashed var(--border2);border-radius:8px;padding:28px 16px;text-align:center;background:var(--input-bg);">
+                  <div style="font-size:12px;color:var(--text3);line-height:1.6;">Signature will be signed<br>manually after printing.</div>
+                  <div style="border-bottom:1.5px solid var(--text3);width:80%;margin:16px auto 0;"></div>
+                </div>
+              </div>
+
+              <!-- Column 2: Evaluation Remarks -->
+              <div>
+                <span class="officers-label">Evaluation Remarks:</span>
+                <textarea class="rec-text-area" id="f-eval-remarks" placeholder="e.g. Completed all the requirements" style="min-height:220px;"></textarea>
+              </div>
+
+              <!-- Column 3: Recommendation -->
+              <div>
+                <span class="officers-label">Recommendation:</span>
+                <textarea class="rec-text-area" id="f-recommendation-text" placeholder="e.g. Technical Assessor in Chemical Testing (ISO/IEC 17025)" style="min-height:220px;"></textarea>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer no-print">
+          <button class="btn btn-ghost" onclick="resetForm()">↺ Reset Form</button>
+          <button class="btn btn-primary" id="form-submit-btn" onclick="submitForm()">Submit Form →</button>
+        </div>
+
+      </div><!-- /form-wrap -->
+    </div>
+
+    <!-- ═══ PRINT VIEW ═══ -->
+    <div class="view" id="view-print">
+      <div class="print-toolbar no-print">
+        <div>
+          <div class="print-ref-label">Reference No.</div>
+          <div class="print-ref-val" id="pt-ref">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="pt-sub">—</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="goto('dashboard',document.getElementById('nav-dash'))">← Back</button>
+          <button class="btn btn-primary btn-sm" onclick="editRecord(currentRec?.id)">✏️ Edit</button>
+          <button class="btn btn-success btn-sm" onclick="exportCurrent()">⬇ Export to Excel</button>
+          <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨 Print</button>
+        </div>
+      </div>
+      <div class="print-doc" id="print-doc"></div>
+    </div>
+
+    <!-- ═══ FORMS LIBRARY ═══ -->
+    <div class="view" id="view-forms-lib">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="page-title">Forms Library</div>
+          <div class="page-sub">All forms available for submission.</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openFormBuilder()">＋ Create New Form</button>
+      </div>
+      <div id="forms-lib-wrap"></div>
+    </div>
+
+    <!-- ═══ FORM BUILDER ═══ -->
+    <div class="view" id="view-form-builder">
+      <div class="page-header">
+        <div class="page-title" id="fb-page-title">Create New Form</div>
+        <div class="page-sub">Build a custom form with your own fields, sections, and labels.</div>
+      </div>
+      <div style="max-width:860px;">
+        <div class="fb-card" style="margin-bottom:16px;">
+          <div class="fb-header"><div class="fs-icon" style="background:var(--accent-bg);">📋</div><div><div class="fb-header-title">Form Details</div><div class="fb-header-sub">Give your form a name, description, and status.</div></div></div>
+          <div class="fb-body">
+            <div class="fb-meta-grid">
+              <div><label class="fb-label">Form Title <span style="color:var(--danger)">*</span></label><input type="text" class="fb-input" id="fb-title" placeholder="e.g. Job Application Form"></div>
+              <div><label class="fb-label">Category / Label</label><input type="text" class="fb-input" id="fb-label" placeholder="e.g. HR, Assessment, Registration"></div>
+              <div style="grid-column:span 2"><label class="fb-label">Description</label><textarea class="fb-input fb-textarea" id="fb-desc" placeholder="Brief description of what this form is for…"></textarea></div>
+              <div><label class="fb-label">Status</label>
+                <select class="fb-input" id="fb-status">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fb-card" style="margin-bottom:16px;">
+          <div class="fb-header"><div class="fs-icon" style="background:var(--accent-bg);">⚙️</div><div><div class="fb-header-title">Form Fields</div><div class="fb-header-sub">Add and arrange the fields for your form. Click a field type below to add it.</div></div></div>
+          <div class="fb-body">
+            <div class="fb-section-title">
+              <span>Fields <span id="fb-field-count" style="color:var(--text3);font-weight:400">(0 fields)</span></span>
+            </div>
+            <div class="fb-fields-list" id="fb-fields-list">
+              <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">No fields yet. Add fields from below.</div>
+            </div>
+            <div style="margin-top:14px;">
+              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">Add Field Type:</div>
+              <div class="fb-add-bar">
+                <button class="fb-add-btn" onclick="addField('text')">＋ Text Input</button>
+                <button class="fb-add-btn" onclick="addField('textarea')">＋ Textarea</button>
+                <button class="fb-add-btn" onclick="addField('number')">＋ Number</button>
+                <button class="fb-add-btn" onclick="addField('email')">＋ Email</button>
+                <button class="fb-add-btn" onclick="addField('date')">＋ Date</button>
+                <button class="fb-add-btn" onclick="addField('time')">＋ Time</button>
+                <button class="fb-add-btn" onclick="addField('checkbox')">＋ Checkboxes</button>
+                <button class="fb-add-btn" onclick="addField('radio')">＋ Radio Buttons</button>
+                <button class="fb-add-btn" onclick="addField('dropdown')">＋ Dropdown</button>
+                <button class="fb-add-btn" onclick="addField('section')">＋ Section Header</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:28px;">
+          <button class="btn btn-ghost" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">Cancel</button>
+          <button class="btn btn-ghost" onclick="saveFormDraft()">Save as Draft</button>
+          <button class="btn btn-primary" onclick="saveFormPublish()">Save &amp; Publish →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FORM FILL (custom form filler) ═══ -->
+    <div class="view" id="view-form-fill">
+      <div class="print-toolbar no-print">
+        <div>
+          <div class="print-ref-label">Filling Form</div>
+          <div class="print-ref-val" id="ff-form-title">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="ff-form-sub">—</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">← Back to Forms</button>
+      </div>
+      <div style="max-width:860px;" id="ff-form-body"></div>
+      <div style="max-width:860px;display:flex;justify-content:flex-end;gap:10px;margin-bottom:28px;" id="ff-form-footer">
+        <button class="btn btn-ghost" id="ff-reset-btn">↺ Reset</button>
+        <button class="btn btn-primary" id="ff-submit-btn">Submit Form →</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- FIELD EDIT MODAL -->
+<div class="modal-overlay" id="field-edit-modal">
+  <div class="modal-box modal-lg">
+    <h3 id="fem-title">Edit Field</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+      <div><label class="fb-label">Field Label <span style="color:var(--danger)">*</span></label><input type="text" class="fb-input" id="fem-label" placeholder="e.g. Full Name"></div>
+      <div><label class="fb-label">Placeholder / Hint</label><input type="text" class="fb-input" id="fem-placeholder" placeholder="e.g. Enter your full name"></div>
+      <div style="display:flex;align-items:center;gap:10px;padding-top:16px;">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);">
+          <input type="checkbox" id="fem-required" style="width:14px;height:14px;accent-color:var(--accent);"> Required field
+        </label>
+      </div>
+    </div>
+    <div id="fem-options-wrap" style="display:none;margin-bottom:16px;">
+      <label class="fb-label">Options (one per line)</label>
+      <textarea class="fb-input fb-textarea" id="fem-options" placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
+    </div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeFieldModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveFieldEdit()">Save Field</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE FORM MODAL -->
+<div class="modal-overlay" id="share-modal">
+  <div class="share-modal-box">
+    <h3>🔗 Share Form</h3>
+    <p>Anyone with this link can open and fill out the form. They will only see the form — no dashboard, no sidebar.</p>
+    <div class="share-link-box">
+      <span class="share-link-text" id="share-link-text">—</span>
+      <button class="btn btn-primary btn-xs" onclick="copyShareLink()">Copy</button>
+    </div>
+    <div class="share-notice">
+      ⚠️ <strong>Note:</strong> Submissions from shared links will be stored once Firebase is connected. For now, submissions only save on the device that fills the form.
+    </div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeShareModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE PAB FORM MODAL -->
+<div class="modal-overlay" id="del-pab-modal">
+  <div class="modal-box">
+    <h3>Clear PAB Submissions</h3>
+    <p>The PAB Technical Assessors & Experts form is the official example form and cannot be removed. This will only clear all its submission records. This cannot be undone.</p>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('del-pab-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDelPAB()">Clear Submissions</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE FORM MODAL -->
+<div class="modal-overlay" id="del-form-modal">
+  <div class="modal-box">
+    <h3>Delete Form</h3>
+    <p>Are you sure you want to delete this form? All submissions for this form will also be removed. This cannot be undone.</p>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeDelFormModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDelForm()">Delete Form</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="del-modal">
+  <div class="modal-box">
+    <h3>Delete Submission</h3>
+    <p>Are you sure you want to permanently delete this record? This action cannot be undone.</p>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDel()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-ico" id="t-ico"></div>
+  <div class="toast-body">
+    <div class="toast-title" id="t-title"></div>
+    <div class="toast-sub" id="t-sub"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ─── Supabase Init ────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://gvsewvjomsijcdyhvwhk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_LWuvb4rw0nJh1yp2fwGhzg_JuensxKN';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ─── Auth Guard ───────────────────────────────────────────────────────────────
+let currentUser = null;
+let currentAdmin = null;
+
+async function initAuth() {
+  // Check kill switch
+  try {
+    const { data: ks } = await sb.from('system_settings').select('value').eq('key','kill_switch').single();
+    if (ks?.value === 'true') { window.location.href = 'login.html'; return; }
+  } catch(e) {}
+
+  // Check session
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  currentUser = session.user;
+
+  // Get admin profile
+  const { data: adminData } = await sb.from('admins').select('*').eq('id', currentUser.id).single();
+  if (!adminData || !adminData.is_active) { await sb.auth.signOut(); window.location.href = 'login.html'; return; }
+  currentAdmin = adminData;
+
+  // Update sidebar user info
+  document.getElementById('sidebar-user-name').textContent = adminData.full_name || currentUser.email;
+  document.getElementById('sidebar-user-role').textContent = roleLabel(adminData.role);
+  document.getElementById('sidebar-user-email').textContent = currentUser.email;
+
+  // Hide super-admin-only features for non-super admins
+  if (adminData.role === 'viewer') {
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+  }
+  if (adminData.role !== 'super_admin') {
+    document.querySelectorAll('.superadmin-only').forEach(el => el.style.display = 'none');
+  }
+
+  // Load submissions from Supabase
+  await loadSubmissions();
+
+  // Init the app
+  refreshStats();
+  renderTable();
+
+  // Auto logout after 1 hour inactivity
+  setupInactivityTimer();
+}
+
+function roleLabel(role) {
+  return { super_admin: '👑 Super Admin', admin: '🔧 Admin', viewer: '👁 Viewer' }[role] || role;
+}
+
+// ─── Load submissions from Supabase ──────────────────────────────────────────
+async function loadSubmissions() {
+  try {
+    const { data, error } = await sb.from('submissions').select('*').order('created_at', { ascending: false });
+    if (!error && data) {
+      records = data.map(r => ({
+        id: r.id,
+        ref: r.ref_no,
+        status: r.status,
+        createdAt: r.created_at,
+        supabase_id: r.id,
+        data: typeof r.form_data === 'string' ? JSON.parse(r.form_data) : r.form_data
+      }));
+    }
+  } catch(e) { console.error('Error loading submissions:', e); }
+}
+
+// ─── Save submission to Supabase ──────────────────────────────────────────────
+async function saveToSupabase(rec) {
+  try {
+    const { data, error } = await sb.from('submissions').insert({
+      ref_no: rec.ref,
+      status: rec.status,
+      submitted_by: currentUser?.id,
+      form_data: rec.data
+    }).select().single();
+    if (!error && data) rec.supabase_id = data.id;
+    // Audit log
+    await auditLog('SUBMIT_FORM', `Submitted form ${rec.ref}`);
+  } catch(e) { console.error('Supabase save error:', e); }
+}
+
+async function updateSupabase(rec) {
+  try {
+    if (rec.supabase_id) {
+      await sb.from('submissions').update({ form_data: rec.data, status: rec.status }).eq('id', rec.supabase_id);
+      await auditLog('EDIT_SUBMISSION', `Edited submission ${rec.ref}`);
+    }
+  } catch(e) {}
+}
+
+async function deleteFromSupabase(supabaseId, ref) {
+  try {
+    if (supabaseId) {
+      await sb.from('submissions').delete().eq('id', supabaseId);
+      await auditLog('DELETE_SUBMISSION', `Deleted submission ${ref}`);
+    }
+  } catch(e) {}
+}
+
+// ─── Audit Logging ────────────────────────────────────────────────────────────
+async function auditLog(action, details) {
+  try {
+    await sb.from('audit_logs').insert({
+      admin_id: currentUser?.id,
+      action,
+      details,
+      ip_address: 'client'
+    });
+  } catch(e) {}
+}
+
+// ─── Inactivity Timer (1 hour) ────────────────────────────────────────────────
+let inactivityTimer;
+function setupInactivityTimer() {
+  const reset = () => {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(async () => {
+      await sb.auth.signOut();
+      toast('⏰','Session Expired','You have been logged out due to inactivity.');
+      setTimeout(() => window.location.href = 'login.html', 2000);
+    }, 60 * 60 * 1000); // 1 hour
+  };
+  ['mousemove','keydown','click','scroll'].forEach(e => document.addEventListener(e, reset, { passive: true }));
+  reset();
+}
+
+// ─── Logout ───────────────────────────────────────────────────────────────────
+async function doLogout() {
+  await auditLog('LOGOUT', `${currentAdmin?.full_name || 'Admin'} logged out`);
+  await sb.auth.signOut();
+  localStorage.removeItem('pab_user');
+  window.location.href = 'login.html';
+}
+
+// ─── Storage Fallback ────────────────────────────────────────────────────────
+const _memStore = {};
+const storage = (() => {
+  try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); return localStorage; }
+  catch(e) { return { getItem: k => _memStore[k]||null, setItem: (k,v) => { _memStore[k]=v; }, removeItem: k => { delete _memStore[k]; } }; }
+})();
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let records = JSON.parse(storage.getItem('pab_records') || '[]');
+let customForms = JSON.parse(storage.getItem('pab_custom_forms') || '[]');
+let pinnedForms = JSON.parse(storage.getItem('pab_pinned') || '["__pab__"]'); // __pab__ = PAB official form
+let pabFormDeleted = false; // PAB form is always shown as the official example
+let delTarget = null;
+let delFormTarget = null;
+let currentRec = null;
+let currentEditFormId = null;
+let builderFields = [];
+let editingFieldIdx = null;
+let currentFillFormId = null;
+let editingRecordId = null;
+let selectedForms = new Set(); // for multi-select in forms library
+let selectMode = false;
+
+// ─── Theme ───────────────────────────────────────────────────────────────────
+let isDark = storage.getItem('pab_theme') !== 'light';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+}
+function toggleTheme() {
+  isDark = !isDark;
+  storage.setItem('pab_theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+applyTheme();
+
+// ─── Navigation ──────────────────────────────────────────────────────────────
+function goto(view, navEl) {
+  const viewEl = document.getElementById('view-' + view);
+  if (!viewEl) return;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  viewEl.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  const labels = { dashboard:'Dashboard', create:'PAB Form — New Submission', print:'Print View', 'forms-lib':'Forms Library', 'form-fill':'Fill Form' };
+  document.getElementById('bc-current').textContent = labels[view] || view;
+  const ta = document.getElementById('topbar-actions');
+  if (view === 'dashboard') {
+    ta.innerHTML = '';
+    refreshStats(); renderTable();
+  } else if (view === 'create') {
+    document.getElementById('nav-forms-lib')?.classList.add('active');
+    ta.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">← Back to Forms</button> <button class="btn btn-ghost btn-sm" onclick="resetForm()" style="margin-left:6px">↺ Reset</button>`;
+  } else if (view === 'print') {
+    document.getElementById('nav-dash')?.classList.add('active');
+    ta.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="goto('dashboard',document.getElementById('nav-dash'))">← Back</button> <button class="btn btn-primary btn-xs" onclick="editRecord(currentRec?.id)" style="margin-left:4px">✏️ Edit</button> <button class="btn btn-success btn-sm" onclick="exportCurrent()" style="margin-left:4px">⬇ Excel</button> <button class="btn btn-primary btn-sm" onclick="doPrint()" style="margin-left:4px">🖨 Print</button>`;
+  } else if (view === 'forms-lib') {
+    document.getElementById('nav-forms-lib')?.classList.add('active');
+    ta.innerHTML = '';
+    renderFormsLib();
+  } else if (view === 'form-builder') {
+    document.getElementById('nav-forms-lib')?.classList.add('active');
+    ta.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">← Back to Library</button>`;
+  } else if (view === 'form-fill') {
+    document.getElementById('nav-forms-lib')?.classList.add('active');
+    ta.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">← Back to Forms</button>`;
+  }
+}
+
+function setFilter(v) { document.getElementById('filter-s').value = v; renderTable(); }
+
+function openFormBuilder() {
+  resetBuilder();
+  goto('form-builder', document.getElementById('nav-forms-lib'));
+}
+
+// ─── Signature Canvas ─────────────────────────────────────────────────────────
+let sigMode = 'draw';
+let sigIsEmpty = true;
+let sigDrawing = false;
+let sigLastX = 0, sigLastY = 0;
+
+function initSignatureCanvas() {
+  const canvas = document.getElementById('sig-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#e8e8f0';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if (e.touches) {
+      return { x: (e.touches[0].clientX - rect.left) * scaleX, y: (e.touches[0].clientY - rect.top) * scaleY };
+    }
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  }
+
+  function startDraw(e) { e.preventDefault(); sigDrawing = true; sigIsEmpty = false; const p = getPos(e); sigLastX = p.x; sigLastY = p.y; }
+  function draw(e) {
+    if (!sigDrawing) return; e.preventDefault();
+    const p = getPos(e);
+    ctx.strokeStyle = isDark ? '#e8e8f0' : '#1a1a2e';
+    ctx.beginPath(); ctx.moveTo(sigLastX, sigLastY); ctx.lineTo(p.x, p.y); ctx.stroke();
+    sigLastX = p.x; sigLastY = p.y;
+  }
+  function endDraw() { sigDrawing = false; }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+}
+
+function clearSignature() {
+  const canvas = document.getElementById('sig-canvas');
+  if (!canvas) return;
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  sigIsEmpty = true;
+}
+
+function setSigMode(mode) {
+  sigMode = mode;
+  document.getElementById('sig-btn-draw').classList.toggle('active', mode === 'draw');
+  document.getElementById('sig-btn-skip').classList.toggle('active', mode === 'skip');
+  document.getElementById('sig-canvas-wrap').style.display = mode === 'draw' ? 'block' : 'none';
+  document.getElementById('sig-skip-wrap').style.display = mode === 'skip' ? 'block' : 'none';
+}
+
+// Init canvas when DOM is ready
+document.addEventListener('DOMContentLoaded', initSignatureCanvas);
+setTimeout(initSignatureCanvas, 100);
+
+
+function toggleOther(cb, inputId) {
+  const inp = document.getElementById(inputId);
+  if (inp) inp.classList.toggle('show', cb.checked);
+}
+
+// ─── Validation helpers ───────────────────────────────────────────────────────
+function g(id) { return (document.getElementById(id)?.value || '').trim(); }
+function clearE(id) {
+  document.getElementById(id)?.classList.remove('err');
+  const e = document.getElementById('e-' + id);
+  if (e) e.classList.remove('on');
+}
+function setE(id) {
+  document.getElementById(id)?.classList.add('err');
+  const e = document.getElementById('e-' + id);
+  if (e) e.classList.add('on');
+}
+
+// ─── Get checkboxes ───────────────────────────────────────────────────────────
+function getCBs(containerId, otherId) {
+  const container = document.getElementById(containerId);
+  if (!container) return 'N/A';
+  const checked = [];
+  container.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+    if (cb.value === 'Other' || cb.value === 'Others') {
+      const otherVal = otherId ? g(otherId) : '';
+      checked.push(otherVal ? 'Other: ' + otherVal : 'Other');
+    } else {
+      checked.push(cb.value);
+    }
+  });
+  return checked.length ? checked.join(', ') : 'N/A';
+}
+
+function getRadio(name) {
+  const sel = document.querySelector(`input[name="${name}"]:checked`);
+  return sel ? sel.value : '';
+}
+
+function getRating(name) {
+  const sel = document.querySelector(`input[name="${name}"]:checked`);
+  return sel ? parseInt(sel.value) : 0;
+}
+
+// ─── Submit PAB Form ──────────────────────────────────────────────────────────
+function submitForm() {
+  let ok = true;
+  const reqFields = ['f-name','f-dob','f-cell','f-addr','f-email','f-tin','f-org','f-col','f-yrs-tech','f-yrs-lab','f-charref'];
+  reqFields.forEach(id => { if (!g(id)) { setE(id); ok = false; } });
+  if (g('f-email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('f-email').split(',')[0].trim())) { setE('f-email'); ok = false; }
+  if (!ok) { toast('⚠️','Validation Error','Please fill in all required fields.'); return; }
+
+  const rec = {
+    id: Date.now(),
+    ref: 'PAB-' + String(records.length + 1).padStart(4,'0'),
+    status: 'new',
+    createdAt: new Date().toISOString(),
+    data: {
+      preferredTitle: g('f-title'), name: g('f-name'), dob: g('f-dob'),
+      homeAddress: g('f-addr'), cellularNumber: g('f-cell'), faxNumber: g('f-fax'),
+      homeNumber: g('f-homenum'), emailAddress: g('f-email'), tin: g('f-tin'),
+      nameOfOrganization: g('f-org'), companyAddress: g('f-compaddr'),
+      positionHeld: g('f-position'), telephoneNumber: g('f-tel'),
+      doctorateDegree: g('f-doc'), mastersDegree: g('f-mas'), collegeDegree: g('f-col'),
+      professionalEligibility: g('f-elig'), professionalMembership: g('f-memb'),
+      iso17025: getCBs('cb-17025','other-17025'), iso9001: getCBs('cb-9001',null),
+      iso15189: getCBs('cb-15189',null), iso17020: getCBs('cb-17020',null),
+      iso17034: getCBs('cb-17034',null), iso17043: getCBs('cb-17043',null),
+      yrsExpTechnical: g('f-yrs-tech'), yrsExpLabMgmt: g('f-yrs-lab'),
+      standards: getCBs('cb-standards','other-standards'),
+      otherRelevantTopics: getCBs('cb-topics','other-topics'),
+      biologicalTesting: getCBs('cb-bio','other-bio'),
+      chemicalTesting: getCBs('cb-chem','other-chem'),
+      electricalTesting: getCBs('cb-elec','other-elec'),
+      mechanicalTesting: getCBs('cb-mech','other-mech'),
+      calibration: getCBs('cb-calib','other-calib'),
+      medical: getCBs('cb-med','other-med'),
+      otherScopes: getCBs('cb-otherscopes','other-otherscopes'),
+      pabAssessmentProcedures: getRating('r-pab-proc'),
+      pabGuidanceDocuments: getRating('r-pab-guid'),
+      pabSupplementaryDocuments: getRating('r-pab-supp'),
+      ilacApacDocuments: getRating('r-ilac'),
+      characterReference: g('f-charref'), confirmation: getRadio('r-confirm'),
+      qualifiedBy: g('f-qualified-by'),
+      qualifiedDate: g('f-qualified-date') || document.getElementById('f-qualified-date')?.value || '',
+      signatureData: (() => { const c = document.getElementById('sig-canvas'); return (sigMode === 'draw' && c && !sigIsEmpty) ? c.toDataURL('image/png') : null; })(),
+      evaluationRemarks: g('f-eval-remarks'),
+      recommendation: g('f-recommendation-text') || 'N/A'
+    }
+  };
+  if (editingRecordId) {
+    const idx = records.findIndex(x => x.id === editingRecordId);
+    if (idx > -1) {
+      records[idx].data = rec.data;
+      records[idx].status = 'new';
+      updateSupabase(records[idx]);
+    }
+    editingRecordId = null;
+    save();
+    toast('💾','Changes Saved!','Record updated successfully.');
+    const title = document.querySelector('#view-create .page-title');
+    if (title) title.textContent = 'PAB Technical Assessors and Experts Information';
+    const btn = document.getElementById('form-submit-btn');
+    if (btn) btn.textContent = 'Submit Form →';
+    resetForm();
+    setTimeout(() => openPrint(records[idx > -1 ? idx : 0].id), 900);
+  } else {
+    records.unshift(rec);
+    save();
+    saveToSupabase(rec);
+    toast('✅','Form Submitted!','Reference: ' + rec.ref);
+    resetForm();
+    setTimeout(() => openPrint(rec.id), 900);
+  }
+}
+
+// ─── Reset PAB Form ───────────────────────────────────────────────────────────
+function resetForm() {
+  ['f-title','f-name','f-dob','f-addr','f-cell','f-fax','f-homenum','f-email','f-tin',
+   'f-org','f-compaddr','f-position','f-tel','f-doc','f-mas','f-col','f-elig','f-memb',
+   'f-yrs-tech','f-yrs-lab','f-charref','f-qualified-by','f-qualified-date',
+   'f-eval-remarks','f-recommendation-text'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+    clearE(id);
+  });
+  document.querySelectorAll('#view-create input[type="checkbox"]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('#view-create input[type="radio"]').forEach(rb => rb.checked = false);
+  document.querySelectorAll('.other-input').forEach(inp => { inp.classList.remove('show'); inp.value = ''; });
+  clearSignature();
+  setSigMode('draw');
+  // Reset edit mode
+  editingRecordId = null;
+  const title = document.querySelector('#view-create .page-title');
+  if (title) title.textContent = 'PAB Technical Assessors and Experts Information';
+  const btn = document.getElementById('form-submit-btn');
+  if (btn) btn.textContent = 'Submit Form →';
+}
+
+// ─── Edit Record ─────────────────────────────────────────────────────────────
+function editRecord(id) {
+  const r = records.find(x => x.id === id);
+  if (!r) return;
+  editingRecordId = id;
+  resetForm();
+  populateForm(r.data);
+  // Update submit button to say Save Changes
+  const btn = document.getElementById('form-submit-btn');
+  if (btn) btn.textContent = '💾 Save Changes';
+  // Update page header
+  const title = document.querySelector('#view-create .page-title');
+  if (title) title.textContent = 'Editing: ' + r.ref;
+  goto('create', document.getElementById('nav-forms-lib'));
+  toast('✏️','Editing ' + r.ref,'Make your changes and click Save Changes.');
+}
+
+function populateForm(d) {
+  // Simple text/select fields
+  const fields = {
+    'f-title': d.preferredTitle, 'f-name': d.name, 'f-dob': d.dob,
+    'f-addr': d.homeAddress, 'f-cell': d.cellularNumber, 'f-fax': d.faxNumber,
+    'f-homenum': d.homeNumber, 'f-email': d.emailAddress, 'f-tin': d.tin,
+    'f-org': d.nameOfOrganization, 'f-compaddr': d.companyAddress,
+    'f-position': d.positionHeld, 'f-tel': d.telephoneNumber,
+    'f-doc': d.doctorateDegree, 'f-mas': d.mastersDegree, 'f-col': d.collegeDegree,
+    'f-elig': d.professionalEligibility, 'f-memb': d.professionalMembership,
+    'f-yrs-tech': d.yrsExpTechnical, 'f-yrs-lab': d.yrsExpLabMgmt,
+    'f-charref': d.characterReference,
+    'f-qualified-by': d.qualifiedBy, 'f-qualified-date': d.qualifiedDate,
+    'f-eval-remarks': d.evaluationRemarks,
+    'f-recommendation-text': d.recommendation === 'N/A' ? '' : d.recommendation
+  };
+  Object.entries(fields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+  });
+
+  // Checkboxes — restore from comma-separated saved strings
+  function restoreCBs(containerId, savedStr) {
+    if (!savedStr || savedStr === 'N/A') return;
+    const vals = savedStr.split(', ');
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      if (vals.some(v => v === cb.value || v.startsWith('Other'))) cb.checked = true;
+    });
+  }
+  restoreCBs('cb-17025', d.iso17025); restoreCBs('cb-9001', d.iso9001);
+  restoreCBs('cb-15189', d.iso15189); restoreCBs('cb-17020', d.iso17020);
+  restoreCBs('cb-17034', d.iso17034); restoreCBs('cb-17043', d.iso17043);
+  restoreCBs('cb-standards', d.standards); restoreCBs('cb-topics', d.otherRelevantTopics);
+  restoreCBs('cb-bio', d.biologicalTesting); restoreCBs('cb-chem', d.chemicalTesting);
+  restoreCBs('cb-elec', d.electricalTesting); restoreCBs('cb-mech', d.mechanicalTesting);
+  restoreCBs('cb-calib', d.calibration); restoreCBs('cb-med', d.medical);
+  restoreCBs('cb-otherscopes', d.otherScopes);
+
+  // Radio — confirmation
+  if (d.confirmation) {
+    const rb = document.querySelector(`input[name="r-confirm"][value="${d.confirmation}"]`);
+    if (rb) rb.checked = true;
+  }
+
+  // Ratings
+  ['r-pab-proc','r-pab-guid','r-pab-supp','r-ilac'].forEach((name, i) => {
+    const val = [d.pabAssessmentProcedures, d.pabGuidanceDocuments, d.pabSupplementaryDocuments, d.ilacApacDocuments][i];
+    if (val) {
+      const rb = document.querySelector(`input[name="${name}"][value="${val}"]`);
+      if (rb) rb.checked = true;
+    }
+  });
+
+  // Signature
+  if (d.signatureData) {
+    setSigMode('draw');
+    const canvas = document.getElementById('sig-canvas');
+    if (canvas) {
+      const img = new Image();
+      img.onload = () => { canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); sigIsEmpty = false; };
+      img.src = d.signatureData;
+    }
+  }
+}
+
+
+function refreshStats() {
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setEl('s-total', records.length);
+  setEl('s-new', records.filter(r => r.status === 'new').length);
+  setEl('s-forms', customForms.length);
+  setEl('nav-badge', records.length);
+  setEl('forms-badge', customForms.length);
+}
+
+function renderTable() {
+  refreshStats();
+  const q = (document.getElementById('search-q')?.value || '').toLowerCase();
+  const sf = document.getElementById('filter-s')?.value || '';
+  const data = records.filter(r => {
+    const d = r.data;
+    const txt = `${d.name} ${d.emailAddress} ${r.ref} ${d.nameOfOrganization}`.toLowerCase();
+    return (!q || txt.includes(q)) && (!sf || r.status === sf);
+  });
+  const wrap = document.getElementById('table-wrap');
+  if (!data.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">${records.length ? '🔍' : '📭'}</div><div class="empty-title">${records.length ? 'No matching records' : 'No submissions yet'}</div><div class="empty-sub">${records.length ? 'Try adjusting your search or filter.' : 'Create your first PAB form submission.'}</div></div>`;
+    return;
+  }
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th>Ref No.</th><th>Name</th><th>Organization</th><th>Email</th><th>Date Submitted</th><th>Status</th><th style="text-align:right">Actions</th>
+    </tr></thead>
+    <tbody>${data.map(r => `
+      <tr onclick="openPrint(${r.id})">
+        <td class="td-ref">${r.ref}</td>
+        <td class="td-name"><strong>${[r.data.preferredTitle, r.data.name].filter(Boolean).join(' ')}</strong><small>${r.data.positionHeld || ''}</small></td>
+        <td style="font-size:12px;color:var(--text2)">${r.data.nameOfOrganization || '—'}</td>
+        <td style="font-size:12px;color:var(--text2)">${r.data.emailAddress}</td>
+        <td style="font-size:12px;color:var(--text2)">${fmtDate(r.createdAt)}</td>
+        <td><span class="badge badge-${r.status}">${cap(r.status)}</span></td>
+        <td onclick="event.stopPropagation()" style="text-align:right">
+          <div class="row-acts">
+            <button class="btn btn-ghost btn-xs" onclick="openPrint(${r.id})">View</button>
+            <button class="btn btn-primary btn-xs" onclick="editRecord(${r.id})">✏️ Edit</button>
+            <button class="btn btn-success btn-xs" onclick="exportOne(${r.id})">XLS</button>
+            <button class="btn btn-danger btn-xs" onclick="askDel(${r.id})">Del</button>
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>`;
+}
+
+// ─── Print View ───────────────────────────────────────────────────────────────
+function fmtDate(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  return isNaN(d) ? s : d.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
+}
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+function vf(v) { return v && v !== 'N/A' && v !== '0' && v !== 0 ? v : '<span class="empty">N/A</span>'; }
+
+function openPrint(id) {
+  const r = records.find(x => x.id === id);
+  if (!r) return;
+  currentRec = r;
+  const d = r.data;
+  document.getElementById('pt-ref').textContent = r.ref;
+  document.getElementById('pt-sub').textContent = `Submitted ${fmtDate(r.createdAt)} · Status: ${cap(r.status)}`;
+  document.getElementById('print-doc').innerHTML = `
+    <div class="print-banner">
+      <div><h1>PAB Technical Assessors and Experts Information</h1><div class="sub">Philippine Accreditation Bureau — DTI · ver.2</div></div>
+      <div class="print-meta"><div>Reference No.</div><div class="val">${r.ref}</div><div style="margin-top:4px;font-size:11px">${fmtDate(r.createdAt)}</div></div>
+    </div>
+    <div class="print-body">
+      <div class="print-sec">
+        <div class="print-sec-title">Personal Information</div>
+        <div class="print-fields">
+          <div class="pf"><label>Preferred Title</label><div class="val">${vf(d.preferredTitle)}</div></div>
+          <div class="pf span2"><label>Name</label><div class="val">${vf(d.name)}</div></div>
+          <div class="pf"><label>Date of Birth</label><div class="val">${vf(d.dob ? fmtDate(d.dob) : '')}</div></div>
+          <div class="pf"><label>Cellular Number</label><div class="val">${vf(d.cellularNumber)}</div></div>
+          <div class="pf"><label>Fax Number</label><div class="val">${vf(d.faxNumber)}</div></div>
+          <div class="pf span3"><label>Home Address</label><div class="val">${vf(d.homeAddress)}</div></div>
+          <div class="pf"><label>Home Number</label><div class="val">${vf(d.homeNumber)}</div></div>
+          <div class="pf span2"><label>E-mail Address</label><div class="val">${vf(d.emailAddress)}</div></div>
+          <div class="pf"><label>TIN</label><div class="val">${vf(d.tin)}</div></div>
+          <div class="pf span2"><label>Name of Organization</label><div class="val">${vf(d.nameOfOrganization)}</div></div>
+          <div class="pf span3"><label>Company Address</label><div class="val">${vf(d.companyAddress)}</div></div>
+          <div class="pf"><label>Position Held</label><div class="val">${vf(d.positionHeld)}</div></div>
+          <div class="pf"><label>Telephone Number</label><div class="val">${vf(d.telephoneNumber)}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Educational Background</div>
+        <div class="print-fields g1">
+          <div class="pf"><label>Doctorate Degree</label><div class="val">${vf(d.doctorateDegree)}</div></div>
+          <div class="pf"><label>Masters Degree</label><div class="val">${vf(d.mastersDegree)}</div></div>
+          <div class="pf"><label>College Degree</label><div class="val">${vf(d.collegeDegree)}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Professional Qualifications</div>
+        <div class="print-fields g1">
+          <div class="pf"><label>Professional Eligibility</label><div class="val">${vf(d.professionalEligibility)}</div></div>
+          <div class="pf"><label>Professional Membership</label><div class="val">${vf(d.professionalMembership)}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Field of Expertise</div>
+        <div class="print-fields g2">
+          <div class="pf"><label>ISO/IEC 17025</label><div class="val">${vf(d.iso17025)}</div></div>
+          <div class="pf"><label>ISO 9001</label><div class="val">${vf(d.iso9001)}</div></div>
+          <div class="pf"><label>ISO 15189</label><div class="val">${vf(d.iso15189)}</div></div>
+          <div class="pf"><label>ISO/IEC 17020</label><div class="val">${vf(d.iso17020)}</div></div>
+          <div class="pf"><label>ISO 17034</label><div class="val">${vf(d.iso17034)}</div></div>
+          <div class="pf"><label>ISO/IEC 17043</label><div class="val">${vf(d.iso17043)}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Work Experience</div>
+        <div class="print-fields g2">
+          <div class="pf"><label>Years of Experience — Technical Field</label><div class="val">${vf(d.yrsExpTechnical)}</div></div>
+          <div class="pf"><label>Years of Experience — Lab Management / QA</label><div class="val">${vf(d.yrsExpLabMgmt)}</div></div>
+          <div class="pf"><label>Standards</label><div class="val">${vf(d.standards)}</div></div>
+          <div class="pf"><label>Other Relevant Topics</label><div class="val">${vf(d.otherRelevantTopics)}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Scope of Assessment</div>
+        <div class="print-fields g1">
+          <div class="pf"><label>Biological Testing</label><div class="val">${vf(d.biologicalTesting)}</div></div>
+          <div class="pf"><label>Chemical Testing</label><div class="val">${vf(d.chemicalTesting)}</div></div>
+          <div class="pf"><label>Electrical Testing</label><div class="val">${vf(d.electricalTesting)}</div></div>
+          <div class="pf"><label>Mechanical Testing</label><div class="val">${vf(d.mechanicalTesting)}</div></div>
+          <div class="pf"><label>Calibration</label><div class="val">${vf(d.calibration)}</div></div>
+          <div class="pf"><label>Medical</label><div class="val">${vf(d.medical)}</div></div>
+          <div class="pf"><label>Other Scopes</label><div class="val">${vf(d.otherScopes)}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Familiarization with PAB Documentation</div>
+        <div class="print-fields">
+          <div class="pf"><label>PAB Assessment Procedures</label><div class="val">${d.pabAssessmentProcedures || '0'}</div></div>
+          <div class="pf"><label>PAB Guidance Documents</label><div class="val">${d.pabGuidanceDocuments || '0'}</div></div>
+          <div class="pf"><label>PAB Supplementary Documents</label><div class="val">${d.pabSupplementaryDocuments || '0'}</div></div>
+          <div class="pf span3"><label>ILAC and APAC Documents</label><div class="val">${d.ilacApacDocuments || '0'}</div></div>
+        </div>
+      </div>
+      <div class="print-sec">
+        <div class="print-sec-title">Additional Requirements & Confirmation</div>
+        <div class="print-fields g1">
+          <div class="pf"><label>Character Reference</label><div class="val">${vf(d.characterReference)}</div></div>
+          <div class="pf"><label>Confirmation — Code of Ethics</label><div class="val">${vf(d.confirmation)}</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:2px solid var(--warning);background:rgba(245,166,35,0.06);">
+      <div style="padding:8px 24px;border-bottom:1px solid rgba(245,166,35,0.25);">
+        <span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--warning);">To Be Filled Out by PAB Officers</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;">
+        <div style="padding:12px 18px;border-right:1px solid rgba(245,166,35,0.2);">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--warning);margin-bottom:6px;">Qualified by (Program Manager)</div>
+          <div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--text);min-height:20px;">${vf(d.qualifiedBy)}</div>
+          ${d.signatureData ? `<img src="${d.signatureData}" style="max-width:100%;height:55px;object-fit:contain;margin-top:6px;display:block;" alt="Signature">` : `<div style="border-bottom:1.5px solid var(--border2);margin-top:24px;margin-bottom:3px;width:80%;"></div><div style="font-size:10px;color:var(--text3);">Signature over printed name</div>`}
+          <div style="font-size:11px;color:var(--text2);margin-top:6px;">${d.qualifiedDate ? fmtDate(d.qualifiedDate) : '<span style="color:var(--text3);font-style:italic;">—</span>'}</div>
+        </div>
+        <div style="padding:12px 18px;border-right:1px solid rgba(245,166,35,0.2);">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--warning);margin-bottom:6px;">Evaluation Remarks</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.6;min-height:55px;">${vf(d.evaluationRemarks)}</div>
+        </div>
+        <div style="padding:12px 18px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--warning);margin-bottom:6px;">Recommendation</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.6;min-height:55px;">${vf(d.recommendation)}</div>
+        </div>
+      </div>
+    </div>
+    <div class="print-footer">
+      <div style="font-size:11px;color:var(--text3);">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">PAB Technical Assessors and Experts Information System</div>
+        <div>Status: <strong style="color:var(--accent)">${cap(r.status)}</strong> &nbsp;·&nbsp; Generated: ${new Date().toLocaleString('en-PH')}</div>
+      </div>
+    </div>`;
+  goto('print', document.getElementById('nav-dash'));
+}
+
+function doPrint() {
+  if (currentRec) { currentRec.status = 'printed'; save(); }
+  window.print();
+}
+
+// ─── Excel / CSV Export ───────────────────────────────────────────────────────
+const HEADERS = ['#','Date Submitted','Preferred Title','Name','Date of Birth','Home Address','Cellular Number','Fax Number','Home Number','Email Address','TIN','Name of Organization','Company Address','Position Held','Telephone Number','Doctorate Degree','Masters Degree','College Degree','Professional Eligibility','Professional Membership','Yrs Exp Technical','Yrs Exp Lab Management','ISO/IEC 17025','ISO 9001','ISO 15189','ISO/IEC 17020','ISO 17034','ISO/IEC 17043','Standards','Other Relevant Topics','Biological Testing','Chemical Testing','Electrical Testing','Mechanical Testing','Calibration','Medical','Other Scopes','PAB Assessment Procedures Rating','PAB Guidance Documents Rating','PAB Supplementary Documents Rating','ILAC and APAC Rating','Character Reference','Confirmation','Qualified By','Evaluation Remarks','Recommendation'];
+
+function recToRow(r, idx) {
+  const d = r.data;
+  return { '#':idx+1, 'Date Submitted':new Date(r.createdAt).toLocaleString('en-PH'), 'Preferred Title':d.preferredTitle, 'Name':d.name, 'Date of Birth':d.dob, 'Home Address':d.homeAddress, 'Cellular Number':d.cellularNumber, 'Fax Number':d.faxNumber, 'Home Number':d.homeNumber, 'Email Address':d.emailAddress, 'TIN':d.tin, 'Name of Organization':d.nameOfOrganization, 'Company Address':d.companyAddress, 'Position Held':d.positionHeld, 'Telephone Number':d.telephoneNumber, 'Doctorate Degree':d.doctorateDegree, 'Masters Degree':d.mastersDegree, 'College Degree':d.collegeDegree, 'Professional Eligibility':d.professionalEligibility, 'Professional Membership':d.professionalMembership, 'Yrs Exp Technical':d.yrsExpTechnical, 'Yrs Exp Lab Management':d.yrsExpLabMgmt, 'ISO/IEC 17025':d.iso17025, 'ISO 9001':d.iso9001, 'ISO 15189':d.iso15189, 'ISO/IEC 17020':d.iso17020, 'ISO 17034':d.iso17034, 'ISO/IEC 17043':d.iso17043, 'Standards':d.standards, 'Other Relevant Topics':d.otherRelevantTopics, 'Biological Testing':d.biologicalTesting, 'Chemical Testing':d.chemicalTesting, 'Electrical Testing':d.electricalTesting, 'Mechanical Testing':d.mechanicalTesting, 'Calibration':d.calibration, 'Medical':d.medical, 'Other Scopes':d.otherScopes, 'PAB Assessment Procedures Rating':d.pabAssessmentProcedures, 'PAB Guidance Documents Rating':d.pabGuidanceDocuments, 'PAB Supplementary Documents Rating':d.pabSupplementaryDocuments, 'ILAC and APAC Rating':d.ilacApacDocuments, 'Character Reference':d.characterReference, 'Confirmation':d.confirmation, 'Qualified By':d.qualifiedBy, 'Evaluation Remarks':d.evaluationRemarks, 'Recommendation':d.recommendation };
+}
+
+function toCSV(rows) {
+  const esc = v => `"${String(v == null ? '' : v).replace(/"/g,'""')}"`;
+  return [HEADERS.map(esc).join(','), ...rows.map(r => HEADERS.map(h => esc(r[h])).join(','))].join('\r\n');
+}
+
+function dlCSV(csv, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'}));
+  a.download = name;
+  a.click();
+}
+
+function exportAll() {
+  if (!records.length) { toast('⚠️','No Data','No records to export.'); return; }
+  dlCSV(toCSV(records.map((r,i) => recToRow(r,i))), `PAB_Raw_Data_${stamp()}.csv`);
+  records.forEach(r => { if (r.status === 'new') r.status = 'exported'; });
+  save(); renderTable();
+  toast('📊','Exported!',`${records.length} records saved to Excel/CSV.`);
+}
+
+function exportOne(id) {
+  const r = records.find(x => x.id === id);
+  if (!r) return;
+  const idx = records.findIndex(x => x.id === id);
+  dlCSV(toCSV([recToRow(r,idx)]), `PAB_${r.ref}.csv`);
+  r.status = 'exported';
+  save(); renderTable();
+  toast('📊','Exported!',`${r.ref} saved to Excel/CSV.`);
+}
+
+function exportCurrent() { if (currentRec) exportOne(currentRec.id); }
+function stamp() { return new Date().toISOString().split('T')[0]; }
+
+// ─── Delete PAB Record ────────────────────────────────────────────────────────
+function askDel(id) { delTarget = id; document.getElementById('del-modal').classList.add('open'); }
+function confirmDel() {
+  const rec = records.find(r => r.id === delTarget);
+  if (rec) deleteFromSupabase(rec.supabase_id, rec.ref);
+  records = records.filter(r => r.id !== delTarget);
+  save(); renderTable(); closeModal();
+  toast('🗑️','Deleted','Record permanently removed.');
+}
+function closeModal() { document.getElementById('del-modal').classList.remove('open'); delTarget = null; }
+
+// ─── Persist ──────────────────────────────────────────────────────────────────
+function save() {
+  storage.setItem('pab_records', JSON.stringify(records));
+}
+function saveForms() { storage.setItem('pab_custom_forms', JSON.stringify(customForms)); }
+function savePinned() { storage.setItem('pab_pinned', JSON.stringify(pinnedForms)); }
+
+// ─── Pin / Unpin ──────────────────────────────────────────────────────────────
+function togglePin(id) {
+  const key = String(id);
+  if (pinnedForms.includes(key)) {
+    pinnedForms = pinnedForms.filter(p => p !== key);
+    toast('📌','Unpinned','Form removed from top.');
+  } else {
+    pinnedForms.push(key);
+    toast('📌','Pinned!','Form pinned to top of library.');
+  }
+  savePinned(); renderFormsLib();
+}
+
+// ─── Share Link ───────────────────────────────────────────────────────────────
+let shareFormId = null;
+function openShareModal(id) {
+  shareFormId = id;
+  const isOfficialPAB = id === '__pab__';
+  const base = window.location.href.split('?')[0].split('#')[0];
+  const link = base + '?share=' + (isOfficialPAB ? 'pab' : id);
+  document.getElementById('share-link-text').textContent = link;
+  document.getElementById('share-modal').classList.add('open');
+}
+function closeShareModal() { document.getElementById('share-modal').classList.remove('open'); shareFormId = null; }
+function copyShareLink() {
+  const txt = document.getElementById('share-link-text').textContent;
+  navigator.clipboard?.writeText(txt).then(() => toast('✅','Copied!','Link copied to clipboard.')).catch(() => {
+    // fallback for browsers without clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); toast('✅','Copied!','Link copied to clipboard.');
+  });
+}
+
+// ─── Delete PAB Official Form ─────────────────────────────────────────────────
+function confirmDelPAB() {
+  // PAB form is the permanent official example — only clear its submissions
+  records = [];
+  save();
+  document.getElementById('del-pab-modal').classList.remove('open');
+  renderFormsLib(); refreshStats();
+  toast('🗑️','Submissions Cleared','All PAB form submissions have been removed.');
+}
+
+// ─── Check for share link on load ────────────────────────────────────────────
+function checkShareLink() {
+  const params = new URLSearchParams(window.location.search);
+  const share = params.get('share');
+  if (!share) return false;
+
+  // Hide sidebar and topbar, stretch main
+  document.querySelector('.sidebar').style.display = 'none';
+  document.querySelector('.topbar').style.display = 'none';
+  document.querySelector('.main').style.marginLeft = '0';
+
+  if (share === 'pab') {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-create').classList.add('active');
+    document.querySelector('.content').style.padding = '24px';
+
+    // Show officers section (visible to user)
+    const officers = document.querySelector('.pab-officers-section');
+    if (officers) officers.style.display = '';
+
+    // Replace form footer: disabled print notice + submit
+    const footer = document.querySelector('.form-footer');
+    if (footer) {
+      footer.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;background:var(--warning-bg);border:1px solid rgba(245,166,35,0.3);border-radius:7px;padding:8px 14px;font-size:12px;color:var(--warning);">
+          🖨 <strong>Printing is only available to admins.</strong> Submit your form and the admin will handle printing.
+        </div>
+        <div style="display:flex;gap:8px;margin-left:auto;">
+          <button class="btn btn-ghost" onclick="resetForm()">↺ Reset</button>
+          <button class="btn btn-primary" onclick="submitForm()">Submit Form →</button>
+        </div>`;
+      footer.style.display = 'flex';
+      footer.style.flexWrap = 'wrap';
+      footer.style.gap = '10px';
+      footer.classList.remove('no-print');
+    }
+  } else {
+    const form = customForms.find(f => String(f.id) === share);
+    if (form) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-form-fill').classList.add('active');
+      document.querySelector('.content').style.padding = '24px';
+      openFormFill(form.id);
+    }
+  }
+  return true;
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+let toastTmr;
+function toast(ico, title, sub) {
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-title').textContent = title;
+  document.getElementById('t-sub').textContent = sub;
+  const el = document.getElementById('toast');
+  el.classList.add('show');
+  clearTimeout(toastTmr);
+  toastTmr = setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ─── Form Builder ─────────────────────────────────────────────────────────────
+const FIELD_TYPES = { text:'Text Input', textarea:'Textarea', number:'Number', email:'Email', date:'Date', time:'Time', checkbox:'Checkboxes', radio:'Radio Buttons', dropdown:'Dropdown', section:'Section Header' };
+
+function addField(type) {
+  builderFields.push({ id: Date.now(), type, label: type === 'section' ? 'New Section' : '', placeholder: '', required: false, options: [] });
+  renderBuilderFields();
+  openFieldModal(builderFields.length - 1);
+}
+
+function renderBuilderFields() {
+  const list = document.getElementById('fb-fields-list');
+  const count = document.getElementById('fb-field-count');
+  if (!list) return;
+  count.textContent = '(' + builderFields.length + ' field' + (builderFields.length !== 1 ? 's' : '') + ')';
+  if (!builderFields.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">No fields yet. Add fields from below.</div>';
+    return;
+  }
+  list.innerHTML = builderFields.map((f,i) => `
+    <div class="fb-field-item">
+      <span class="fb-field-drag">⠿</span>
+      <span class="fb-field-type">${FIELD_TYPES[f.type] || f.type}</span>
+      <span class="fb-field-label">${f.label || '<em style="color:var(--text3)">Untitled field</em>'}</span>
+      ${f.required ? '<span class="fb-field-req">Required</span>' : ''}
+      <div class="fb-field-acts">
+        <button class="btn btn-ghost btn-xs" onclick="openFieldModal(${i})">✏️ Edit</button>
+        <button class="btn btn-danger btn-xs" onclick="removeField(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function removeField(idx) { builderFields.splice(idx,1); renderBuilderFields(); }
+
+function openFieldModal(idx) {
+  editingFieldIdx = idx;
+  const f = builderFields[idx];
+  document.getElementById('fem-title').textContent = 'Edit ' + (FIELD_TYPES[f.type] || 'Field');
+  document.getElementById('fem-label').value = f.label || '';
+  document.getElementById('fem-placeholder').value = f.placeholder || '';
+  document.getElementById('fem-required').checked = !!f.required;
+  const hasOpts = ['checkbox','radio','dropdown'].includes(f.type);
+  document.getElementById('fem-options-wrap').style.display = hasOpts ? 'block' : 'none';
+  document.getElementById('fem-options').value = (f.options || []).join('\n');
+  document.getElementById('field-edit-modal').classList.add('open');
+}
+
+function closeFieldModal() {
+  document.getElementById('field-edit-modal').classList.remove('open');
+  editingFieldIdx = null;
+}
+
+function saveFieldEdit() {
+  if (editingFieldIdx === null) return;
+  const f = builderFields[editingFieldIdx];
+  f.label = document.getElementById('fem-label').value.trim();
+  f.placeholder = document.getElementById('fem-placeholder').value.trim();
+  f.required = document.getElementById('fem-required').checked;
+  f.options = document.getElementById('fem-options').value.split('\n').map(s => s.trim()).filter(Boolean);
+  builderFields[editingFieldIdx] = f;
+  closeFieldModal();
+  renderBuilderFields();
+}
+
+function saveFormDraft() { doSaveForm('draft'); }
+function saveFormPublish() { doSaveForm('published'); }
+
+function doSaveForm(status) {
+  const title = document.getElementById('fb-title')?.value.trim();
+  if (!title) { toast('⚠️','Missing Title','Please give your form a title.'); return; }
+  if (!builderFields.length) { toast('⚠️','No Fields','Please add at least one field.'); return; }
+  const existing = currentEditFormId ? customForms.find(f => f.id === currentEditFormId) : null;
+  const formData = {
+    id: currentEditFormId || Date.now(),
+    title,
+    label: document.getElementById('fb-label')?.value.trim() || '',
+    desc: document.getElementById('fb-desc')?.value.trim() || '',
+    status: status || document.getElementById('fb-status')?.value || 'draft',
+    fields: JSON.parse(JSON.stringify(builderFields)),
+    createdAt: existing?.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    submissions: existing?.submissions || []
+  };
+  if (currentEditFormId) {
+    const idx = customForms.findIndex(f => f.id === currentEditFormId);
+    if (idx > -1) customForms[idx] = formData; else customForms.unshift(formData);
+  } else {
+    customForms.unshift(formData);
+  }
+  saveForms(); refreshStats();
+  toast(status === 'published' ? '🚀' : '💾', status === 'published' ? 'Form Published!' : 'Draft Saved!', `"${title}" has been saved.`);
+  resetBuilder();
+  goto('forms-lib', document.getElementById('nav-forms-lib'));
+}
+
+function resetBuilder() {
+  builderFields = [];
+  currentEditFormId = null;
+  ['fb-title','fb-label','fb-desc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const fs = document.getElementById('fb-status'); if (fs) fs.value = 'draft';
+  renderBuilderFields();
+  const pt = document.getElementById('fb-page-title'); if (pt) pt.textContent = 'Create New Form';
+}
+
+function editCustomForm(id) {
+  const form = customForms.find(f => f.id === id);
+  if (!form) return;
+  currentEditFormId = id;
+  builderFields = JSON.parse(JSON.stringify(form.fields));
+  document.getElementById('fb-title').value = form.title || '';
+  document.getElementById('fb-label').value = form.label || '';
+  document.getElementById('fb-desc').value = form.desc || '';
+  document.getElementById('fb-status').value = form.status || 'draft';
+  const pt = document.getElementById('fb-page-title');
+  if (pt) pt.textContent = 'Edit Form: ' + form.title;
+  renderBuilderFields();
+  goto('form-builder', document.getElementById('nav-form-builder'));
+}
+
+function toggleFormStatus(id) {
+  const form = customForms.find(f => f.id === id);
+  if (!form) return;
+  form.status = form.status === 'published' ? 'draft' : 'published';
+  saveForms(); renderFormsLib(); refreshStats();
+  toast('✅', form.status === 'published' ? 'Form Published!' : 'Set to Draft', `"${form.title}" status updated.`);
+}
+
+function askDelForm(id) { delFormTarget = id; document.getElementById('del-form-modal').classList.add('open'); }
+function closeDelFormModal() { document.getElementById('del-form-modal').classList.remove('open'); delFormTarget = null; }
+function confirmDelForm() {
+  customForms = customForms.filter(f => f.id !== delFormTarget);
+  saveForms(); renderFormsLib(); refreshStats(); closeDelFormModal();
+  toast('🗑️','Form Deleted','Custom form removed.');
+}
+
+// ─── Forms Library ────────────────────────────────────────────────────────────
+function toggleSelectMode() {
+  selectMode = !selectMode;
+  selectedForms.clear();
+  renderFormsLib();
+}
+
+function toggleFormSelect(id) {
+  const key = String(id);
+  if (selectedForms.has(key)) selectedForms.delete(key);
+  else selectedForms.add(key);
+  // update checkbox visually
+  const cb = document.getElementById('fs-cb-' + key);
+  if (cb) cb.checked = selectedForms.has(key);
+  updateBulkBar();
+}
+
+function toggleSelectAll() {
+  const allIds = [...document.querySelectorAll('.form-sel-cb')].map(cb => cb.dataset.id).filter(id => id !== '__pab__');
+  const allSelected = allIds.every(id => selectedForms.has(id));
+  if (allSelected) { allIds.forEach(id => selectedForms.delete(id)); }
+  else { allIds.forEach(id => selectedForms.add(id)); }
+  allIds.forEach(id => {
+    const cb = document.getElementById('fs-cb-' + id);
+    if (cb) cb.checked = selectedForms.has(id);
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  const countEl = document.getElementById('bulk-count');
+  if (!bar) return;
+  if (selectedForms.size > 0) {
+    bar.style.display = 'flex';
+    countEl.textContent = selectedForms.size + ' form' + (selectedForms.size !== 1 ? 's' : '') + ' selected';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function bulkDelete() {
+  if (!selectedForms.size) return;
+  customForms = customForms.filter(f => !selectedForms.has(String(f.id)));
+  selectedForms.clear();
+  selectMode = false;
+  saveForms(); renderFormsLib(); refreshStats();
+  toast('🗑️', 'Deleted', 'Selected forms removed.');
+}
+
+function renderFormsLib() {
+  refreshStats();
+  const wrap = document.getElementById('forms-lib-wrap');
+  if (!wrap) return;
+
+  let allCards = [];
+  allCards.push({ isPAB: true, pinned: pinnedForms.includes('__pab__') });
+  customForms.forEach(form => allCards.push({ isPAB: false, pinned: pinnedForms.includes(String(form.id)), form }));
+  allCards.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+  const rows = allCards.map((entry, idx) => {
+    const num = idx + 1;
+    if (entry.isPAB) {
+      return `<tr onclick="${selectMode ? '' : "goto('create',document.getElementById('nav-forms-lib'))"}">
+        <td style="width:36px;text-align:center;font-size:11px;font-weight:700;color:var(--text3);">${selectMode ? `<input type="checkbox" id="fs-cb-__pab__" data-id="__pab__" class="form-sel-cb" disabled style="opacity:0.3;cursor:not-allowed;" title="Official form cannot be deleted">` : num}</td>
+        <td style="width:28px;text-align:center;">
+          ${entry.pinned ? '<span style="color:var(--accent);font-size:13px;">📌</span>' : '<span style="color:var(--accent);font-size:14px;">🏛</span>'}
+        </td>
+        <td class="td-name">
+          <strong style="color:var(--accent);">PAB Technical Assessors & Experts Information</strong>
+          <small>Official form — ver.2 · Personal info, expertise, qualifications</small>
+        </td>
+        <td style="font-size:12px;color:var(--text2);">Official</td>
+        <td style="font-size:12px;color:var(--text2);">${records.length} submission${records.length !== 1 ? 's' : ''}</td>
+        <td><span class="badge badge-published">Published</span></td>
+        <td onclick="event.stopPropagation()" style="text-align:right;">
+          ${selectMode ? '' : `<div class="row-acts">
+            <button class="btn btn-ghost btn-xs" onclick="togglePin('__pab__')">${entry.pinned ? '📌 Unpin' : '📌 Pin'}</button>
+            <button class="btn btn-ghost btn-xs" onclick="openShareModal('__pab__')">🔗 Share</button>
+            <button class="btn btn-primary btn-xs" onclick="goto('create',document.getElementById('nav-forms-lib'))">＋ Fill</button>
+            <button class="btn btn-danger btn-xs" onclick="document.getElementById('del-pab-modal').classList.add('open')">✕ Del</button>
+          </div>`}
+        </td>
+      </tr>`;
+    } else {
+      const form = entry.form;
+      const isSelected = selectedForms.has(String(form.id));
+      return `<tr onclick="${selectMode ? `toggleFormSelect(${form.id})` : `openFormFill(${form.id})`}" style="${isSelected ? 'background:var(--accent-bg);' : ''}">
+        <td style="width:36px;text-align:center;font-size:11px;font-weight:700;color:var(--text3);" onclick="event.stopPropagation()">
+          ${selectMode
+            ? `<input type="checkbox" id="fs-cb-${form.id}" data-id="${form.id}" class="form-sel-cb" ${isSelected ? 'checked' : ''} onchange="toggleFormSelect(${form.id})" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">`
+            : num}
+        </td>
+        <td style="width:28px;text-align:center;">
+          ${entry.pinned ? '<span style="color:var(--accent);font-size:13px;">📌</span>' : '<span style="color:var(--text3);font-size:14px;">📋</span>'}
+        </td>
+        <td class="td-name">
+          <strong>${form.title}</strong>
+          <small>${form.desc || (form.label ? '📌 ' + form.label : 'No description')}</small>
+        </td>
+        <td style="font-size:12px;color:var(--text2);">${form.fields.length} field${form.fields.length !== 1 ? 's' : ''}</td>
+        <td style="font-size:12px;color:var(--text2);">${(form.submissions||[]).length} submission${(form.submissions||[]).length !== 1 ? 's' : ''}</td>
+        <td><span class="badge badge-${form.status}">${cap(form.status)}</span></td>
+        <td onclick="event.stopPropagation()" style="text-align:right;">
+          ${selectMode ? '' : `<div class="row-acts">
+            <button class="btn btn-ghost btn-xs" onclick="togglePin(${form.id})">${entry.pinned ? '📌 Unpin' : '📌 Pin'}</button>
+            <button class="btn btn-ghost btn-xs" onclick="openShareModal(${form.id})">🔗 Share</button>
+            <button class="btn btn-ghost btn-xs" onclick="toggleFormStatus(${form.id})">${form.status === 'published' ? '⏸ Unpublish' : '🚀 Publish'}</button>
+            <button class="btn btn-ghost btn-xs" onclick="editCustomForm(${form.id})">✏️ Edit</button>
+            <button class="btn btn-danger btn-xs" onclick="askDelForm(${form.id})">✕ Del</button>
+          </div>`}
+        </td>
+      </tr>`;
+    }
+  }).join('');
+
+  // Bulk action bar
+  const bulkBar = `<div id="bulk-bar" style="display:${selectedForms.size > 0 ? 'flex' : 'none'};align-items:center;gap:10px;padding:8px 16px;background:var(--accent-bg);border-bottom:1px solid var(--accent-border);">
+    <span id="bulk-count" style="font-size:12px;font-weight:600;color:var(--accent);flex:1;">${selectedForms.size} form${selectedForms.size !== 1 ? 's' : ''} selected</span>
+    <button class="btn btn-ghost btn-xs" onclick="toggleSelectAll()">☑ Select All</button>
+    <button class="btn btn-danger btn-xs" onclick="if(confirm('Delete all selected forms?')) bulkDelete()">🗑️ Delete Selected</button>
+    <button class="btn btn-ghost btn-xs" onclick="toggleSelectMode()">✕ Cancel</button>
+  </div>`;
+
+  wrap.innerHTML = `<div class="table-card">
+    <div class="table-toolbar">
+      <div class="table-title">All Forms</div>
+      <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode()" style="${selectMode ? 'border-color:var(--accent);color:var(--accent);' : ''}">
+        ${selectMode ? '✕ Cancel Select' : '☑ Select'}
+      </button>
+    </div>
+    ${bulkBar}
+    <table>
+      <thead><tr>
+        <th style="width:36px;">#</th>
+        <th style="width:28px;"></th>
+        <th>Form Name</th>
+        <th>Type / Fields</th>
+        <th>Submissions</th>
+        <th>Status</th>
+        <th style="text-align:right">Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+// ─── Form Fill ────────────────────────────────────────────────────────────────
+function openFormFill(id) {
+  const form = customForms.find(f => f.id === id);
+  if (!form) return;
+  if (form.status !== 'published') {
+    toast('⚠️','Not Published','This form is a draft. Publish it first to fill it out.');
+    return;
+  }
+  currentFillFormId = id;
+  document.getElementById('ff-form-title').textContent = form.title;
+  document.getElementById('ff-form-sub').textContent = (form.label ? '📌 ' + form.label + '  ·  ' : '') + form.fields.length + ' fields';
+  renderFormFill(form);
+  goto('form-fill', null);
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-forms-lib').classList.add('active');
+}
+
+function renderFormFill(form) {
+  const body = document.getElementById('ff-form-body');
+  let html = '';
+  let inSection = false;
+  form.fields.forEach((f, i) => {
+    if (f.type === 'section') {
+      if (inSection) html += '</div></div>';
+      html += `<div class="ff-section"><div class="ff-section-head"><div class="ff-section-title">${f.label}</div></div><div class="ff-section-body">`;
+      inSection = true;
+      return;
+    }
+    if (!inSection) { html += '<div class="ff-section"><div class="ff-section-body">'; inSection = true; }
+    const req = f.required ? '<span style="color:var(--danger)"> *</span>' : '';
+    html += `<div class="ff-field"><label>${f.label || 'Field ' + (i+1)}${req}</label>`;
+    if (['text','email','number','date','time'].includes(f.type)) {
+      html += `<input type="${f.type}" id="ff-field-${i}" placeholder="${f.placeholder || ''}">`;
+    } else if (f.type === 'textarea') {
+      html += `<textarea id="ff-field-${i}" placeholder="${f.placeholder || ''}"></textarea>`;
+    } else if (f.type === 'dropdown') {
+      html += `<select id="ff-field-${i}"><option value="">Select…</option>${(f.options||[]).map(o=>`<option>${o}</option>`).join('')}</select>`;
+    } else if (f.type === 'checkbox') {
+      html += `<div class="ff-cb-grid" id="ff-field-${i}">${(f.options||[]).map(o=>`<label class="cb-item"><input type="checkbox" value="${o}"> <span>${o}</span></label>`).join('')}</div>`;
+    } else if (f.type === 'radio') {
+      html += `<div class="ff-cb-grid" id="ff-field-${i}">${(f.options||[]).map(o=>`<label class="cb-item"><input type="radio" name="ff-radio-${i}" value="${o}"> <span>${o}</span></label>`).join('')}</div>`;
+    }
+    html += '</div>';
+  });
+  if (inSection) html += '</div></div>';
+  body.innerHTML = html;
+  document.getElementById('ff-reset-btn').onclick = () => renderFormFill(form);
+  document.getElementById('ff-submit-btn').onclick = () => submitCustomForm(form);
+}
+
+function submitCustomForm(form) {
+  const answers = {};
+  form.fields.forEach((f, i) => {
+    if (f.type === 'section') return;
+    const el = document.getElementById('ff-field-' + i);
+    if (!el) return;
+    if (f.type === 'checkbox') {
+      answers[f.label || 'Field '+i] = [...el.querySelectorAll('input:checked')].map(c=>c.value).join(', ');
+    } else if (f.type === 'radio') {
+      const sel = el.querySelector('input:checked');
+      answers[f.label || 'Field '+i] = sel ? sel.value : '';
+    } else {
+      answers[f.label || 'Field '+i] = el.value || '';
+    }
+  });
+  const formIdx = customForms.findIndex(cf => cf.id === form.id);
+  if (formIdx > -1) {
+    if (!customForms[formIdx].submissions) customForms[formIdx].submissions = [];
+    customForms[formIdx].submissions.push({ id: Date.now(), submittedAt: new Date().toISOString(), answers });
+    saveForms();
+  }
+  toast('✅','Submitted!','Your response has been recorded.');
+  renderFormFill(form);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+if (!checkShareLink()) {
+  initAuth();
+}
+</script>
+</body>
+</html>
