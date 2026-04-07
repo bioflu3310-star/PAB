@@ -408,6 +408,11 @@ tbody tr:hover .row-acts{opacity:1;}
       <span class="nav-icon">📂</span> Forms Library
       <span class="nav-badge" id="forms-badge">0</span>
     </button>
+    <div class="nav-group">System</div>
+    <button class="nav-item" id="nav-settings" onclick="goto('settings',this)">
+      <span class="nav-icon">⚙️</span> Settings
+      <span class="nav-badge" id="notif-badge" style="display:none;background:var(--danger)">0</span>
+    </button>
   </div>
   <div class="sidebar-footer">
     <div id="sidebar-user-name" style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Loading…</div>
@@ -1280,8 +1285,57 @@ tbody tr:hover .row-acts{opacity:1;}
       </div>
     </div>
 
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="view" id="view-settings">
+      <div class="page-header">
+        <div class="page-title">Settings</div>
+        <div class="page-sub">Manage registered assessors and view new form submissions.</div>
+      </div>
+
+      <!-- New submissions notification panel -->
+      <div class="table-card" style="margin-bottom:20px;">
+        <div class="table-toolbar">
+          <div class="table-title">🔔 New Form Submissions</div>
+          <button class="btn btn-ghost btn-sm" onclick="markAllRead()">✓ Mark all as read</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadNotifications()">↺ Refresh</button>
+        </div>
+        <div id="notif-list" style="min-height:60px;"></div>
+      </div>
+
+      <!-- Assessors management panel -->
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="table-title">Registered Assessors</div>
+          <button class="btn btn-primary btn-sm" onclick="openAddAssessor()">+ Add Assessor</button>
+        </div>
+        <div id="assessors-wrap" style="min-height:60px;"></div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
+
+<!-- ADD ASSESSOR MODAL -->
+<div class="modal-overlay" id="add-assessor-modal">
+  <div class="modal-box" style="max-width:460px;">
+    <h3>Add Assessor</h3>
+    <p>Create an assessor account. They will verify their email when opening a form link — no login needed.</p>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Full Name *</label>
+      <input type="text" id="asr-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .13s;">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Email Address *</label>
+      <input type="email" id="asr-email" placeholder="assessor@email.com" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .13s;">
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">Only this email will be allowed to open and submit the form link.</div>
+    </div>
+    <div id="add-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);"></div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeAddAssessor()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="add-asr-btn" onclick="doAddAssessor()">Add Assessor</button>
+    </div>
+  </div>
+</div>
 
 <!-- FIELD EDIT MODAL -->
 <div class="modal-overlay" id="field-edit-modal">
@@ -1392,7 +1446,6 @@ async function initAuth() {
   // Check session
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = 'login.html'; return; }
-
   currentUser = session.user;
 
   // Get admin profile
@@ -1401,26 +1454,35 @@ async function initAuth() {
   currentAdmin = adminData;
 
   // Update sidebar user info
-  document.getElementById('sidebar-user-name').textContent = adminData.full_name || currentUser.email;
-  document.getElementById('sidebar-user-role').textContent = roleLabel(adminData.role);
+  document.getElementById('sidebar-user-name').textContent  = adminData.full_name || currentUser.email;
+  document.getElementById('sidebar-user-role').textContent  = roleLabel(adminData.role);
   document.getElementById('sidebar-user-email').textContent = currentUser.email;
 
   // Hide super-admin-only features for non-super admins
-  if (adminData.role === 'viewer') {
-    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-  }
-  if (adminData.role !== 'super_admin') {
-    document.querySelectorAll('.superadmin-only').forEach(el => el.style.display = 'none');
-  }
+  if (adminData.role === 'viewer')       document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+  if (adminData.role !== 'super_admin')  document.querySelectorAll('.superadmin-only').forEach(el => el.style.display = 'none');
 
-  // Load submissions from Supabase
+  // Load PAB form submissions from Supabase
   await loadSubmissions();
+
+  // Load custom forms from Supabase (so they work across all devices)
+  await loadCustomForms();
+
+  // Set up real-time listener for new form submissions (shows notification badge)
+  sb.channel('form_submissions_channel')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'form_submissions' }, payload => {
+      // New submission arrived — update the notification badge
+      updateNotifBadge();
+      toast('🔔', 'New Submission!', `${payload.new.assessor_name || 'An assessor'} submitted "${payload.new.form_title}"`);
+    })
+    .subscribe();
+
+  // Check for unread submissions badge on load
+  updateNotifBadge();
 
   // Init the app
   refreshStats();
   renderTable();
-
-  // Auto logout after 1 hour inactivity
   setupInactivityTimer();
 }
 
@@ -1557,7 +1619,7 @@ function goto(view, navEl) {
   viewEl.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   if (navEl) navEl.classList.add('active');
-  const labels = { dashboard:'Dashboard', create:'PAB Form — New Submission', print:'Print View', 'forms-lib':'Forms Library', 'form-fill':'Fill Form' };
+  const labels = { dashboard:'Dashboard', create:'PAB Form — New Submission', print:'Print View', 'forms-lib':'Forms Library', 'form-fill':'Fill Form', settings:'Settings' };
   document.getElementById('bc-current').textContent = labels[view] || view;
   const ta = document.getElementById('topbar-actions');
   if (view === 'dashboard') {
@@ -1579,6 +1641,10 @@ function goto(view, navEl) {
   } else if (view === 'form-fill') {
     document.getElementById('nav-forms-lib')?.classList.add('active');
     ta.innerHTML = `<button class="btn btn-ghost btn-sm" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">← Back to Forms</button>`;
+  } else if (view === 'settings') {
+    document.getElementById('nav-settings')?.classList.add('active');
+    ta.innerHTML = '';
+    loadSettings();
   }
 }
 
@@ -2140,8 +2206,11 @@ let shareFormId = null;
 function openShareModal(id) {
   shareFormId = id;
   const isOfficialPAB = id === '__pab__';
-  const base = window.location.href.split('?')[0].split('#')[0];
-  const link = base + '?share=' + (isOfficialPAB ? 'pab' : id);
+  const base = window.location.href.split('?')[0].split('#')[0].replace('index.html','');
+  // Custom forms use assessor.html?form=ID so assessors are email-gated
+  const link = isOfficialPAB
+    ? (base + 'index.html?share=pab')
+    : (base + 'assessor.html?form=' + id);
   document.getElementById('share-link-text').textContent = link;
   document.getElementById('share-modal').classList.add('open');
 }
@@ -2292,30 +2361,42 @@ function saveFieldEdit() {
 function saveFormDraft() { doSaveForm('draft'); }
 function saveFormPublish() { doSaveForm('published'); }
 
-function doSaveForm(status) {
+async function doSaveForm(status) {
   const title = document.getElementById('fb-title')?.value.trim();
   if (!title) { toast('⚠️','Missing Title','Please give your form a title.'); return; }
   if (!builderFields.length) { toast('⚠️','No Fields','Please add at least one field.'); return; }
-  const existing = currentEditFormId ? customForms.find(f => f.id === currentEditFormId) : null;
-  const formData = {
-    id: currentEditFormId || Date.now(),
+
+  const payload = {
     title,
-    label: document.getElementById('fb-label')?.value.trim() || '',
-    desc: document.getElementById('fb-desc')?.value.trim() || '',
-    status: status || document.getElementById('fb-status')?.value || 'draft',
-    fields: JSON.parse(JSON.stringify(builderFields)),
-    createdAt: existing?.createdAt || new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    submissions: existing?.submissions || []
+    label      : document.getElementById('fb-label')?.value.trim() || '',
+    description: document.getElementById('fb-desc')?.value.trim() || '',
+    status     : status || document.getElementById('fb-status')?.value || 'draft',
+    fields     : JSON.parse(JSON.stringify(builderFields)),
+    updated_at : new Date().toISOString(),
+    created_by : currentUser?.id
   };
-  if (currentEditFormId) {
-    const idx = customForms.findIndex(f => f.id === currentEditFormId);
-    if (idx > -1) customForms[idx] = formData; else customForms.unshift(formData);
-  } else {
-    customForms.unshift(formData);
+
+  try {
+    if (currentEditFormId) {
+      // Update existing form in Supabase
+      const { error } = await sb.from('custom_forms').update(payload).eq('id', currentEditFormId);
+      if (error) throw error;
+      const idx = customForms.findIndex(f => f.id === currentEditFormId);
+      if (idx > -1) customForms[idx] = { ...customForms[idx], ...payload, id: currentEditFormId };
+    } else {
+      // Insert new form in Supabase and get back the real ID
+      const { data, error } = await sb.from('custom_forms')
+        .insert({ ...payload, created_at: new Date().toISOString(), submissions: [] })
+        .select().single();
+      if (error) throw error;
+      customForms.unshift({ ...payload, id: data.id, submissions: [] });
+    }
+  } catch(e) {
+    toast('❌','Save Failed', e.message); return;
   }
+
   saveForms(); refreshStats();
-  toast(status === 'published' ? '🚀' : '💾', status === 'published' ? 'Form Published!' : 'Draft Saved!', `"${title}" has been saved.`);
+  toast(status==='published'?'🚀':'💾', status==='published'?'Form Published!':'Draft Saved!', `"${title}" has been saved.`);
   resetBuilder();
   goto('forms-lib', document.getElementById('nav-forms-lib'));
 }
@@ -2354,7 +2435,12 @@ function toggleFormStatus(id) {
 
 function askDelForm(id) { delFormTarget = id; document.getElementById('del-form-modal').classList.add('open'); }
 function closeDelFormModal() { document.getElementById('del-form-modal').classList.remove('open'); delFormTarget = null; }
-function confirmDelForm() {
+async function confirmDelForm() {
+  const form = customForms.find(f => f.id === delFormTarget);
+  if (form && form.id && typeof form.id === 'number') {
+    // Delete from Supabase (numeric ID = real Supabase row)
+    await sb.from('custom_forms').delete().eq('id', form.id).catch(()=>{});
+  }
   customForms = customForms.filter(f => f.id !== delFormTarget);
   saveForms(); renderFormsLib(); refreshStats(); closeDelFormModal();
   toast('🗑️','Form Deleted','Custom form removed.');
@@ -2580,6 +2666,203 @@ function submitCustomForm(form) {
   }
   toast('✅','Submitted!','Your response has been recorded.');
   renderFormFill(form);
+}
+
+// ─── Load custom forms from Supabase ─────────────────────────────────────────
+async function loadCustomForms() {
+  try {
+    const { data, error } = await sb.from('custom_forms').select('*').order('created_at', { ascending: false });
+    if (!error && data) {
+      // Merge Supabase forms with any local ones, Supabase is the source of truth
+      customForms = data.map(f => ({
+        id        : f.id,
+        title     : f.title,
+        label     : f.label || '',
+        desc      : f.description || '',
+        status    : f.status,
+        fields    : f.fields || [],
+        submissions: f.submissions || [],
+        createdAt : f.created_at,
+        updatedAt : f.updated_at
+      }));
+      saveForms(); // keep localStorage in sync as a fallback
+    }
+  } catch(e) { console.error('loadCustomForms error:', e); }
+}
+
+// ─── Notification badge (unread form submissions) ─────────────────────────────
+async function updateNotifBadge() {
+  try {
+    const { count } = await sb.from('form_submissions')
+      .select('*', { count:'exact', head:true }).eq('is_read', false);
+    const badge = document.getElementById('notif-badge');
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+// ─── Settings: load both panels ───────────────────────────────────────────────
+function loadSettings() {
+  loadNotifications();
+  loadAssessors();
+}
+
+// ─── Notifications: load unread form submissions ──────────────────────────────
+async function loadNotifications() {
+  const wrap = document.getElementById('notif-list');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="padding:16px;font-size:13px;color:var(--text3)">Loading…</div>';
+
+  try {
+    const { data, error } = await sb.from('form_submissions')
+      .select('*').order('submitted_at', { ascending: false }).limit(50);
+    if (error) throw error;
+
+    if (!data.length) {
+      wrap.innerHTML = '<div style="padding:20px 16px;font-size:13px;color:var(--text3)">No submissions yet.</div>';
+      return;
+    }
+
+    wrap.innerHTML = data.map(s => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);${!s.is_read?'background:var(--accent-bg);':''}">
+        <span style="font-size:18px">${s.is_read ? '📬' : '🔔'}</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:${s.is_read?'500':'700'};color:var(--text)">${s.assessor_name || s.assessor_email || 'Unknown'} submitted <em>${s.form_title || 'a form'}</em></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">${new Date(s.submitted_at).toLocaleString('en-PH')}</div>
+        </div>
+        ${!s.is_read ? `<button class="btn btn-ghost btn-xs" onclick="markRead(${s.id})">Mark read</button>` : ''}
+      </div>`).join('');
+  } catch(e) {
+    wrap.innerHTML = `<div style="padding:16px;font-size:13px;color:var(--danger)">Error: ${e.message}</div>`;
+  }
+}
+
+async function markRead(id) {
+  await sb.from('form_submissions').update({ is_read: true }).eq('id', id).catch(()=>{});
+  loadNotifications();
+  updateNotifBadge();
+}
+
+async function markAllRead() {
+  await sb.from('form_submissions').update({ is_read: true }).eq('is_read', false).catch(()=>{});
+  loadNotifications();
+  updateNotifBadge();
+  toast('✅','Done','All submissions marked as read.');
+}
+
+// ─── Assessors: load list ─────────────────────────────────────────────────────
+async function loadAssessors() {
+  const wrap = document.getElementById('assessors-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="padding:16px;font-size:13px;color:var(--text3)">Loading…</div>';
+
+  try {
+    const { data, error } = await sb.from('assessors').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+
+    if (!data.length) {
+      wrap.innerHTML = '<div style="padding:24px 16px;font-size:13px;color:var(--text3)">No assessors registered yet. Click "+ Add Assessor" to add one.</div>';
+      return;
+    }
+
+    wrap.innerHTML = `<table style="width:100%;border-collapse:collapse;">
+      <thead><tr>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Name</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Email</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Status</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Added</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:right;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Actions</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(a => `
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:11px 14px;font-size:13px;font-weight:600;">${a.full_name}</td>
+            <td style="padding:11px 14px;font-size:12px;color:var(--text2);">${a.email}</td>
+            <td style="padding:11px 14px;">
+              <span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${a.is_active?'var(--success-bg)':'var(--danger-bg)'};color:${a.is_active?'var(--success)':'var(--danger)'};">
+                ${a.is_active ? '● Active' : '● Inactive'}
+              </span>
+            </td>
+            <td style="padding:11px 14px;font-size:11px;color:var(--text3);">${new Date(a.created_at).toLocaleDateString('en-PH')}</td>
+            <td style="padding:11px 14px;text-align:right;">
+              <button class="btn btn-ghost btn-xs" onclick="toggleAssessorStatus('${a.id}', ${a.is_active})">${a.is_active?'Deactivate':'Activate'}</button>
+              <button class="btn btn-danger btn-xs" style="margin-left:4px" onclick="removeAssessor('${a.id}', '${a.full_name}')">Remove</button>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    wrap.innerHTML = `<div style="padding:16px;font-size:13px;color:var(--danger)">Error: ${e.message}</div>`;
+  }
+}
+
+// ─── Assessors: add ───────────────────────────────────────────────────────────
+function openAddAssessor() {
+  document.getElementById('asr-name').value  = '';
+  document.getElementById('asr-email').value = '';
+  document.getElementById('add-asr-err').style.display = 'none';
+  document.getElementById('add-assessor-modal').classList.add('open');
+}
+function closeAddAssessor() {
+  document.getElementById('add-assessor-modal').classList.remove('open');
+}
+
+async function doAddAssessor() {
+  const errEl = document.getElementById('add-asr-err');
+  errEl.style.display = 'none';
+
+  const name  = document.getElementById('asr-name').value.trim();
+  const email = document.getElementById('asr-email').value.trim().toLowerCase();
+  if (!name || !email) { errEl.textContent='Please fill in all fields.'; errEl.style.display='block'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent='Please enter a valid email address.'; errEl.style.display='block'; return; }
+
+  const btn = document.getElementById('add-asr-btn');
+  btn.disabled=true; btn.textContent='Adding…';
+
+  try {
+    // Check if email already exists
+    const { data: existing } = await sb.from('assessors').select('id').eq('email', email).single();
+    if (existing) { errEl.textContent='This email is already registered as an assessor.'; errEl.style.display='block'; btn.disabled=false; btn.textContent='Add Assessor'; return; }
+
+    // Insert assessor row (no auth account needed — email-only verification)
+    const { error } = await sb.from('assessors').insert({
+      id        : crypto.randomUUID(),
+      email,
+      full_name : name,
+      is_active : true,
+      created_by: currentUser?.id,
+      created_at: new Date().toISOString()
+    });
+    if (error) throw error;
+
+    closeAddAssessor();
+    toast('✅','Assessor Added', `${name} can now access form links.`);
+    await auditLog('ADD_ASSESSOR', `Added assessor: ${name} (${email})`);
+    loadAssessors();
+
+  } catch(e) {
+    errEl.textContent = '❌ ' + e.message;
+    errEl.style.display = 'block';
+    btn.disabled=false; btn.textContent='Add Assessor';
+  }
+}
+
+async function toggleAssessorStatus(id, currentlyActive) {
+  await sb.from('assessors').update({ is_active: !currentlyActive }).eq('id', id).catch(()=>{});
+  loadAssessors();
+  toast('✅','Updated', currentlyActive ? 'Assessor deactivated.' : 'Assessor activated.');
+}
+
+async function removeAssessor(id, name) {
+  if (!confirm(`Remove ${name}? They will no longer be able to access any form links.`)) return;
+  await sb.from('assessors').delete().eq('id', id).catch(()=>{});
+  await auditLog('REMOVE_ASSESSOR', `Removed assessor: ${name}`);
+  loadAssessors();
+  toast('🗑️','Removed', `${name} has been removed.`);
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
