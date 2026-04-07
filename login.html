@@ -11,468 +11,237 @@
 [data-theme="light"]{--bg:#f4f5f7;--surface:#ffffff;--surface2:#f8f9fb;--border:#e2e4ea;--border2:#d0d3dc;--text:#1a1a2e;--text2:#5a5d72;--text3:#9598a8;--accent:#1a56db;--accent-bg:rgba(26,86,219,0.08);--accent-border:rgba(26,86,219,0.25);--success:#0d9963;--success-bg:rgba(13,153,99,0.08);--danger:#d93025;--danger-bg:rgba(217,48,37,0.08);--warning:#b06000;--input-bg:#ffffff;--shadow:0 4px 20px rgba(0,0,0,0.08);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.login-wrap{width:100%;max-width:420px;padding:24px;}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:36px 32px;box-shadow:var(--shadow);}
-.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
-.login-emblem{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.login-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;line-height:1.2;}
-.login-sub{font-size:11px;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-top:2px;}
-.tab-row{display:flex;gap:0;background:var(--surface2);border-radius:8px;padding:3px;margin-bottom:24px;border:1px solid var(--border);}
-.tab-btn{flex:1;padding:8px;border:none;background:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.13s;}
-.tab-btn.active{background:var(--accent);color:#fff;font-weight:600;}
+.wrap{width:100%;max-width:420px;padding:24px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:36px 32px;box-shadow:var(--shadow);}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.emblem{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.logo-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;line-height:1.2;}
+.logo-sub{font-size:11px;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-top:2px;}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
 .fg label{font-size:11.5px;font-weight:600;color:var(--text2);}
-.fg input,.fg select{background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.13s,box-shadow 0.13s;width:100%;}
-.fg input:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
-.fg input.err{border-color:var(--danger);}
-.hint{font-size:11px;color:var(--text3);margin-top:2px;}
-.req{color:var(--danger);}
-.btn-primary{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.13s;margin-top:4px;}
-.btn-primary:hover{opacity:0.88;transform:translateY(-1px);}
-.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.fg input{background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .13s,box-shadow .13s;width:100%;}
+.fg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.btn{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .13s;margin-top:4px;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .alert{padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px;line-height:1.5;display:none;}
 .alert.show{display:block;}
-.alert-danger{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,0.3);}
-.alert-success{background:var(--success-bg);color:var(--success);border:1px solid rgba(62,207,142,0.3);}
-.alert-warning{background:rgba(245,166,35,0.1);color:var(--warning);border:1px solid rgba(245,166,35,0.3);}
+.alert-err{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);}
+.alert-ok{background:var(--success-bg);color:var(--success);border:1px solid rgba(62,207,142,.3);}
+.alert-warn{background:rgba(245,166,35,.1);color:var(--warning);border:1px solid rgba(245,166,35,.3);}
 .divider{height:1px;background:var(--border);margin:18px 0;}
-.theme-toggle{position:fixed;top:16px;right:16px;padding:7px 13px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;}
-.password-wrap{position:relative;}
-.password-wrap input{padding-right:40px;}
-.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:4px;}
-.strength-bar{height:3px;border-radius:2px;margin-top:5px;transition:all 0.2s;}
-.attempts-warning{font-size:11px;color:var(--danger);margin-top:4px;display:none;}
-/* Honeypot - invisible to humans */
-.hp-field{position:absolute;left:-9999px;opacity:0;pointer-events:none;}
-.footer-note{text-align:center;font-size:11px;color:var(--text3);margin-top:20px;line-height:1.6;}
-.kill-screen{display:none;position:fixed;inset:0;background:#0d0d12;z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
-.kill-screen.show{display:flex;}
+.theme-btn{position:fixed;top:16px;right:16px;padding:7px 13px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:40px;}
+.eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:4px;}
+.hp{position:absolute;left:-9999px;opacity:0;pointer-events:none;}
+.footer{text-align:center;font-size:11px;color:var(--text3);margin-top:20px;line-height:1.6;}
+.kill{display:none;position:fixed;inset:0;background:#0d0d12;z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.kill.show{display:flex;}
+.admin-note{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
 </style>
 </head>
 <body>
 
-<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
+<button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
 
-<!-- Kill Switch Screen -->
-<div class="kill-screen" id="kill-screen">
-  <div style="font-size:48px;">🔒</div>
-  <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#e8e8f0;">System Locked</div>
-  <div style="font-size:14px;color:#5a5a72;text-align:center;max-width:320px;">The PAB Information System is currently under maintenance. Please contact your system administrator.</div>
+<div class="kill" id="kill-screen">
+  <div style="font-size:48px">🔒</div>
+  <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#e8e8f0">System Locked</div>
+  <div style="font-size:14px;color:#5a5a72;text-align:center;max-width:320px">Under maintenance. Contact your system administrator.</div>
 </div>
 
-<div class="login-wrap">
-  <div class="login-card">
-
-    <div class="login-logo">
-      <div class="login-emblem">🏛</div>
+<div class="wrap">
+  <div class="card">
+    <div class="logo">
+      <div class="emblem">🏛</div>
       <div>
-        <div class="login-title">PAB Information System</div>
-        <div class="login-sub">DTI · Accreditation Bureau</div>
+        <div class="logo-title">PAB Information System</div>
+        <div class="logo-sub">DTI · Accreditation Bureau</div>
       </div>
     </div>
 
-    <!-- Tab Switch -->
-    <div class="tab-row">
-      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
-      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Create Account</button>
+    <div class="admin-note">🔐 Admin access only. Assessors use the form link provided to them by the admin.</div>
+
+    <div class="alert alert-err"  id="alert-err"></div>
+    <div class="alert alert-ok"   id="alert-ok"></div>
+    <div class="alert alert-warn" id="alert-warn"></div>
+
+    <!-- Honeypot — catches bots -->
+    <input type="text" class="hp" id="hp" tabindex="-1" autocomplete="off">
+
+    <div class="fg">
+      <label>Email Address *</label>
+      <input type="email" id="email" placeholder="admin@pab.gov.ph" autocomplete="email">
     </div>
-
-    <!-- Alerts -->
-    <div class="alert alert-danger" id="alert-error"></div>
-    <div class="alert alert-success" id="alert-success"></div>
-    <div class="alert alert-warning" id="alert-warning"></div>
-
-    <!-- ── LOGIN FORM ── -->
-    <div id="form-login">
-      <!-- Honeypot (bot trap) -->
-      <input type="text" class="hp-field" id="hp-login" tabindex="-1" autocomplete="off">
-
-      <div class="fg">
-        <label>Email Address <span class="req">*</span></label>
-        <input type="email" id="login-email" placeholder="admin@pab.gov.ph" autocomplete="email">
-      </div>
-      <div class="fg">
-        <label>Password <span class="req">*</span></label>
-        <div class="password-wrap">
-          <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
-          <button class="eye-btn" onclick="togglePass('login-password', this)" type="button">👁</button>
-        </div>
-        <div class="attempts-warning" id="attempts-warning"></div>
-      </div>
-
-      <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In →</button>
-
-      <div class="divider"></div>
-      <div style="text-align:center;font-size:12px;color:var(--text3);">
-        Forgot your password? <span style="color:var(--accent);cursor:pointer;" onclick="doResetPassword()">Reset it</span>
+    <div class="fg">
+      <label>Password *</label>
+      <div class="pw-wrap">
+        <input type="password" id="pw" placeholder="Enter your password" autocomplete="current-password">
+        <button class="eye" onclick="togglePw()" type="button" id="eye-btn">👁</button>
       </div>
     </div>
 
-    <!-- ── REGISTER FORM ── -->
-    <div id="form-register" style="display:none;">
-      <!-- Honeypot (bot trap) -->
-      <input type="text" class="hp-field" id="hp-register" tabindex="-1" autocomplete="off">
+    <button class="btn" id="login-btn" onclick="doLogin()">Sign In →</button>
 
-      <div class="fg">
-        <label>Full Name <span class="req">*</span></label>
-        <input type="text" id="reg-name" placeholder="Juan Dela Cruz">
-      </div>
-      <div class="fg">
-        <label>Email Address <span class="req">*</span></label>
-        <input type="email" id="reg-email" placeholder="admin@pab.gov.ph" autocomplete="email">
-      </div>
-      <div class="fg">
-        <label>Password <span class="req">*</span></label>
-        <div class="password-wrap">
-          <input type="password" id="reg-password" placeholder="Min. 8 characters" oninput="checkStrength(this.value)" autocomplete="new-password">
-          <button class="eye-btn" onclick="togglePass('reg-password', this)" type="button">👁</button>
-        </div>
-        <div class="strength-bar" id="strength-bar"></div>
-        <div class="hint" id="strength-text"></div>
-      </div>
-      <div class="fg">
-        <label>Confirm Password <span class="req">*</span></label>
-        <div class="password-wrap">
-          <input type="password" id="reg-confirm" placeholder="Repeat password" autocomplete="new-password">
-          <button class="eye-btn" onclick="togglePass('reg-confirm', this)" type="button">👁</button>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Access Role <span class="req">*</span></label>
-        <select id="reg-role">
-          <option value="">— Select Role —</option>
-          <option value="viewer">Viewer — Read only</option>
-          <option value="admin">Admin — Fill & manage forms</option>
-          <option value="super_admin">Super Admin — Full access</option>
-        </select>
-        <div class="hint">Super Admin can manage other admins and system settings.</div>
-      </div>
-
-      <button class="btn-primary" id="register-btn" onclick="doRegister()">Create Account →</button>
+    <div class="divider"></div>
+    <div style="text-align:center;font-size:12px;color:var(--text3)">
+      Forgot your password? <span style="color:var(--accent);cursor:pointer" onclick="doReset()">Reset it</span>
     </div>
-
   </div>
 
-  <div class="footer-note">
+  <div class="footer">
     PAB Technical Assessors & Experts Information System<br>
     Philippine Accreditation Bureau · DTI · ver.2<br>
-    <span style="color:var(--danger);">🔒 Secured with end-to-end encryption</span>
+    <span style="color:var(--danger)">🔒 Secured with end-to-end encryption</span>
   </div>
 </div>
 
 <script>
-// ── Supabase Init ──────────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://yayovhfettjrxryluvbz.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_pgKRjgTXeL7GGqeWFj1BfQ_c4Vjs_gn';
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+// ─── Supabase ─────────────────────────────────────────────────────────────────
+const sb = supabase.createClient(
+  'https://gvsewvjomsijcdyhvwhk.supabase.co',
+  'sb_publishable_LWuvb4rw0nJh1yp2fwGhzg_JuensxKN'
+);
 
-// ── Theme ─────────────────────────────────────────────────────────────────────
-let isDark = localStorage.getItem('pab_theme') !== 'light';
+// ─── Theme ────────────────────────────────────────────────────────────────────
+let dark = localStorage.getItem('pab_theme') !== 'light';
 function applyTheme() {
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('theme-btn').textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
 }
-function toggleTheme() { isDark = !isDark; localStorage.setItem('pab_theme', isDark ? 'dark' : 'light'); applyTheme(); }
+function toggleTheme() { dark = !dark; localStorage.setItem('pab_theme', dark?'dark':'light'); applyTheme(); }
 applyTheme();
 
-// ── Security: Rate limiting ───────────────────────────────────────────────────
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_MINUTES = 15;
-
-function getAttempts() { return JSON.parse(localStorage.getItem('pab_login_attempts') || '{"count":0,"time":0}'); }
-function setAttempts(data) { localStorage.setItem('pab_login_attempts', JSON.stringify(data)); }
-function isLockedOut() {
-  const a = getAttempts();
+// ─── Rate limiting (stored in localStorage per browser) ───────────────────────
+const MAX_ATTEMPTS = 5, LOCK_MINS = 15;
+const getA  = () => JSON.parse(localStorage.getItem('pab_login_attempts') || '{"count":0,"time":0}');
+const saveA = d => localStorage.setItem('pab_login_attempts', JSON.stringify(d));
+function lockedOut() {
+  const a = getA();
   if (a.count >= MAX_ATTEMPTS) {
-    const mins = Math.ceil((LOCKOUT_MINUTES * 60 * 1000 - (Date.now() - a.time)) / 60000);
+    const mins = Math.ceil((LOCK_MINS * 60000 - (Date.now() - a.time)) / 60000);
     if (mins > 0) return mins;
-    setAttempts({ count: 0, time: 0 });
+    saveA({ count:0, time:0 }); // lockout expired, reset
   }
   return false;
 }
-function recordAttempt() {
-  const a = getAttempts();
-  a.count = (a.count || 0) + 1;
-  a.time = Date.now();
-  setAttempts(a);
-  const remaining = MAX_ATTEMPTS - a.count;
-  if (remaining > 0 && remaining <= 2) {
-    showWarning(`⚠️ Warning: ${remaining} login attempt${remaining !== 1 ? 's' : ''} remaining before lockout.`);
-  }
+function recordFail() {
+  const a = getA(); a.count=(a.count||0)+1; a.time=Date.now(); saveA(a);
+  const rem = MAX_ATTEMPTS - a.count;
+  if (rem > 0 && rem <= 2) showWarn(`⚠️ ${rem} attempt${rem!==1?'s':''} remaining before lockout.`);
 }
-function clearAttempts() { setAttempts({ count: 0, time: 0 }); }
+function clearAttempts() { saveA({ count:0, time:0 }); }
 
-// ── Security: Input Sanitization (XSS prevention) ────────────────────────────
-function sanitize(str) {
-  return str.replace(/[<>"'&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;','&':'&amp;'}[c]));
-}
-
-function detectMalicious(str) {
-  const patterns = [/<script/i, /javascript:/i, /on\w+\s*=/i, /union\s+select/i, /drop\s+table/i, /'.*or.*'/i, /--/, /\/\*/];
-  return patterns.some(p => p.test(str));
+// ─── Alerts ───────────────────────────────────────────────────────────────────
+function showErr(m)  { const e=document.getElementById('alert-err');  e.textContent=m; e.classList.add('show'); }
+function showOk(m)   { const e=document.getElementById('alert-ok');   e.textContent=m; e.classList.add('show'); }
+function showWarn(m) { const e=document.getElementById('alert-warn'); e.textContent=m; e.classList.add('show'); }
+function clearAlerts() {
+  ['alert-err','alert-ok','alert-warn'].forEach(id => {
+    const e=document.getElementById(id); e.classList.remove('show'); e.textContent='';
+  });
 }
 
-// ── Honeypot check ────────────────────────────────────────────────────────────
-function honeypotTripped(id) {
-  const val = document.getElementById(id)?.value || '';
-  if (val.length > 0) {
-    showError('🤖 Bot detected. Access denied.');
-    return true;
-  }
-  return false;
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function togglePw() {
+  const i=document.getElementById('pw');
+  i.type = i.type==='password' ? 'text' : 'password';
+  document.getElementById('eye-btn').textContent = i.type==='password' ? '👁' : '🙈';
+}
+function isMalicious(s) {
+  return [/<script/i,/javascript:/i,/union\s+select/i,/drop\s+table/i].some(p=>p.test(s));
 }
 
-// ── Kill Switch check ─────────────────────────────────────────────────────────
-async function checkKillSwitch() {
+// ─── Kill switch ──────────────────────────────────────────────────────────────
+async function checkKill() {
   try {
-    const { data } = await sb.from('system_settings').select('value').eq('key', 'kill_switch').single();
-    if (data?.value === 'true') {
-      document.getElementById('kill-screen').classList.add('show');
-      return true;
-    }
+    const { data } = await sb.from('system_settings').select('value').eq('key','kill_switch').single();
+    if (data?.value === 'true') { document.getElementById('kill-screen').classList.add('show'); return true; }
   } catch(e) {}
   return false;
 }
 
-// ── Tab switching ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-  clearAlerts();
-}
-
-// ── Alerts ────────────────────────────────────────────────────────────────────
-function showError(msg) { const el = document.getElementById('alert-error'); el.textContent = msg; el.classList.add('show'); }
-function showSuccess(msg) { const el = document.getElementById('alert-success'); el.textContent = msg; el.classList.add('show'); }
-function showWarning(msg) { const el = document.getElementById('alert-warning'); el.textContent = msg; el.classList.add('show'); }
-function clearAlerts() {
-  ['alert-error','alert-success','alert-warning'].forEach(id => {
-    const el = document.getElementById(id);
-    el.classList.remove('show'); el.textContent = '';
-  });
-}
-
-// ── Password visibility ───────────────────────────────────────────────────────
-function togglePass(id, btn) {
-  const inp = document.getElementById(id);
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-}
-
-// ── Password strength ─────────────────────────────────────────────────────────
-function checkStrength(val) {
-  const bar = document.getElementById('strength-bar');
-  const txt = document.getElementById('strength-text');
-  if (!val) { bar.style.width = '0'; bar.style.background = ''; txt.textContent = ''; return; }
-  let score = 0;
-  if (val.length >= 8) score++;
-  if (val.length >= 12) score++;
-  if (/[A-Z]/.test(val)) score++;
-  if (/[0-9]/.test(val)) score++;
-  if (/[^A-Za-z0-9]/.test(val)) score++;
-  const levels = [
-    { color: '#f76f6f', text: 'Very weak', width: '20%' },
-    { color: '#f5a623', text: 'Weak', width: '40%' },
-    { color: '#f5a623', text: 'Fair', width: '60%' },
-    { color: '#3ecf8e', text: 'Strong', width: '80%' },
-    { color: '#3ecf8e', text: 'Very strong ✅', width: '100%' }
-  ];
-  const l = levels[Math.min(score, 4)];
-  bar.style.width = l.width; bar.style.background = l.color;
-  txt.textContent = l.text; txt.style.color = l.color;
-}
-
-// ── Login ─────────────────────────────────────────────────────────────────────
+// ─── Login ────────────────────────────────────────────────────────────────────
 async function doLogin() {
   clearAlerts();
 
-  // Honeypot check
-  if (honeypotTripped('hp-login')) return;
+  // Bot check
+  if (document.getElementById('hp').value) { showErr('🤖 Bot detected.'); return; }
 
-  // Rate limit check
-  const lockMins = isLockedOut();
-  if (lockMins) {
-    showError(`🔒 Too many failed attempts. Try again in ${lockMins} minute${lockMins !== 1 ? 's' : ''}.`);
-    return;
-  }
+  // Lockout check
+  const lock = lockedOut();
+  if (lock) { showErr(`🔒 Too many failed attempts. Try again in ${lock} minute${lock!==1?'s':''}.`); return; }
 
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-
-  // Validation
-  if (!email || !password) { showError('Please fill in all fields.'); return; }
-  if (detectMalicious(email) || detectMalicious(password)) { showError('⚠️ Invalid characters detected.'); return; }
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('pw').value;
+  if (!email || !pw) { showErr('Please fill in all fields.'); return; }
+  if (isMalicious(email)) { showErr('⚠️ Invalid input detected.'); return; }
 
   const btn = document.getElementById('login-btn');
-  btn.disabled = true; btn.textContent = 'Signing in…';
+  btn.disabled=true; btn.textContent='Signing in…';
 
   try {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
+    // Step 1: Authenticate with Supabase Auth
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
     if (error) {
-      recordAttempt();
-      const lockout = isLockedOut();
-      if (lockout) {
-        showError(`🔒 Account temporarily locked. Try again in ${lockout} minutes.`);
-      } else {
-        showError('❌ Invalid email or password. Please try again.');
-      }
-      btn.disabled = false; btn.textContent = 'Sign In →';
+      recordFail();
+      const l = lockedOut();
+      showErr(l ? `🔒 Account locked. Try again in ${l} minutes.` : '❌ Invalid email or password.');
+      btn.disabled=false; btn.textContent='Sign In →';
       return;
     }
 
-    // Check if admin exists in admins table
-    const { data: adminData, error: adminErr } = await sb
-      .from('admins')
-      .select('role, is_active, full_name')
-      .eq('id', data.user.id)
-      .single();
-
-    if (adminErr || !adminData) {
+    // Step 2: Verify this user is in the admins table and is active
+    const { data: admin } = await sb
+      .from('admins').select('role,is_active,full_name').eq('id', data.user.id).single();
+    if (!admin || !admin.is_active) {
       await sb.auth.signOut();
-      showError('❌ Your account is not registered as an admin. Contact your Super Admin.');
-      btn.disabled = false; btn.textContent = 'Sign In →';
+      showErr('❌ Admin account not found or deactivated. Contact your Super Admin.');
+      btn.disabled=false; btn.textContent='Sign In →';
       return;
     }
 
-    if (!adminData.is_active) {
-      await sb.auth.signOut();
-      showError('🚫 Your account has been deactivated. Contact your Super Admin.');
-      btn.disabled = false; btn.textContent = 'Sign In →';
-      return;
-    }
-
-    // Log the login action
+    // Step 3: Log the login event
     await sb.from('audit_logs').insert({
-      admin_id: data.user.id,
-      action: 'LOGIN',
-      details: `${adminData.full_name || email} logged in`,
-      ip_address: 'client'
+      admin_id: data.user.id, action:'LOGIN',
+      details:`${admin.full_name} logged in`, ip_address:'client'
     });
 
-    // Clear failed attempts on success
     clearAttempts();
-
-    // Save session info
     localStorage.setItem('pab_user', JSON.stringify({
-      id: data.user.id,
-      email: data.user.email,
-      name: adminData.full_name,
-      role: adminData.role
+      id: data.user.id, email: data.user.email,
+      name: admin.full_name, role: admin.role
     }));
-
-    showSuccess(`✅ Welcome back, ${adminData.full_name || email}! Redirecting…`);
+    showOk(`✅ Welcome back, ${admin.full_name}! Redirecting…`);
     setTimeout(() => { window.location.href = 'index.html'; }, 1200);
 
   } catch(e) {
-    showError('Something went wrong. Please try again.');
-    btn.disabled = false; btn.textContent = 'Sign In →';
+    showErr('Something went wrong. Please try again.');
+    btn.disabled=false; btn.textContent='Sign In →';
   }
 }
 
-// ── Register ──────────────────────────────────────────────────────────────────
-async function doRegister() {
+// ─── Password reset ───────────────────────────────────────────────────────────
+async function doReset() {
   clearAlerts();
-
-  // Honeypot check
-  if (honeypotTripped('hp-register')) return;
-
-  const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const password = document.getElementById('reg-password').value;
-  const confirm = document.getElementById('reg-confirm').value;
-  const role = document.getElementById('reg-role').value;
-
-  // Validation
-  if (!name || !email || !password || !confirm || !role) { showError('Please fill in all fields.'); return; }
-  if (detectMalicious(name) || detectMalicious(email)) { showError('⚠️ Invalid characters detected.'); return; }
-  if (password !== confirm) { showError('❌ Passwords do not match.'); return; }
-  if (password.length < 8) { showError('❌ Password must be at least 8 characters.'); return; }
-  if (!/[A-Z]/.test(password)) { showError('❌ Password must contain at least one uppercase letter.'); return; }
-  if (!/[0-9]/.test(password)) { showError('❌ Password must contain at least one number.'); return; }
-
-  const btn = document.getElementById('register-btn');
-  btn.disabled = true; btn.textContent = 'Creating account…';
-
-  try {
-    // Create auth user
-    const { data, error } = await sb.auth.signUp({ email, password });
-
-    if (error) {
-      showError('❌ ' + error.message);
-      btn.disabled = false; btn.textContent = 'Create Account →';
-      return;
-    }
-
-    // Insert into admins table
-    const { error: adminErr } = await sb.from('admins').insert({
-      id: data.user.id,
-      email: sanitize(email),
-      full_name: sanitize(name),
-      role: role,
-      is_active: true
-    });
-
-    if (adminErr) {
-      showError('❌ Could not create admin profile. ' + adminErr.message);
-      btn.disabled = false; btn.textContent = 'Create Account →';
-      return;
-    }
-
-    // Log registration
-    await sb.from('audit_logs').insert({
-      admin_id: data.user.id,
-      action: 'REGISTER',
-      details: `New account created: ${name} (${role})`,
-      ip_address: 'client'
-    });
-
-    showSuccess(`✅ Account created successfully! You can now sign in.`);
-    btn.disabled = false; btn.textContent = 'Create Account →';
-    setTimeout(() => switchTab('login'), 2000);
-
-  } catch(e) {
-    showError('Something went wrong. Please try again.');
-    btn.disabled = false; btn.textContent = 'Create Account →';
-  }
-}
-
-// ── Password Reset ────────────────────────────────────────────────────────────
-async function doResetPassword() {
-  clearAlerts();
-  const email = document.getElementById('login-email').value.trim();
-  if (!email) { showError('Enter your email address first, then click Reset.'); return; }
+  const email = document.getElementById('email').value.trim();
+  if (!email) { showErr('Enter your email address first.'); return; }
   const { error } = await sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + '/index.html'
   });
-  if (error) { showError('❌ ' + error.message); return; }
-  showSuccess('✅ Password reset email sent! Check your inbox.');
+  if (error) { showErr('❌ ' + error.message); return; }
+  showOk('✅ Password reset email sent! Check your inbox.');
 }
 
-// ── Check if already logged in ────────────────────────────────────────────────
+// ─── Page init ────────────────────────────────────────────────────────────────
 async function init() {
-  // Check kill switch first
-  const killed = await checkKillSwitch();
-  if (killed) return;
-
-  // Check existing session
+  if (await checkKill()) return;
+  // If already logged in, go straight to dashboard
   const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    window.location.href = 'index.html';
-  }
+  if (session) window.location.href = 'index.html';
 }
-
-// Enter key support
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const loginVisible = document.getElementById('form-login').style.display !== 'none';
-    if (loginVisible) doLogin(); else doRegister();
-  }
-});
-
+document.addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
 init();
 </script>
 </body>
