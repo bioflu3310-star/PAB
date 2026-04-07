@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAB — Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+[data-theme="dark"]{--bg:#0d0d12;--surface:#14141c;--surface2:#1c1c28;--surface3:#242432;--border:#2a2a3a;--border2:#353548;--text:#e8e8f0;--text2:#9090a8;--text3:#5a5a72;--accent:#4f8ef7;--accent-bg:rgba(79,142,247,0.12);--accent-border:rgba(79,142,247,0.3);--success:#3ecf8e;--success-bg:rgba(62,207,142,0.1);--danger:#f76f6f;--danger-bg:rgba(247,111,111,0.1);--input-bg:#1c1c28;--shadow:0 4px 20px rgba(0,0,0,0.4);--shadow-sm:0 2px 8px rgba(0,0,0,0.3);}
+[data-theme="light"]{--bg:#f4f5f7;--surface:#ffffff;--surface2:#f8f9fb;--surface3:#f0f1f4;--border:#e2e4ea;--border2:#d0d3dc;--text:#1a1a2e;--text2:#5a5d72;--text3:#9598a8;--accent:#1a56db;--accent-bg:rgba(26,86,219,0.08);--accent-border:rgba(26,86,219,0.25);--success:#0d9963;--success-bg:rgba(13,153,99,0.08);--danger:#d93025;--danger-bg:rgba(217,48,37,0.08);--input-bg:#ffffff;--shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-sm:0 2px 8px rgba(0,0,0,0.06);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+
+/* ── Header ── */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-emblem{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.header-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
+.theme-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;}
+
+/* ── Layout ── */
+.page{max-width:720px;margin:0 auto;padding:32px 20px;}
+
+/* ── Screens ── */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp .18s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Gate screen ── */
+.gate-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:40px 36px;max-width:420px;margin:60px auto 0;box-shadow:var(--shadow);}
+.gate-icon{font-size:36px;margin-bottom:16px;}
+.gate-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+.gate-sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:24px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.fg label{font-size:11.5px;font-weight:600;color:var(--text2);}
+.fg input{background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .13s,box-shadow .13s;width:100%;}
+.fg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.btn-primary{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .13s;}
+.btn-primary:hover{opacity:.88;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.alert{padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px;line-height:1.5;display:none;}
+.alert.show{display:block;}
+.alert-err{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);}
+
+/* ── Form screen ── */
+.form-header{margin-bottom:24px;}
+.form-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
+.form-sub{font-size:13px;color:var(--text2);margin-top:4px;}
+.assessor-pill{display:inline-flex;align-items:center;gap:7px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--accent);font-weight:600;margin-top:10px;}
+
+/* ── Form sections ── */
+.ff-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+.ff-head{background:var(--surface2);padding:12px 18px;border-bottom:1px solid var(--border);}
+.ff-head-title{font-size:13px;font-weight:700;}
+.ff-body{padding:18px;}
+.ff-field{margin-bottom:14px;}
+.ff-field:last-child{margin-bottom:0;}
+.ff-field label{display:block;font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:5px;}
+.ff-field input,.ff-field textarea,.ff-field select{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .13s;}
+.ff-field input:focus,.ff-field textarea:focus,.ff-field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.ff-field textarea{min-height:80px;resize:vertical;}
+.ff-field input.req-err,.ff-field textarea.req-err,.ff-field select.req-err{border-color:var(--danger);}
+.cb-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.cb-item{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:5px;cursor:pointer;user-select:none;transition:background .1s;}
+.cb-item:hover{background:var(--surface2);}
+.cb-item input{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
+.cb-item span{font-size:12.5px;color:var(--text2);}
+.req-star{color:var(--danger);}
+
+/* ── Form footer ── */
+.form-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+.btn-ghost{padding:9px 18px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-ghost:hover{background:var(--surface3);}
+.btn-submit{padding:9px 24px;border-radius:7px;border:none;background:var(--accent);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .13s;}
+.btn-submit:hover{opacity:.88;}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── Thank you screen ── */
+.ty-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:56px 40px;max-width:480px;margin:60px auto 0;text-align:center;box-shadow:var(--shadow);}
+.ty-icon{font-size:56px;margin-bottom:20px;display:block;}
+.ty-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:12px;}
+.ty-msg{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
+.ty-name{font-weight:700;color:var(--accent);}
+.ty-badge{display:inline-flex;align-items:center;gap:8px;background:var(--success-bg);border:1px solid rgba(62,207,142,.3);border-radius:8px;padding:10px 18px;font-size:13px;color:var(--success);font-weight:600;}
+
+/* ── Error / already done ── */
+.center-msg{text-align:center;padding:80px 24px;}
+.center-icon{font-size:40px;margin-bottom:12px;display:block;}
+.center-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:8px;}
+.center-sub{font-size:13px;color:var(--text2);line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-emblem">🏛</div>
+    <div class="header-title">PAB Information System</div>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
+</div>
+
+<div class="page">
+
+  <!-- SCREEN 1: Email verification gate -->
+  <div class="screen active" id="screen-gate">
+    <div class="gate-card">
+      <div class="gate-icon">📋</div>
+      <div class="gate-title">Access Form</div>
+      <div class="gate-sub">Enter your registered email address to access this form. Only approved assessors can fill it out.</div>
+      <div class="alert alert-err" id="gate-err"></div>
+      <div class="fg">
+        <label>Email Address *</label>
+        <input type="email" id="gate-email" placeholder="yourname@email.com" autocomplete="email">
+      </div>
+      <button class="btn-primary" id="gate-btn" onclick="verifyEmail()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: The actual form -->
+  <div class="screen" id="screen-form">
+    <div class="form-header">
+      <div class="form-title" id="form-title"></div>
+      <div class="form-sub" id="form-sub"></div>
+      <div class="assessor-pill">📧 <span id="assessor-email-show"></span></div>
+    </div>
+    <div id="form-body"></div>
+    <div class="form-footer">
+      <button class="btn-ghost" onclick="resetForm()">↺ Reset</button>
+      <button class="btn-submit" id="submit-btn" onclick="submitForm()">Submit Form →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Thank you (shown after submit, hides the form) -->
+  <div class="screen" id="screen-thanks">
+    <div class="ty-card">
+      <span class="ty-icon">✅</span>
+      <div class="ty-title">Thank You!</div>
+      <div class="ty-msg">
+        Your response has been submitted successfully, <span class="ty-name" id="ty-name"></span>.<br><br>
+        The PAB team will review your submission. You may now close this window.
+      </div>
+      <div class="ty-badge">🎉 Submission recorded</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Already submitted -->
+  <div class="screen" id="screen-done">
+    <div class="ty-card">
+      <span class="ty-icon">📬</span>
+      <div class="ty-title">Already Submitted</div>
+      <div class="ty-msg">You have already submitted this form. Each assessor can only submit once.<br><br>If you think this is an error, contact your administrator.</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Error (bad link, form not found, etc.) -->
+  <div class="screen" id="screen-error">
+    <div class="center-msg">
+      <span class="center-icon">⚠️</span>
+      <div class="center-title" id="err-title">Something went wrong</div>
+      <div class="center-sub"  id="err-sub">This form link may be invalid or expired.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── Supabase ─────────────────────────────────────────────────────────────────
+const sb = supabase.createClient(
+  'https://gvsewvjomsijcdyhvwhk.supabase.co',
+  'sb_publishable_LWuvb4rw0nJh1yp2fwGhzg_JuensxKN'
+);
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let formData = null;   // row from custom_forms table
+let assessor = null;   // row from assessors table
+let formId   = null;   // ?form=ID from URL
+
+// ─── Theme ────────────────────────────────────────────────────────────────────
+let dark = localStorage.getItem('pab_theme') !== 'light';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  document.getElementById('theme-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
+}
+function toggleTheme() { dark=!dark; localStorage.setItem('pab_theme',dark?'dark':'light'); applyTheme(); }
+applyTheme();
+
+// ─── Screen switcher ──────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+function showError(title, sub) {
+  document.getElementById('err-title').textContent = title;
+  document.getElementById('err-sub').textContent   = sub;
+  show('error');
+}
+
+// ─── Init: read URL and load the form ────────────────────────────────────────
+async function init() {
+  formId = new URLSearchParams(window.location.search).get('form');
+  if (!formId) { showError('No Form Found', 'This link does not point to a valid form. Please check the URL.'); return; }
+
+  const { data, error } = await sb
+    .from('custom_forms').select('*').eq('id', formId).eq('status','published').single();
+
+  if (error || !data) {
+    showError('Form Not Available', 'This form does not exist, is not published, or has been removed.');
+    return;
+  }
+
+  formData = data;
+  document.title = `PAB — ${data.title}`;
+  show('gate');
+}
+
+// ─── Step 1: Verify email ─────────────────────────────────────────────────────
+async function verifyEmail() {
+  const errEl = document.getElementById('gate-err');
+  errEl.classList.remove('show');
+
+  const email = document.getElementById('gate-email').value.trim().toLowerCase();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = '❌ Please enter a valid email address.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('gate-btn');
+  btn.disabled=true; btn.textContent='Checking…';
+
+  // Check if this email is a registered, active assessor
+  const { data: asr } = await sb
+    .from('assessors').select('*').eq('email', email).eq('is_active', true).single();
+
+  if (!asr) {
+    errEl.textContent = '❌ This email is not registered as an assessor. Contact the admin.';
+    errEl.classList.add('show');
+    btn.disabled=false; btn.textContent='Continue →';
+    return;
+  }
+
+  // Check if they already submitted this form (one submission per assessor per form)
+  const { data: existing } = await sb
+    .from('form_submissions').select('id').eq('form_id', formId).eq('assessor_id', asr.id).single();
+
+  if (existing) { show('done'); return; }
+
+  // All good — show the form
+  assessor = asr;
+  document.getElementById('assessor-email-show').textContent = email;
+  renderForm();
+  show('form');
+  btn.disabled=false; btn.textContent='Continue →';
+}
+
+// ─── Step 2: Render form fields ───────────────────────────────────────────────
+function renderForm() {
+  const fields = formData.fields || [];
+  document.getElementById('form-title').textContent = formData.title;
+  document.getElementById('form-sub').textContent   =
+    (formData.description||'') + (fields.length ? `  ·  ${fields.length} field${fields.length!==1?'s':''}` : '');
+
+  const body = document.getElementById('form-body');
+  let html = '', inSection = false;
+
+  fields.forEach((f, i) => {
+    if (f.type === 'section') {
+      if (inSection) html += '</div></div>';
+      html += `<div class="ff-section"><div class="ff-head"><div class="ff-head-title">${esc(f.label)}</div></div><div class="ff-body">`;
+      inSection = true;
+      return;
+    }
+    if (!inSection) { html += '<div class="ff-section"><div class="ff-body">'; inSection = true; }
+
+    const req = f.required ? '<span class="req-star"> *</span>' : '';
+    html += `<div class="ff-field"><label>${esc(f.label||`Field ${i+1}`)}${req}</label>`;
+
+    if (['text','email','number','date','time'].includes(f.type)) {
+      html += `<input type="${f.type}" id="ff-${i}" placeholder="${esc(f.placeholder||'')}">`;
+    } else if (f.type === 'textarea') {
+      html += `<textarea id="ff-${i}" placeholder="${esc(f.placeholder||'')}"></textarea>`;
+    } else if (f.type === 'dropdown') {
+      html += `<select id="ff-${i}"><option value="">Select…</option>${(f.options||[]).map(o=>`<option>${esc(o)}</option>`).join('')}</select>`;
+    } else if (f.type === 'checkbox') {
+      html += `<div class="cb-grid" id="ff-${i}">${(f.options||[]).map(o=>`<label class="cb-item"><input type="checkbox" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>`;
+    } else if (f.type === 'radio') {
+      html += `<div class="cb-grid" id="ff-${i}">${(f.options||[]).map(o=>`<label class="cb-item"><input type="radio" name="r-${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div>`;
+    }
+    html += '</div>';
+  });
+
+  if (inSection) html += '</div></div>';
+  body.innerHTML = html || '<p style="color:var(--text3);padding:20px;text-align:center">This form has no fields.</p>';
+}
+
+function resetForm() { renderForm(); }
+
+// ─── Step 3: Submit ───────────────────────────────────────────────────────────
+async function submitForm() {
+  const fields  = formData.fields || [];
+  const answers = {};
+  let valid     = true;
+
+  fields.forEach((f, i) => {
+    if (f.type === 'section') return;
+    const el = document.getElementById('ff-' + i);
+    if (!el) return;
+
+    let val = '';
+    if (f.type === 'checkbox') {
+      val = [...el.querySelectorAll('input:checked')].map(c=>c.value).join(', ');
+    } else if (f.type === 'radio') {
+      const sel = el.querySelector('input:checked');
+      val = sel ? sel.value : '';
+    } else {
+      val = el.value || '';
+    }
+
+    // Mark missing required fields
+    if (f.required && !val.trim()) {
+      el.classList.add('req-err'); valid = false;
+    } else {
+      el.classList.remove('req-err');
+    }
+
+    answers[f.label || `Field ${i}`] = val;
+  });
+
+  if (!valid) {
+    const first = document.querySelector('.req-err');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled=true; btn.textContent='Submitting…';
+
+  try {
+    const { error } = await sb.from('form_submissions').insert({
+      form_id       : Number(formData.id),
+      form_title    : formData.title,
+      assessor_id   : assessor.id,
+      assessor_name : assessor.full_name,
+      assessor_email: assessor.email,
+      answers       : answers,
+      is_read       : false,
+      submitted_at  : new Date().toISOString()
+    });
+    if (error) throw error;
+
+    // Show thank you and hide the form permanently
+    document.getElementById('ty-name').textContent = assessor.full_name;
+    show('thanks');
+
+  } catch(e) {
+    btn.disabled=false; btn.textContent='Submit Form →';
+    alert('❌ Submission failed: ' + e.message);
+  }
+}
+
+// ─── Utility: escape HTML ─────────────────────────────────────────────────────
+const esc = s => String(s||'').replace(/[<>"'&]/g, c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;','&':'&amp;'}[c]));
+
+// ─── Start ────────────────────────────────────────────────────────────────────
+document.getElementById('gate-email').addEventListener('keydown', e => { if(e.key==='Enter') verifyEmail(); });
+init();
+</script>
+</body>
+</html>
