@@ -85,7 +85,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <div class="page">
 
-  <!-- SCREEN 1: Email verification gate -->
   <div class="screen active" id="screen-gate">
     <div class="gate-card">
       <div class="gate-icon">📋</div>
@@ -100,7 +99,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN 2: The actual form -->
   <div class="screen" id="screen-form">
     <div class="form-header">
       <div class="form-title" id="form-title"></div>
@@ -114,7 +112,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN 3: Thank you -->
   <div class="screen" id="screen-thanks">
     <div class="ty-card">
       <span class="ty-icon">✅</span>
@@ -127,7 +124,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN: Already submitted -->
   <div class="screen" id="screen-done">
     <div class="ty-card">
       <span class="ty-icon">📬</span>
@@ -136,7 +132,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN: Error -->
   <div class="screen" id="screen-error">
     <div class="center-msg">
       <span class="center-icon">⚠️</span>
@@ -319,16 +314,18 @@ async function submitForm() {
   btn.disabled=true; btn.textContent='Submitting…';
 
   try {
+    // UPDATED: Push data to Supabase online table
     const { error } = await sb.from('form_submissions').insert({
       form_id       : Number(formData.id),
       form_title    : formData.title,
       assessor_id   : assessor.id,
       assessor_name : assessor.full_name,
       assessor_email: assessor.email,
-      answers       : answers,
+      answers       : answers, // JSONB object
       is_read       : false,
       submitted_at  : new Date().toISOString()
     });
+
     if (error) throw error;
 
     document.getElementById('ty-name').textContent = assessor.full_name;
@@ -336,7 +333,7 @@ async function submitForm() {
 
   } catch(e) {
     btn.disabled=false; btn.textContent='Submit Form →';
-    alert('❌ Submission failed: ' + e.message);
+    alert('❌ Online Submission failed: ' + e.message);
   }
 }
 
