@@ -11,23 +11,15 @@
 [data-theme="light"]{--bg:#f4f5f7;--surface:#ffffff;--surface2:#f8f9fb;--surface3:#f0f1f4;--border:#e2e4ea;--border2:#d0d3dc;--text:#1a1a2e;--text2:#5a5d72;--text3:#9598a8;--accent:#1a56db;--accent-bg:rgba(26,86,219,0.08);--accent-border:rgba(26,86,219,0.25);--success:#0d9963;--success-bg:rgba(13,153,99,0.08);--danger:#d93025;--danger-bg:rgba(217,48,37,0.08);--input-bg:#ffffff;--shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-sm:0 2px 8px rgba(0,0,0,0.06);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
-
-/* ── Header ── */
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
 .header-left{display:flex;align-items:center;gap:10px;}
 .header-emblem{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
 .header-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
 .theme-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;}
-
-/* ── Layout ── */
 .page{max-width:720px;margin:0 auto;padding:32px 20px;}
-
-/* ── Screens ── */
 .screen{display:none;}
 .screen.active{display:block;animation:fadeUp .18s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── Gate screen ── */
 .gate-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:40px 36px;max-width:420px;margin:60px auto 0;box-shadow:var(--shadow);}
 .gate-icon{font-size:36px;margin-bottom:16px;}
 .gate-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
@@ -42,14 +34,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .alert{padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px;line-height:1.5;display:none;}
 .alert.show{display:block;}
 .alert-err{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);}
-
-/* ── Form screen ── */
 .form-header{margin-bottom:24px;}
 .form-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
 .form-sub{font-size:13px;color:var(--text2);margin-top:4px;}
 .assessor-pill{display:inline-flex;align-items:center;gap:7px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--accent);font-weight:600;margin-top:10px;}
-
-/* ── Form sections ── */
 .ff-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm);}
 .ff-head{background:var(--surface2);padding:12px 18px;border-bottom:1px solid var(--border);}
 .ff-head-title{font-size:13px;font-weight:700;}
@@ -67,24 +55,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .cb-item input{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
 .cb-item span{font-size:12.5px;color:var(--text2);}
 .req-star{color:var(--danger);}
-
-/* ── Form footer ── */
 .form-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
 .btn-ghost{padding:9px 18px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
 .btn-ghost:hover{background:var(--surface3);}
 .btn-submit{padding:9px 24px;border-radius:7px;border:none;background:var(--accent);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .13s;}
 .btn-submit:hover{opacity:.88;}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-
-/* ── Thank you screen ── */
 .ty-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:56px 40px;max-width:480px;margin:60px auto 0;text-align:center;box-shadow:var(--shadow);}
 .ty-icon{font-size:56px;margin-bottom:20px;display:block;}
 .ty-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:12px;}
 .ty-msg{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
 .ty-name{font-weight:700;color:var(--accent);}
 .ty-badge{display:inline-flex;align-items:center;gap:8px;background:var(--success-bg);border:1px solid rgba(62,207,142,.3);border-radius:8px;padding:10px 18px;font-size:13px;color:var(--success);font-weight:600;}
-
-/* ── Error / already done ── */
 .center-msg{text-align:center;padding:80px 24px;}
 .center-icon{font-size:40px;margin-bottom:12px;display:block;}
 .center-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:8px;}
@@ -132,7 +114,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN 3: Thank you (shown after submit, hides the form) -->
+  <!-- SCREEN 3: Thank you -->
   <div class="screen" id="screen-thanks">
     <div class="ty-card">
       <span class="ty-icon">✅</span>
@@ -154,7 +136,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN: Error (bad link, form not found, etc.) -->
+  <!-- SCREEN: Error -->
   <div class="screen" id="screen-error">
     <div class="center-msg">
       <span class="center-icon">⚠️</span>
@@ -173,9 +155,9 @@ const sb = supabase.createClient(
 );
 
 // ─── State ────────────────────────────────────────────────────────────────────
-let formData = null;   // row from custom_forms table
-let assessor = null;   // row from assessors table
-let formId   = null;   // ?form=ID from URL
+let formData = null;
+let assessor = null;
+let formId   = null;
 
 // ─── Theme ────────────────────────────────────────────────────────────────────
 let dark = localStorage.getItem('pab_theme') !== 'light';
@@ -241,7 +223,7 @@ async function verifyEmail() {
     return;
   }
 
-  // Check if they already submitted this form (one submission per assessor per form)
+  // Check if they already submitted this form
   const { data: existing } = await sb
     .from('form_submissions').select('id').eq('form_id', formId).eq('assessor_id', asr.id).single();
 
@@ -318,7 +300,6 @@ async function submitForm() {
       val = el.value || '';
     }
 
-    // Mark missing required fields
     if (f.required && !val.trim()) {
       el.classList.add('req-err'); valid = false;
     } else {
@@ -350,7 +331,6 @@ async function submitForm() {
     });
     if (error) throw error;
 
-    // Show thank you and hide the form permanently
     document.getElementById('ty-name').textContent = assessor.full_name;
     show('thanks');
 
@@ -360,7 +340,7 @@ async function submitForm() {
   }
 }
 
-// ─── Utility: escape HTML ─────────────────────────────────────────────────────
+// ─── Utility ──────────────────────────────────────────────────────────────────
 const esc = s => String(s||'').replace(/[<>"'&]/g, c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;','&':'&amp;'}[c]));
 
 // ─── Start ────────────────────────────────────────────────────────────────────
