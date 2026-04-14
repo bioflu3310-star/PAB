@@ -173,16 +173,21 @@ const sb = supabase.createClient(
 );
 
 // ─── State ────────────────────────────────────────────────────────────────────
-let formData = null;
-let formId   = null;
+let formData  = null;  // loaded from custom_forms table
+let assessor  = null;  // verified assessor row from assessors table
+let formId    = null;  // ?form=ID from URL
 
 // ─── Theme ────────────────────────────────────────────────────────────────────
 let dark = localStorage.getItem('pab_theme') !== 'light';
 function applyTheme() {
-  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   document.getElementById('theme-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
 }
-function toggleTheme() { dark=!dark; localStorage.setItem('pab_theme',dark?'dark':'light'); applyTheme(); }
+function toggleTheme() {
+  dark = !dark;
+  localStorage.setItem('pab_theme', dark ? 'dark' : 'light');
+  applyTheme();
+}
 applyTheme();
 
 // ─── Screen switcher ──────────────────────────────────────────────────────────
@@ -196,46 +201,116 @@ function showError(title, sub) {
   show('error');
 }
 
-// ─── Init: read URL, load form, skip email gate ────────────────────────────────
+// ─── STEP 1: Load form from URL ───────────────────────────────────────────────
+// When the page loads, read the ?form=ID from the URL and load
+// the form details from Supabase. If the form doesn't exist or
+// isn't published, show an error. Otherwise show the email gate.
 async function init() {
   formId = new URLSearchParams(window.location.search).get('form');
   if (!formId) {
-    showError('No Form Found', 'This link does not point to a valid form. Please check the URL.');
+    showError('No Form Found', 'This link does not point to a valid form.');
     return;
   }
+
   const { data, error } = await sb
-    .from('custom_forms').select('*').eq('id', formId).eq('status','published').single();
+    .from('custom_forms')
+    .select('*')
+    .eq('id', formId)
+    .eq('status', 'published')
+    .single();
+
   if (error || !data) {
     showError('Form Not Available', 'This form does not exist, is not published, or has been removed.');
     return;
   }
+
   formData = data;
   document.title = 'PAB — ' + data.title;
-  renderForm();
-  show('form'); // skip email gate, go straight to form
+
+  // Show email gate first — assessor must verify their email
+  show('gate');
 }
 
-// ─── Render form ──────────────────────────────────────────────────────────────
+// ─── STEP 2: Verify assessor email ────────────────────────────────────────────
+// The assessor enters their email. We check if it exists in the
+// assessors table AND is marked active (admin controls this).
+// If yes → show the form. If no → block them with a message.
+async function verifyEmail() {
+  const errEl = document.getElementById('gate-err');
+  errEl.classList.remove('show');
+
+  const email = document.getElementById('gate-email').value.trim().toLowerCase();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = '❌ Please enter a valid email address.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('gate-btn');
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+
+  try {
+    // Check if this email is a registered, active assessor
+    const { data: asr, error: asrErr } = await sb
+      .from('assessors')
+      .select('*')
+      .eq('email', email)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (asrErr) throw new Error(asrErr.message);
+
+    if (!asr) {
+      // Email not found or not active
+      errEl.textContent = '❌ Your email is not registered as an assessor. Please contact the admin.';
+      errEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Continue →';
+      return;
+    }
+
+    // Check if they already submitted this exact form
+    const { data: existing } = await sb
+      .from('form_submissions')
+      .select('id')
+      .eq('form_id', formId)
+      .eq('assessor_id', asr.id)
+      .maybeSingle();
+
+    if (existing) {
+      // Already submitted — show the "already done" screen
+      show('done');
+      return;
+    }
+
+    // All good — save assessor and show the form
+    assessor = asr;
+    document.getElementById('assessor-email-show').textContent = email;
+    renderForm();
+    show('form');
+
+  } catch(e) {
+    errEl.textContent = '❌ Something went wrong: ' + e.message;
+    errEl.classList.add('show');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Continue →';
+}
+
+// ─── STEP 3: Render form fields ───────────────────────────────────────────────
 function renderForm() {
   const fields = formData.fields || [];
   document.getElementById('form-title').textContent = formData.title;
   document.getElementById('form-sub').textContent =
-    (formData.description||'') + (fields.length ? '  ·  ' + fields.length + ' field' + (fields.length!==1?'s':'') : '');
-  const pill = document.querySelector('.assessor-pill');
-  if (pill) pill.style.display = 'none';
+    (formData.description || '') +
+    (fields.length ? '  ·  ' + fields.length + ' field' + (fields.length !== 1 ? 's' : '') : '');
 
   const body = document.getElementById('form-body');
-  let html = '';
+  let html = '', inSection = false;
 
-  // Auto-add Name + Email fields so we know who submitted
-  html += '<div class="ff-section"><div class="ff-head"><div class="ff-head-title">Your Information</div></div><div class="ff-body">' +
-    '<div class="ff-field"><label>Full Name <span class="req-star">*</span></label>' +
-    '<input type="text" id="submitter-name" placeholder="Enter your full name"></div>' +
-    '<div class="ff-field"><label>Email Address <span class="req-star">*</span></label>' +
-    '<input type="email" id="submitter-email" placeholder="your@email.com"></div>' +
-    '</div></div>';
-
-  let inSection = false;
   fields.forEach(function(f, i) {
     if (f.type === 'section') {
       if (inSection) html += '</div></div>';
@@ -243,117 +318,118 @@ function renderForm() {
       inSection = true;
       return;
     }
-    if (!inSection) { html += '<div class="ff-section"><div class="ff-body">'; inSection = true; }
+    if (!inSection) {
+      html += '<div class="ff-section"><div class="ff-body">';
+      inSection = true;
+    }
+
     var req = f.required ? '<span class="req-star"> *</span>' : '';
-    html += '<div class="ff-field"><label>' + esc(f.label||('Field '+(i+1))) + req + '</label>';
+    html += '<div class="ff-field"><label>' + esc(f.label || ('Field ' + (i + 1))) + req + '</label>';
+
     if (['text','email','number','date','time'].indexOf(f.type) > -1) {
-      html += '<input type="' + f.type + '" id="ff-' + i + '" placeholder="' + esc(f.placeholder||'') + '">';
+      html += '<input type="' + f.type + '" id="ff-' + i + '" placeholder="' + esc(f.placeholder || '') + '">';
     } else if (f.type === 'textarea') {
-      html += '<textarea id="ff-' + i + '" placeholder="' + esc(f.placeholder||'') + '"></textarea>';
+      html += '<textarea id="ff-' + i + '" placeholder="' + esc(f.placeholder || '') + '"></textarea>';
     } else if (f.type === 'dropdown') {
       html += '<select id="ff-' + i + '"><option value="">Select…</option>' +
-        (f.options||[]).map(function(o){ return '<option>' + esc(o) + '</option>'; }).join('') + '</select>';
+        (f.options || []).map(function(o) { return '<option>' + esc(o) + '</option>'; }).join('') + '</select>';
     } else if (f.type === 'checkbox') {
       html += '<div class="cb-grid" id="ff-' + i + '">' +
-        (f.options||[]).map(function(o){ return '<label class="cb-item"><input type="checkbox" value="' + esc(o) + '"><span>' + esc(o) + '</span></label>'; }).join('') + '</div>';
+        (f.options || []).map(function(o) { return '<label class="cb-item"><input type="checkbox" value="' + esc(o) + '"><span>' + esc(o) + '</span></label>'; }).join('') + '</div>';
     } else if (f.type === 'radio') {
       html += '<div class="cb-grid" id="ff-' + i + '">' +
-        (f.options||[]).map(function(o){ return '<label class="cb-item"><input type="radio" name="r-' + i + '" value="' + esc(o) + '"><span>' + esc(o) + '</span></label>'; }).join('') + '</div>';
+        (f.options || []).map(function(o) { return '<label class="cb-item"><input type="radio" name="r-' + i + '" value="' + esc(o) + '"><span>' + esc(o) + '</span></label>'; }).join('') + '</div>';
     }
     html += '</div>';
   });
+
   if (inSection) html += '</div></div>';
   body.innerHTML = html || '<p style="color:var(--text3);padding:20px;text-align:center">This form has no fields.</p>';
 }
 
 function resetForm() { renderForm(); }
 
-// ─── Submit ───────────────────────────────────────────────────────────────────
+// ─── STEP 4: Submit form answers to Supabase ──────────────────────────────────
+// Collect all answers, validate required fields, then save
+// directly to form_submissions table using the verified assessor ID.
 async function submitForm() {
   var fields  = formData.fields || [];
   var answers = {};
   var valid   = true;
 
-  var nameEl  = document.getElementById('submitter-name');
-  var emailEl = document.getElementById('submitter-email');
-  var submitterName  = nameEl.value.trim();
-  var submitterEmail = emailEl.value.trim().toLowerCase();
-
-  if (!submitterName)  { nameEl.classList.add('req-err');  valid = false; }
-  else                 { nameEl.classList.remove('req-err'); }
-  if (!submitterEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submitterEmail)) {
-    emailEl.classList.add('req-err'); valid = false;
-  } else { emailEl.classList.remove('req-err'); }
-
   fields.forEach(function(f, i) {
     if (f.type === 'section') return;
     var el = document.getElementById('ff-' + i);
     if (!el) return;
+
     var val = '';
     if (f.type === 'checkbox') {
-      val = Array.from(el.querySelectorAll('input:checked')).map(function(c){ return c.value; }).join(', ');
+      val = Array.from(el.querySelectorAll('input:checked')).map(function(c) { return c.value; }).join(', ');
     } else if (f.type === 'radio') {
       var sel = el.querySelector('input:checked');
       val = sel ? sel.value : '';
     } else {
       val = el.value || '';
     }
-    if (f.required && !val.trim()) { el.classList.add('req-err'); valid = false; }
-    else { el.classList.remove('req-err'); }
+
+    if (f.required && !val.trim()) {
+      el.classList.add('req-err');
+      valid = false;
+    } else {
+      el.classList.remove('req-err');
+    }
+
     answers[f.label || ('Field ' + i)] = val;
   });
 
   if (!valid) {
     var first = document.querySelector('.req-err');
-    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
   var btn = document.getElementById('submit-btn');
-  btn.disabled=true; btn.textContent='Submitting…';
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
 
   try {
-    // Step 1: auto-register assessor if not in table
-    var assessorId = null;
-    var existRes = await sb.from('assessors').select('id').eq('email', submitterEmail).maybeSingle();
-    if (existRes.data) {
-      assessorId = existRes.data.id;
-    } else {
-      var insRes = await sb.from('assessors')
-        .insert({ email: submitterEmail, full_name: submitterName, is_active: true })
-        .select('id').single();
-      if (insRes.error) throw new Error('Assessor registration failed: ' + insRes.error.message);
-      assessorId = insRes.data.id;
-    }
-
-    // Step 2: save submission to Supabase
+    // Save the answers to form_submissions using the verified assessor ID
+    // assessor was set during verifyEmail() so it is guaranteed to exist here
     var subRes = await sb.from('form_submissions').insert({
       form_id        : Number(formData.id),
       form_title     : formData.title,
-      assessor_id    : assessorId,
-      assessor_name  : submitterName,
-      assessor_email : submitterEmail,
+      assessor_id    : assessor.id,
+      assessor_name  : assessor.full_name,
+      assessor_email : assessor.email,
       answers        : answers,
       is_read        : false,
       submitted_at   : new Date().toISOString()
     });
-    if (subRes.error) throw new Error('Submission failed: ' + subRes.error.message);
 
-    document.getElementById('ty-name').textContent = submitterName;
+    if (subRes.error) throw new Error(subRes.error.message);
+
+    // Show thank you screen
+    document.getElementById('ty-name').textContent = assessor.full_name;
     show('thanks');
 
   } catch(e) {
-    btn.disabled=false; btn.textContent='Submit Form →';
-    alert('❌ ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'Submit Form →';
+    alert('❌ Submission failed: ' + e.message);
   }
 }
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
+// ─── Utility: escape HTML to prevent XSS ─────────────────────────────────────
 function esc(s) {
-  return String(s||'').replace(/[<>"'&]/g, function(c){
-    return {'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;','&':'&amp;'}[c];
+  return String(s || '').replace(/[<>"'&]/g, function(c) {
+    return { '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#x27;', '&':'&amp;' }[c];
   });
 }
+
+// ─── Enter key on email gate ──────────────────────────────────────────────────
+document.getElementById('gate-email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') verifyEmail();
+});
 
 init();
 </script>
