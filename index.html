@@ -1289,7 +1289,7 @@ tbody tr:hover .row-acts{opacity:1;}
     <div class="view" id="view-settings">
       <div class="page-header">
         <div class="page-title">Settings</div>
-        <div class="page-sub">Manage registered assessors and view new form submissions.</div>
+        <div class="page-sub">Manage assessors, admins, system settings, and view submissions.</div>
       </div>
 
       <!-- New submissions notification panel -->
@@ -1303,13 +1303,48 @@ tbody tr:hover .row-acts{opacity:1;}
       </div>
 
       <!-- Assessors management panel -->
-      <div class="table-card">
+      <div class="table-card" style="margin-bottom:20px;">
         <div class="table-toolbar">
           <div class="table-title">Registered Assessors</div>
           <button class="btn btn-primary btn-sm" onclick="openAddAssessor()">+ Add Assessor</button>
         </div>
         <div id="assessors-wrap" style="min-height:60px;"></div>
       </div>
+
+      <!-- Admin Management panel (super_admin only) -->
+      <div class="table-card superadmin-only" style="margin-bottom:20px;">
+        <div class="table-toolbar">
+          <div class="table-title">👑 Admin Accounts</div>
+          <button class="btn btn-primary btn-sm" onclick="openAddAdmin()">+ Add Admin</button>
+        </div>
+        <div id="admins-wrap" style="min-height:60px;"></div>
+      </div>
+
+      <!-- Kill Switch panel (super_admin only) -->
+      <div class="table-card superadmin-only" style="margin-bottom:20px;">
+        <div class="table-toolbar">
+          <div class="table-title">🔒 System Kill Switch</div>
+        </div>
+        <div style="padding:18px 20px;">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6;">
+            When <strong>ON</strong>, the login page is locked and shows a maintenance screen. No one can log in until you turn it off. Use this during system updates or emergencies.
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div id="kill-status-label" style="font-size:13px;font-weight:600;"></div>
+            <button id="kill-toggle-btn" class="btn btn-sm" onclick="toggleKillSwitch()" style="min-width:120px;">Loading…</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Log panel (super_admin only) -->
+      <div class="table-card superadmin-only" style="margin-bottom:20px;">
+        <div class="table-toolbar">
+          <div class="table-title">📋 Audit Log</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadAuditLog()">↺ Refresh</button>
+        </div>
+        <div id="audit-wrap" style="min-height:60px;"></div>
+      </div>
+
     </div>
 
   </div><!-- /content -->
@@ -1333,6 +1368,55 @@ tbody tr:hover .row-acts{opacity:1;}
     <div class="modal-acts">
       <button class="btn btn-ghost btn-sm" onclick="closeAddAssessor()">Cancel</button>
       <button class="btn btn-primary btn-sm" id="add-asr-btn" onclick="doAddAssessor()">Add Assessor</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ADMIN MODAL -->
+<div class="modal-overlay" id="add-admin-modal">
+  <div class="modal-box" style="max-width:460px;">
+    <h3>Add Admin</h3>
+    <p>The person must already have a Supabase Auth account (i.e. they must have logged in at least once). Enter their email and assign a role.</p>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Email Address *</label>
+      <input type="email" id="adm-email" placeholder="admin@pab.gov.ph" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .13s;">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Full Name *</label>
+      <input type="text" id="adm-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .13s;">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Role *</label>
+      <select id="adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;">
+        <option value="viewer">👁 Viewer — can only view records</option>
+        <option value="admin">🔧 Admin — can add/edit/delete</option>
+        <option value="super_admin">👑 Super Admin — full access</option>
+      </select>
+    </div>
+    <div id="add-adm-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);"></div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeAddAdmin()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="add-adm-btn" onclick="doAddAdmin()">Add Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT ADMIN ROLE MODAL -->
+<div class="modal-overlay" id="edit-admin-modal">
+  <div class="modal-box" style="max-width:400px;">
+    <h3>Change Role</h3>
+    <p id="edit-adm-desc" style="font-size:13px;color:var(--text2);margin-bottom:16px;"></p>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">New Role</label>
+      <select id="edit-adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;">
+        <option value="viewer">👁 Viewer</option>
+        <option value="admin">🔧 Admin</option>
+        <option value="super_admin">👑 Super Admin</option>
+      </select>
+    </div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeEditAdmin()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="edit-adm-btn" onclick="doEditAdmin()">Save Role</button>
     </div>
   </div>
 </div>
@@ -1371,7 +1455,7 @@ tbody tr:hover .row-acts{opacity:1;}
       <button class="btn btn-primary btn-xs" onclick="copyShareLink()">Copy</button>
     </div>
     <div class="share-notice">
-      ⚠️ <strong>Note:</strong> Submissions from shared links will be stored once Firebase is connected. For now, submissions only save on the device that fills the form.
+      ⚠️ <strong>Note:</strong> The assessor form link uses Supabase. Submissions are stored in the cloud and visible to all admins instantly.
     </div>
     <div class="modal-acts">
       <button class="btn btn-ghost btn-sm" onclick="closeShareModal()">Close</button>
@@ -1411,6 +1495,25 @@ tbody tr:hover .row-acts{opacity:1;}
     <div class="modal-acts">
       <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
       <button class="btn btn-danger btn-sm" onclick="confirmDel()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS CHANGE POPOVER -->
+<div class="modal-overlay" id="status-modal">
+  <div class="modal-box" style="max-width:320px;">
+    <h3>Change Status</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;" id="status-modal-ref"></p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+      <button class="btn btn-ghost btn-sm" style="text-align:left;justify-content:flex-start;" onclick="setStatus('new')">🆕 New</button>
+      <button class="btn btn-ghost btn-sm" style="text-align:left;justify-content:flex-start;" onclick="setStatus('reviewed')">🔍 Reviewed</button>
+      <button class="btn btn-ghost btn-sm" style="text-align:left;justify-content:flex-start;" onclick="setStatus('approved')">✅ Approved</button>
+      <button class="btn btn-ghost btn-sm" style="text-align:left;justify-content:flex-start;" onclick="setStatus('rejected')">❌ Rejected</button>
+      <button class="btn btn-ghost btn-sm" style="text-align:left;justify-content:flex-start;" onclick="setStatus('exported')">📊 Exported</button>
+      <button class="btn btn-ghost btn-sm" style="text-align:left;justify-content:flex-start;" onclick="setStatus('printed')">🖨️ Printed</button>
+    </div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeStatusModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -1982,6 +2085,7 @@ function renderTable() {
           <div class="row-acts">
             <button class="btn btn-ghost btn-xs" onclick="openPrint(${r.id})">View</button>
             <button class="btn btn-primary btn-xs" onclick="editRecord(${r.id})">✏️ Edit</button>
+            <button class="btn btn-ghost btn-xs" onclick="openStatusChange(${r.id},event)">📌 Status</button>
             <button class="btn btn-success btn-xs" onclick="exportOne(${r.id})">XLS</button>
             <button class="btn btn-danger btn-xs" onclick="askDel(${r.id})">Del</button>
           </div>
@@ -2439,7 +2543,8 @@ async function confirmDelForm() {
   const form = customForms.find(f => f.id === delFormTarget);
   if (form && form.id && typeof form.id === 'number') {
     // Delete from Supabase (numeric ID = real Supabase row)
-    await sb.from('custom_forms').delete().eq('id', form.id).catch(()=>{});
+    const { error: delErr } = await sb.from('custom_forms').delete().eq('id', form.id);
+    if (delErr) { toast('❌','Delete Failed', delErr.message); closeDelFormModal(); return; }
   }
   customForms = customForms.filter(f => f.id !== delFormTarget);
   saveForms(); renderFormsLib(); refreshStats(); closeDelFormModal();
@@ -2705,10 +2810,15 @@ async function updateNotifBadge() {
   } catch(e) {}
 }
 
-// ─── Settings: load both panels ───────────────────────────────────────────────
+// ─── Settings: load all panels ────────────────────────────────────────────────
 function loadSettings() {
   loadNotifications();
   loadAssessors();
+  if (currentAdmin?.role === 'super_admin') {
+    loadAdmins();
+    loadKillSwitch();
+    loadAuditLog();
+  }
 }
 
 // ─── Notifications: load unread form submissions ──────────────────────────────
@@ -2742,13 +2852,13 @@ async function loadNotifications() {
 }
 
 async function markRead(id) {
-  await sb.from('form_submissions').update({ is_read: true }).eq('id', id).catch(()=>{});
+  await sb.from('form_submissions').update({ is_read: true }).eq('id', id);
   loadNotifications();
   updateNotifBadge();
 }
 
 async function markAllRead() {
-  await sb.from('form_submissions').update({ is_read: true }).eq('is_read', false).catch(()=>{});
+  await sb.from('form_submissions').update({ is_read: true }).eq('is_read', false);
   loadNotifications();
   updateNotifBadge();
   toast('✅','Done','All submissions marked as read.');
@@ -2852,17 +2962,238 @@ async function doAddAssessor() {
 }
 
 async function toggleAssessorStatus(id, currentlyActive) {
-  await sb.from('assessors').update({ is_active: !currentlyActive }).eq('id', id).catch(()=>{});
+  await sb.from('assessors').update({ is_active: !currentlyActive }).eq('id', id);
   loadAssessors();
   toast('✅','Updated', currentlyActive ? 'Assessor deactivated.' : 'Assessor activated.');
 }
 
 async function removeAssessor(id, name) {
   if (!confirm(`Remove ${name}? They will no longer be able to access any form links.`)) return;
-  await sb.from('assessors').delete().eq('id', id).catch(()=>{});
+  await sb.from('assessors').delete().eq('id', id);
   await auditLog('REMOVE_ASSESSOR', `Removed assessor: ${name}`);
   loadAssessors();
   toast('🗑️','Removed', `${name} has been removed.`);
+}
+
+// ─── Status Change ────────────────────────────────────────────────────────────
+let statusTarget = null;
+function openStatusChange(id, e) {
+  e.stopPropagation();
+  const r = records.find(x => x.id === id);
+  if (!r) return;
+  statusTarget = id;
+  document.getElementById('status-modal-ref').textContent = `Record: ${r.ref} — current: ${cap(r.status)}`;
+  document.getElementById('status-modal').classList.add('open');
+}
+async function setStatus(newStatus) {
+  const r = records.find(x => x.id === statusTarget);
+  if (!r) return;
+  r.status = newStatus;
+  save();
+  await updateSupabase(r);
+  renderTable();
+  closeStatusModal();
+  toast('📌', 'Status Updated', `${r.ref} → ${cap(newStatus)}`);
+}
+function closeStatusModal() {
+  document.getElementById('status-modal').classList.remove('open');
+  statusTarget = null;
+}
+
+// ─── Admin Management ─────────────────────────────────────────────────────────
+let editingAdminId = null;
+
+function openAddAdmin() {
+  document.getElementById('adm-email').value = '';
+  document.getElementById('adm-name').value  = '';
+  document.getElementById('adm-role').value  = 'viewer';
+  document.getElementById('add-adm-err').style.display = 'none';
+  document.getElementById('add-admin-modal').classList.add('open');
+}
+function closeAddAdmin() { document.getElementById('add-admin-modal').classList.remove('open'); }
+
+async function doAddAdmin() {
+  const errEl = document.getElementById('add-adm-err');
+  errEl.style.display = 'none';
+  const email    = document.getElementById('adm-email').value.trim().toLowerCase();
+  const fullName = document.getElementById('adm-name').value.trim();
+  const role     = document.getElementById('adm-role').value;
+  if (!email || !fullName) { errEl.textContent = 'Please fill in all fields.'; errEl.style.display = 'block'; return; }
+
+  const btn = document.getElementById('add-adm-btn');
+  btn.disabled = true; btn.textContent = 'Adding…';
+
+  try {
+    // Look up the user's UUID from auth via email match in admins — they must have signed up
+    // We use Supabase's admin API via a direct insert; the user MUST already exist in auth.users
+    // Find their UUID from auth by matching email in a workaround: try inserting and catch duplicate
+    const { data: existing } = await sb.from('admins').select('id,email').eq('email', email).single();
+    if (existing) { errEl.textContent = 'This email is already an admin.'; errEl.style.display = 'block'; btn.disabled=false; btn.textContent='Add Admin'; return; }
+
+    // We need the user's UUID — the user must have logged in before. Ask them to use the email
+    // Insert using a subquery approach: look up id from auth.users by email isn't possible from client
+    // Instead: instruct and provide SQL. For now insert with a placeholder and show a note.
+    errEl.textContent = '⚠️ To add an admin, run the SQL script shown in the tutorial. The user must have logged in first to create their auth account.';
+    errEl.style.display = 'block';
+    btn.disabled=false; btn.textContent='Add Admin';
+
+    // Show a pre-filled SQL snippet for the super admin to run
+    const sql = `INSERT INTO public.admins (id, email, full_name, role, is_active)\nSELECT id, email, '${fullName}', '${role}', true\nFROM auth.users WHERE email = '${email}';`;
+    errEl.innerHTML = `⚠️ Run this SQL in your Supabase dashboard SQL Editor:<br><br><code style="display:block;background:rgba(0,0,0,0.2);padding:8px;border-radius:6px;font-size:11px;white-space:pre;margin-top:6px;word-break:break-all;">${sql}</code>`;
+    errEl.style.display = 'block';
+  } catch(e) {
+    errEl.textContent = '❌ ' + e.message;
+    errEl.style.display = 'block';
+    btn.disabled=false; btn.textContent='Add Admin';
+  }
+}
+
+function openEditAdmin(id, currentRole, name) {
+  editingAdminId = id;
+  document.getElementById('edit-adm-desc').textContent = `Change role for: ${name}`;
+  document.getElementById('edit-adm-role').value = currentRole;
+  document.getElementById('edit-admin-modal').classList.add('open');
+}
+function closeEditAdmin() { document.getElementById('edit-admin-modal').classList.remove('open'); editingAdminId = null; }
+
+async function doEditAdmin() {
+  const newRole = document.getElementById('edit-adm-role').value;
+  const btn = document.getElementById('edit-adm-btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const { error } = await sb.from('admins').update({ role: newRole }).eq('id', editingAdminId);
+    if (error) throw error;
+    await auditLog('CHANGE_ADMIN_ROLE', `Changed admin ${editingAdminId} role to ${newRole}`);
+    closeEditAdmin();
+    toast('✅', 'Role Updated', `Admin role changed to ${roleLabel(newRole)}.`);
+    loadAdmins();
+  } catch(e) {
+    toast('❌','Error', e.message);
+    btn.disabled=false; btn.textContent='Save Role';
+  }
+}
+
+async function toggleAdminActive(id, currentlyActive, name) {
+  const { error } = await sb.from('admins').update({ is_active: !currentlyActive }).eq('id', id);
+  if (!error) {
+    await auditLog('TOGGLE_ADMIN', `${currentlyActive ? 'Deactivated' : 'Activated'} admin: ${name}`);
+    toast('✅', 'Updated', `${name} ${currentlyActive ? 'deactivated' : 'activated'}.`);
+    loadAdmins();
+  }
+}
+
+async function loadAdmins() {
+  const wrap = document.getElementById('admins-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="padding:16px;font-size:13px;color:var(--text3)">Loading…</div>';
+  try {
+    const { data, error } = await sb.from('admins').select('*').order('created_at', { ascending: true });
+    if (error) throw error;
+    if (!data.length) { wrap.innerHTML = '<div style="padding:20px 16px;font-size:13px;color:var(--text3)">No admins found.</div>'; return; }
+    wrap.innerHTML = `<table style="width:100%;border-collapse:collapse;">
+      <thead><tr>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Name</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Email</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Role</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Status</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:right;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Actions</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(a => `
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:11px 14px;font-size:13px;font-weight:600;">${a.full_name} ${a.id === currentUser?.id ? '<span style="font-size:10px;color:var(--accent);font-weight:700;">(you)</span>' : ''}</td>
+            <td style="padding:11px 14px;font-size:12px;color:var(--text2);">${a.email}</td>
+            <td style="padding:11px 14px;">${roleLabel(a.role)}</td>
+            <td style="padding:11px 14px;">
+              <span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${a.is_active?'var(--success-bg)':'var(--danger-bg)'};color:${a.is_active?'var(--success)':'var(--danger)'};">
+                ${a.is_active ? '● Active' : '● Inactive'}
+              </span>
+            </td>
+            <td style="padding:11px 14px;text-align:right;">
+              ${a.id !== currentUser?.id ? `
+                <button class="btn btn-ghost btn-xs" onclick="openEditAdmin('${a.id}','${a.role}','${a.full_name}')">Role</button>
+                <button class="btn btn-ghost btn-xs" style="margin-left:4px" onclick="toggleAdminActive('${a.id}',${a.is_active},'${a.full_name}')">${a.is_active ? 'Deactivate' : 'Activate'}</button>
+              ` : '<span style="font-size:11px;color:var(--text3);">—</span>'}
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    wrap.innerHTML = `<div style="padding:16px;font-size:13px;color:var(--danger)">Error: ${e.message}</div>`;
+  }
+}
+
+// ─── Kill Switch ──────────────────────────────────────────────────────────────
+let killSwitchValue = false;
+
+async function loadKillSwitch() {
+  try {
+    const { data } = await sb.from('system_settings').select('value').eq('key','kill_switch').single();
+    killSwitchValue = data?.value === 'true';
+    renderKillSwitch();
+  } catch(e) {}
+}
+
+function renderKillSwitch() {
+  const label = document.getElementById('kill-status-label');
+  const btn   = document.getElementById('kill-toggle-btn');
+  if (!label || !btn) return;
+  if (killSwitchValue) {
+    label.innerHTML = '<span style="color:var(--danger);font-weight:700;">🔴 System is LOCKED — login is blocked</span>';
+    btn.textContent = 'Unlock System';
+    btn.className   = 'btn btn-success btn-sm';
+  } else {
+    label.innerHTML = '<span style="color:var(--success);font-weight:700;">🟢 System is ONLINE — login is active</span>';
+    btn.textContent = 'Lock System (Kill Switch)';
+    btn.className   = 'btn btn-danger btn-sm';
+  }
+}
+
+async function toggleKillSwitch() {
+  const newVal = !killSwitchValue;
+  const confirmed = confirm(newVal
+    ? '⚠️ Are you sure? This will lock the login page for EVERYONE including yourself.'
+    : 'Unlock the system? This will restore login access.');
+  if (!confirmed) return;
+  try {
+    const { error } = await sb.from('system_settings').update({ value: String(newVal) }).eq('key','kill_switch');
+    if (error) throw error;
+    killSwitchValue = newVal;
+    renderKillSwitch();
+    await auditLog('KILL_SWITCH', `Kill switch turned ${newVal ? 'ON' : 'OFF'}`);
+    toast(newVal ? '🔒' : '🔓', newVal ? 'System Locked' : 'System Unlocked', newVal ? 'Login is now blocked.' : 'Login is now active.');
+  } catch(e) {
+    toast('❌','Error', e.message);
+  }
+}
+
+// ─── Audit Log ────────────────────────────────────────────────────────────────
+async function loadAuditLog() {
+  const wrap = document.getElementById('audit-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="padding:16px;font-size:13px;color:var(--text3)">Loading…</div>';
+  try {
+    const { data, error } = await sb.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(100);
+    if (error) throw error;
+    if (!data.length) { wrap.innerHTML = '<div style="padding:20px 16px;font-size:13px;color:var(--text3)">No audit events yet.</div>'; return; }
+    wrap.innerHTML = `<table style="width:100%;border-collapse:collapse;">
+      <thead><tr>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Time</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Action</th>
+        <th style="background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);">Details</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(l => `
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:9px 14px;font-size:11px;color:var(--text3);white-space:nowrap;">${new Date(l.created_at).toLocaleString('en-PH')}</td>
+            <td style="padding:9px 14px;font-size:12px;font-weight:700;color:var(--accent);">${l.action}</td>
+            <td style="padding:9px 14px;font-size:12px;color:var(--text2);">${l.details || '—'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    wrap.innerHTML = `<div style="padding:16px;font-size:13px;color:var(--danger)">Error: ${e.message}</div>`;
+  }
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
