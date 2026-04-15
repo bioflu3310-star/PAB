@@ -61,11 +61,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .ff-field input:focus,.ff-field textarea:focus,.ff-field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
 .ff-field textarea{min-height:80px;resize:vertical;}
 .ff-field input.req-err,.ff-field textarea.req-err,.ff-field select.req-err{border-color:var(--danger);}
-.cb-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
-.cb-item{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:5px;cursor:pointer;user-select:none;transition:background .1s;}
+
+/* ── Checkbox / Radio Grid (FIXED) ── */
+.cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px;margin-top:4px;}
+.cb-item{display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border-radius:6px;cursor:pointer;user-select:none;transition:background .1s;}
 .cb-item:hover{background:var(--surface2);}
-.cb-item input{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
-.cb-item span{font-size:12.5px;color:var(--text2);}
+.cb-item input[type="checkbox"],
+.cb-item input[type="radio"]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:1px;}
+.cb-item span{font-size:12.5px;color:var(--text2);line-height:1.4;}
 .req-star{color:var(--danger);}
 
 /* ── Form footer ── */
@@ -132,7 +135,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN 3: Thank you (shown after submit, hides the form) -->
+  <!-- SCREEN 3: Thank you -->
   <div class="screen" id="screen-thanks">
     <div class="ty-card">
       <span class="ty-icon">✅</span>
@@ -154,12 +157,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- SCREEN: Error (bad link, form not found, etc.) -->
+  <!-- SCREEN: Error -->
   <div class="screen" id="screen-error">
     <div class="center-msg">
       <span class="center-icon">⚠️</span>
       <div class="center-title" id="err-title">Something went wrong</div>
-      <div class="center-sub"  id="err-sub">This form link may be invalid or expired.</div>
+      <div class="center-sub" id="err-sub">This form link may be invalid or expired.</div>
     </div>
   </div>
 
@@ -173,9 +176,9 @@ const sb = supabase.createClient(
 );
 
 // ─── State ────────────────────────────────────────────────────────────────────
-let formData = null;   // row from custom_forms table
-let assessor = null;   // row from assessors table
-let formId   = null;   // ?form=ID from URL
+let formData = null;
+let assessor = null;
+let formId   = null;
 
 // ─── Theme ────────────────────────────────────────────────────────────────────
 let dark = localStorage.getItem('pab_theme') !== 'light';
@@ -197,7 +200,7 @@ function showError(title, sub) {
   show('error');
 }
 
-// ─── Init: read URL and load the form ────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
   formId = new URLSearchParams(window.location.search).get('form');
   if (!formId) { showError('No Form Found', 'This link does not point to a valid form. Please check the URL.'); return; }
@@ -230,7 +233,6 @@ async function verifyEmail() {
   const btn = document.getElementById('gate-btn');
   btn.disabled=true; btn.textContent='Checking…';
 
-  // Check if this email is a registered, active assessor
   const { data: asr } = await sb
     .from('assessors').select('*').eq('email', email).eq('is_active', true).single();
 
@@ -241,13 +243,11 @@ async function verifyEmail() {
     return;
   }
 
-  // Check if they already submitted this form (one submission per assessor per form)
   const { data: existing } = await sb
     .from('form_submissions').select('id').eq('form_id', formId).eq('assessor_id', asr.id).single();
 
   if (existing) { show('done'); return; }
 
-  // All good — show the form
   assessor = asr;
   document.getElementById('assessor-email-show').textContent = email;
   renderForm();
@@ -259,7 +259,7 @@ async function verifyEmail() {
 function renderForm() {
   const fields = formData.fields || [];
   document.getElementById('form-title').textContent = formData.title;
-  document.getElementById('form-sub').textContent   =
+  document.getElementById('form-sub').textContent =
     (formData.description||'') + (fields.length ? `  ·  ${fields.length} field${fields.length!==1?'s':''}` : '');
 
   const body = document.getElementById('form-body');
@@ -318,18 +318,27 @@ async function submitForm() {
       val = el.value || '';
     }
 
-    // Mark missing required fields
     if (f.required && !val.trim()) {
-      el.classList.add('req-err'); valid = false;
+      if (f.type === 'checkbox' || f.type === 'radio') {
+        el.style.outline = '2px solid var(--danger)';
+        el.style.borderRadius = '6px';
+      } else {
+        el.classList.add('req-err');
+      }
+      valid = false;
     } else {
-      el.classList.remove('req-err');
+      if (f.type === 'checkbox' || f.type === 'radio') {
+        el.style.outline = '';
+      } else {
+        el.classList.remove('req-err');
+      }
     }
 
     answers[f.label || `Field ${i}`] = val;
   });
 
   if (!valid) {
-    const first = document.querySelector('.req-err');
+    const first = document.querySelector('.req-err, [style*="outline"]');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
@@ -350,7 +359,6 @@ async function submitForm() {
     });
     if (error) throw error;
 
-    // Show thank you and hide the form permanently
     document.getElementById('ty-name').textContent = assessor.full_name;
     show('thanks');
 
@@ -360,7 +368,7 @@ async function submitForm() {
   }
 }
 
-// ─── Utility: escape HTML ─────────────────────────────────────────────────────
+// ─── Utility ──────────────────────────────────────────────────────────────────
 const esc = s => String(s||'').replace(/[<>"'&]/g, c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;','&':'&amp;'}[c]));
 
 // ─── Start ────────────────────────────────────────────────────────────────────
