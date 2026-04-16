@@ -19,60 +19,27 @@
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm)}.table-toolbar{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}.table-title{font-size:14px;font-weight:700;flex:1}.search-box{position:relative}.search-box input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 12px 7px 32px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);outline:none;width:220px}.search-box input:focus{border-color:var(--accent)}.search-box input::placeholder{color:var(--text3)}.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px}select.filter-sel{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);outline:none;cursor:pointer}table{width:100%;border-collapse:collapse}thead th{background:var(--surface2);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}tbody tr{border-bottom:1px solid var(--border);cursor:pointer}tbody tr:last-child{border-bottom:none}tbody tr:hover{background:var(--surface2)}tbody td{padding:12px 14px;font-size:13px;vertical-align:middle}.td-name strong{font-weight:600}.td-name small{display:block;font-size:11px;color:var(--text3);margin-top:1px}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;border:1px solid transparent}.badge::before{content:'';width:5px;height:5px;border-radius:50%;display:inline-block}.badge-new{background:var(--badge-new);color:var(--badge-new-text);border-color:var(--accent-border)}.badge-new::before{background:var(--accent)}.badge-printed{background:var(--success-bg);color:var(--success);border-color:rgba(62,207,142,.3)}.badge-printed::before{background:var(--success)}.badge-admin{background:rgba(139,92,246,.1);color:#8b5cf6;border-color:rgba(139,92,246,.3)}.badge-admin::before{background:#8b5cf6}.badge-assessor{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}.badge-assessor::before{background:var(--accent)}.badge-draft{background:var(--warning-bg);color:var(--warning);border:1px solid rgba(245,166,35,.3)}.badge-draft::before{background:var(--warning)}.badge-published{background:var(--success-bg);color:var(--success);border:1px solid rgba(62,207,142,.3)}.badge-published::before{background:var(--success)}
 .row-acts{display:flex;gap:4px;opacity:0}.row-acts.always{opacity:1}tbody tr:hover .row-acts{opacity:1}.empty-state{padding:56px 24px;text-align:center}.empty-icon{font-size:40px;margin-bottom:12px;opacity:.35}.empty-title{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:6px}.empty-sub{font-size:13px;color:var(--text2)}
+
+/* ── BULK ACTION BAR ── */
+.bulk-action-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:var(--accent-bg);border-bottom:1px solid var(--accent-border);flex-wrap:wrap}
+.bulk-action-bar.visible{display:flex}
+.bulk-count{font-size:12px;font-weight:700;color:var(--accent)}
+.bulk-action-bar .btn{font-size:11px;padding:4px 10px}
+
+/* ── PAGINATION ── */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px}
+.pagination-info{font-size:12px;color:var(--text3)}
+.pagination-controls{display:flex;align-items:center;gap:4px}
+.pg-btn{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;transition:all .12s}
+.pg-btn:hover:not(:disabled){background:var(--surface3);border-color:var(--border2);color:var(--text)}
+.pg-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pg-btn:disabled{opacity:.35;cursor:not-allowed}
+
 .print-toolbar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}.print-ref-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}.print-ref-val{font-family:'Playfair Display',serif;font-size:17px;font-weight:700}.print-doc{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}.print-banner{background:var(--accent);padding:24px 32px;display:flex;justify-content:space-between;align-items:flex-start}.print-banner h1{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff}.print-banner .sub{font-size:12px;color:rgba(255,255,255,.75);margin-top:3px}.print-meta{text-align:right;color:rgba(255,255,255,.85);font-size:12px}.print-meta .val{font-size:15px;font-weight:700;color:#fff;margin-top:2px}.print-body{padding:28px 32px}.print-sec{margin-bottom:24px}.print-sec-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:14px}.print-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.print-fields.g2{grid-template-columns:repeat(2,1fr)}.print-fields.g1{grid-template-columns:1fr}.pf{display:flex;flex-direction:column;gap:3px}.pf.span2{grid-column:span 2}.pf.span3{grid-column:span 3}.pf label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3)}.pf .val{font-size:13px;color:var(--text);font-weight:500;padding:7px 10px;background:var(--surface2);border-radius:5px;border:1px solid var(--border);min-height:32px;line-height:1.5;word-break:break-word}.pf .val.empty{color:var(--text3);font-style:italic}.print-footer{padding:18px 32px;border-top:1px solid var(--border);background:var(--section-bg)}
 .director-section{border-top:2px solid var(--warning);background:rgba(245,166,35,.04);display:none}.director-section.show{display:block}.director-header{padding:12px 24px;border-bottom:1px solid rgba(245,166,35,.25);display:flex;align-items:center;gap:10px;background:rgba(245,166,35,.08)}.director-header-icon{width:32px;height:32px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px}.director-header-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700}.director-header-sub{font-size:10px;color:var(--text3);margin-top:1px}.director-body{padding:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}.director-field label{display:block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--warning);margin-bottom:6px}.director-field input,.director-field textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none}.director-field input:focus,.director-field textarea:focus{border-color:rgba(245,166,35,.5)}.director-field textarea{resize:vertical;min-height:100px;line-height:1.6}.director-canvas-wrap{border:2px dashed var(--border2);border-radius:8px;overflow:hidden;background:var(--input-bg);position:relative;margin-top:6px}.director-canvas-wrap canvas{display:block;width:100%;cursor:crosshair;touch-action:none}.director-actions{grid-column:span 3;display:flex;justify-content:flex-end;gap:8px;padding-top:8px;border-top:1px solid var(--border)}
 .fb-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm)}.fb-header{background:var(--section-bg);padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}.fb-header-title{font-size:14px;font-weight:700}.fb-body{padding:20px}.fb-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}.fb-label{font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}.fb-input{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%}.fb-input:focus{border-color:var(--accent)}.fb-textarea{resize:vertical;min-height:70px;line-height:1.5}
-/* ── INLINE FIELD BUILDER ── */
-.fb-field-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px;position:relative;transition:border-color .15s,box-shadow .15s}
-.fb-field-card:hover{border-color:var(--border2)}
-.fb-field-card.focused{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
-.fb-field-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
-.fb-field-num{width:26px;height:26px;background:var(--accent-bg);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:4px}
-.fb-field-main{flex:1;display:flex;flex-direction:column;gap:8px}
-.fb-field-q{background:transparent;border:none;border-bottom:1.5px solid var(--border2);padding:4px 0 6px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:var(--text);outline:none;width:100%}
-.fb-field-q:focus{border-bottom-color:var(--accent)}
-.fb-field-q::placeholder{color:var(--text3);font-weight:400}
-.fb-field-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.fb-field-type-sel{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);outline:none;cursor:pointer;min-width:140px}
-.fb-field-type-sel:focus{border-color:var(--accent)}
-.fb-req-label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none}
-.fb-req-label input{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
-.fb-field-actions{margin-left:auto;display:flex;gap:4px}
-.fb-icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .12s}
-.fb-icon-btn:hover{background:var(--surface3);color:var(--text)}
-.fb-icon-btn.danger:hover{background:var(--danger-bg);color:var(--danger);border-color:rgba(247,111,111,.3)}
-.fb-field-preview{padding-top:10px;padding-left:36px;border-top:1px dashed var(--border)}
-.fb-preview-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.fb-preview-input{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--text3);width:100%;pointer-events:none;opacity:.8;font-family:'Inter',sans-serif}
-.fb-preview-textarea{min-height:60px;resize:none}
-.fb-opt-list{display:flex;flex-direction:column;gap:6px}
-.fb-opt-item{display:flex;align-items:center;gap:8px}
-.fb-opt-marker{width:14px;height:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.fb-opt-marker.radio{border:2px solid var(--text3);border-radius:50%}
-.fb-opt-marker.check{border:2px solid var(--text3);border-radius:3px}
-.fb-opt-marker.numbered{font-size:11px;color:var(--text3);font-weight:600;width:auto}
-.fb-opt-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);padding:4px 2px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none}
-.fb-opt-input:focus{border-bottom-color:var(--accent)}
-.fb-opt-input::placeholder{color:var(--text3)}
-.fb-opt-remove{width:22px;height:22px;border-radius:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
-.fb-opt-remove:hover{background:var(--danger-bg);color:var(--danger)}
-.fb-add-opt{background:transparent;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;padding:4px 0;text-align:left;margin-top:4px}
-.fb-add-opt:hover{text-decoration:underline}
-.fb-section-divider{background:linear-gradient(135deg,rgba(245,166,35,.08),rgba(245,166,35,.02));border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:14px 18px;margin-bottom:12px;position:relative}
-.fb-section-divider-input{background:transparent;border:none;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);outline:none;width:100%}
-.fb-section-divider-input::placeholder{color:var(--text3);font-style:italic}
-/* PLUS BUTTON on the left */
-.fb-add-between{display:flex;align-items:center;gap:10px;padding-left:13px;height:28px;margin:-6px 0;opacity:.5;transition:opacity .15s;position:relative;z-index:1}
-.fb-add-between:hover{opacity:1}
-.fb-add-between.menu-open{z-index:150}
-.fb-add-plus{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(79,142,247,.3)}
-.fb-add-plus:hover{transform:scale(1.1)}
-.fb-add-plus-label{font-size:11px;color:var(--text3);font-style:italic}
-.fb-add-type-menu{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.2);padding:6px;z-index:9999;display:none;min-width:220px;max-height:320px;overflow-y:auto}
-.fb-add-type-menu.open{display:block;animation:fadeUp .15s ease}
-.fb-add-type-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:5px;cursor:pointer;font-size:12.5px;color:var(--text);background:none;border:none;width:100%;font-family:'Inter',sans-serif;text-align:left}
-.fb-add-type-item:hover{background:var(--surface2);color:var(--accent)}
-.fb-add-type-ico{width:22px;height:22px;background:var(--accent-bg);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);flex-shrink:0}
+.fb-field-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px;position:relative;transition:border-color .15s,box-shadow .15s}.fb-field-card:hover{border-color:var(--border2)}.fb-field-card.focused{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}.fb-field-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}.fb-field-num{width:26px;height:26px;background:var(--accent-bg);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:4px}.fb-field-main{flex:1;display:flex;flex-direction:column;gap:8px}.fb-field-q{background:transparent;border:none;border-bottom:1.5px solid var(--border2);padding:4px 0 6px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;color:var(--text);outline:none;width:100%}.fb-field-q:focus{border-bottom-color:var(--accent)}.fb-field-q::placeholder{color:var(--text3);font-weight:400}.fb-field-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.fb-field-type-sel{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);outline:none;cursor:pointer;min-width:140px}.fb-field-type-sel:focus{border-color:var(--accent)}.fb-req-label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none}.fb-req-label input{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}.fb-field-actions{margin-left:auto;display:flex;gap:4px}.fb-icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .12s}.fb-icon-btn:hover{background:var(--surface3);color:var(--text)}.fb-icon-btn.danger:hover{background:var(--danger-bg);color:var(--danger);border-color:rgba(247,111,111,.3)}.fb-field-preview{padding-top:10px;padding-left:36px;border-top:1px dashed var(--border)}.fb-preview-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}.fb-preview-input{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--text3);width:100%;pointer-events:none;opacity:.8;font-family:'Inter',sans-serif}.fb-preview-textarea{min-height:60px;resize:none}.fb-opt-list{display:flex;flex-direction:column;gap:6px}.fb-opt-item{display:flex;align-items:center;gap:8px}.fb-opt-marker{width:14px;height:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}.fb-opt-marker.radio{border:2px solid var(--text3);border-radius:50%}.fb-opt-marker.check{border:2px solid var(--text3);border-radius:3px}.fb-opt-marker.numbered{font-size:11px;color:var(--text3);font-weight:600;width:auto}.fb-opt-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);padding:4px 2px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none}.fb-opt-input:focus{border-bottom-color:var(--accent)}.fb-opt-input::placeholder{color:var(--text3)}.fb-opt-remove{width:22px;height:22px;border-radius:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}.fb-opt-remove:hover{background:var(--danger-bg);color:var(--danger)}.fb-add-opt{background:transparent;border:none;color:var(--accent);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;padding:4px 0;text-align:left;margin-top:4px}.fb-add-opt:hover{text-decoration:underline}.fb-section-divider{background:linear-gradient(135deg,rgba(245,166,35,.08),rgba(245,166,35,.02));border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:14px 18px;margin-bottom:12px;position:relative}.fb-section-divider-input{background:transparent;border:none;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);outline:none;width:100%}.fb-section-divider-input::placeholder{color:var(--text3);font-style:italic}
+.fb-add-between{display:flex;align-items:center;gap:10px;padding-left:13px;height:28px;margin:-6px 0;opacity:.5;transition:opacity .15s;position:relative;z-index:1}.fb-add-between:hover{opacity:1}.fb-add-between.menu-open{z-index:150}.fb-add-plus{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(79,142,247,.3)}.fb-add-plus:hover{transform:scale(1.1)}.fb-add-plus-label{font-size:11px;color:var(--text3);font-style:italic}.fb-add-type-menu{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.2);padding:6px;z-index:9999;display:none;min-width:220px;max-height:320px;overflow-y:auto}.fb-add-type-menu.open{display:block;animation:fadeUp .15s ease}.fb-add-type-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:5px;cursor:pointer;font-size:12.5px;color:var(--text);background:none;border:none;width:100%;font-family:'Inter',sans-serif;text-align:left}.fb-add-type-item:hover{background:var(--surface2);color:var(--accent)}.fb-add-type-ico{width:22px;height:22px;background:var(--accent-bg);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);flex-shrink:0}
 .ff-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm)}.ff-section-head{background:var(--section-bg);padding:12px 18px;border-bottom:1px solid var(--border)}.ff-section-title{font-size:13px;font-weight:700}.ff-section-body{padding:18px}.ff-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}.ff-field:last-child{margin-bottom:0}.ff-field label{font-size:11.5px;font-weight:600;color:var(--text2)}.ff-field input,.ff-field select,.ff-field textarea{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%}.ff-field input:focus,.ff-field select:focus,.ff-field textarea:focus{border-color:var(--accent)}.ff-field textarea{resize:vertical;min-height:80px}.ff-cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px}.cb-item{display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border-radius:5px;cursor:pointer;user-select:none}.cb-item:hover{background:var(--surface2)}.cb-item input[type="checkbox"],.cb-item input[type="radio"]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:1px}.cb-item span{font-size:12.5px;color:var(--text2);line-height:1.4}
 .share-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;max-width:480px;width:95%;box-shadow:var(--shadow)}.share-modal-box h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:6px}.share-modal-box p{font-size:12.5px;color:var(--text2);margin-bottom:18px;line-height:1.6}.share-link-box{display:flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;margin-bottom:14px}.share-link-text{font-size:12px;color:var(--accent);font-family:monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.share-notice{background:var(--warning-bg);border:1px solid rgba(245,166,35,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--warning);line-height:1.6;margin-bottom:18px}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center}.modal-overlay.open{display:flex}.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:26px;max-width:400px;width:90%;box-shadow:var(--shadow)}.modal-box h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:8px}.modal-box p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6}.modal-acts{display:flex;gap:8px;justify-content:flex-end}.modal-lg{max-width:680px;width:95%;max-height:90vh;overflow-y:auto}
@@ -85,9 +52,45 @@
 <nav class="sidebar"><div class="sidebar-logo"><div class="logo-top"><div class="logo-emblem">🏛</div><div><div class="logo-title">PAB Information System</div><div class="logo-sub">DTI · Accreditation Bureau</div></div></div><div class="logo-ver">ver.2 · Technical Assessors & Experts</div></div><div class="sidebar-nav"><div class="nav-group">Overview</div><button class="nav-item active" id="nav-dash" onclick="goto('dashboard',this)"><span style="width:16px;text-align:center;font-size:14px">⊞</span> Dashboard <span class="nav-badge" id="nav-badge">0</span></button><div class="nav-group">Forms</div><button class="nav-item" id="nav-forms-lib" onclick="goto('forms-lib',this)"><span style="width:16px;text-align:center;font-size:14px">📂</span> Forms Library <span class="nav-badge" id="forms-badge">0</span></button><div class="nav-group">System</div><button class="nav-item" id="nav-settings" onclick="goto('settings',this)"><span style="width:16px;text-align:center;font-size:14px">⚙️</span> Settings</button></div><div class="sidebar-footer"><div id="sidebar-user-name" style="font-size:12px;font-weight:600;margin-bottom:2px">Loading…</div><div id="sidebar-user-role" style="font-size:11px;color:var(--accent);margin-bottom:1px"></div><div id="sidebar-user-email" style="font-size:10px;color:var(--text3);margin-bottom:10px"></div><button onclick="doLogout()" style="width:100%;padding:7px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer">⏻ Sign Out</button></div></nav>
 <div class="main"><div class="topbar"><div class="topbar-left"><span>PAB</span><span class="topbar-sep">›</span><span class="topbar-current" id="bc-current">Dashboard</span></div><div class="topbar-right"><div class="notif-wrap" id="notif-wrap"><button class="notif-btn" onclick="toggleNotifDD()" title="Notifications">🔔<span class="notif-count-bell" id="notif-count-bell">0</span></button><div class="notif-dropdown" id="notif-dropdown"><div class="notif-dd-header"><span class="notif-dd-title">🔔 Notifications</span><button class="notif-dd-mark" onclick="markAllReadBell()">Mark all read</button></div><div class="notif-dd-list" id="notif-dd-list"><div class="notif-dd-empty">Loading…</div></div></div></div><button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button><div id="topbar-actions"></div></div></div>
 <div class="content">
-<div class="view active" id="view-dashboard"><div class="page-header"><div class="page-title">Dashboard</div><div class="page-sub">View and manage all form submissions from assessors and admins. Click any row to view full details.</div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat-card"><div class="stat-label">Total</div><div class="stat-num" id="s-total">0</div><div class="stat-hint">All submissions</div></div><div class="stat-card"><div class="stat-label">Unread</div><div class="stat-num" id="s-unread">0</div><div class="stat-hint">Pending review</div></div><div class="stat-card"><div class="stat-label">Forms</div><div class="stat-num" id="s-forms">0</div><div class="stat-hint">Created</div></div></div><div class="table-card"><div class="table-toolbar"><div class="table-title">📋 All Submissions</div><div class="search-box"><span class="search-ico">🔍</span><input type="text" id="search-q" placeholder="Search…" oninput="renderMainTable()"></div><select class="filter-sel" id="filter-source" onchange="renderMainTable()"><option value="">All Sources</option><option value="assessor">Assessor</option><option value="admin">Admin</option></select><select class="filter-sel" id="filter-status" onchange="renderMainTable()"><option value="">All Status</option><option value="unread">Unread</option><option value="read">Read</option></select></div><div id="main-table-wrap"></div></div></div>
+
+<!-- DASHBOARD -->
+<div class="view active" id="view-dashboard">
+  <div class="page-header"><div class="page-title">Dashboard</div><div class="page-sub">View and manage all form submissions from assessors and admins. Click any row to view full details.</div></div>
+  <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card"><div class="stat-label">Total</div><div class="stat-num" id="s-total">0</div><div class="stat-hint">All submissions</div></div>
+    <div class="stat-card"><div class="stat-label">Unread</div><div class="stat-num" id="s-unread">0</div><div class="stat-hint">Pending review</div></div>
+    <div class="stat-card"><div class="stat-label">Forms</div><div class="stat-num" id="s-forms">0</div><div class="stat-hint">Created</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="table-title">📋 All Submissions</div>
+      <div class="search-box"><span class="search-ico">🔍</span><input type="text" id="search-q" placeholder="Search…" oninput="resetPageAndRender()"></div>
+      <select class="filter-sel" id="filter-source" onchange="resetPageAndRender()"><option value="">All Sources</option><option value="assessor">Assessor</option><option value="admin">Admin</option></select>
+      <select class="filter-sel" id="filter-status" onchange="resetPageAndRender()"><option value="">All Status</option><option value="unread">Unread</option><option value="read">Read</option></select>
+    </div>
+    <!-- Bulk action bar -->
+    <div class="bulk-action-bar" id="bulk-action-bar">
+      <span class="bulk-count" id="bulk-count-label">0 selected</span>
+      <button class="btn btn-success btn-sm" onclick="bulkMarkRead()">✓ Mark as Read</button>
+      <button class="btn btn-danger btn-sm" onclick="bulkDelete()">🗑 Delete Selected</button>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="clearSelection()">✕ Clear</button>
+    </div>
+    <div id="main-table-wrap"></div>
+    <!-- Pagination -->
+    <div class="pagination-bar" id="pagination-bar" style="display:none">
+      <div class="pagination-info" id="pagination-info"></div>
+      <div class="pagination-controls" id="pagination-controls"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT VIEW -->
 <div class="view" id="view-print"><div class="print-toolbar no-print"><div><div class="print-ref-label">Reference</div><div class="print-ref-val" id="pt-ref">—</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="pt-sub">—</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="goto('dashboard',document.getElementById('nav-dash'))">← Back</button><button class="btn btn-warning btn-sm" id="director-toggle-btn" onclick="toggleDirectorSection()">🏛 Director Sign-Off</button><button class="btn btn-primary btn-sm" onclick="doPrint()">🖨 Print</button></div></div><div class="print-doc" id="print-doc"></div></div>
+
+<!-- FORMS LIBRARY -->
 <div class="view" id="view-forms-lib"><div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between"><div><div class="page-title">Forms Library</div><div class="page-sub">All your custom forms. Create new forms, edit existing ones, share links with assessors, and manage submissions.</div></div><button class="btn btn-primary btn-sm" onclick="openFormBuilder()">＋ Create New Form</button></div><div id="forms-lib-wrap"></div></div>
+
+<!-- FORM BUILDER -->
 <div class="view" id="view-form-builder">
 <div class="page-header"><div class="page-title" id="fb-page-title">Create New Form</div><div class="page-sub">Type your question, pick the answer type, and see a live preview. Click the blue ⊕ button to add a new field below.</div></div>
 <div style="max-width:860px">
@@ -105,7 +108,6 @@
   <div class="fb-body">
     <div style="font-size:12px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between"><span>Fields <span id="fb-field-count" style="color:var(--text3);font-weight:400">(0)</span></span></div>
     <div id="fb-fields-container"></div>
-    <!-- Empty state (shown when no fields) -->
     <div id="fb-empty-state" style="text-align:center;padding:32px 24px;color:var(--text3);background:var(--surface2);border-radius:10px;border:1px dashed var(--border2)">
       <div style="font-size:32px;margin-bottom:8px;opacity:.5">📝</div>
       <div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px">No fields yet</div>
@@ -116,20 +118,37 @@
 </div>
 <div style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:28px"><button class="btn btn-ghost" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">Cancel</button><button class="btn btn-ghost" onclick="saveFormDraft()">Save as Draft</button><button class="btn btn-primary" onclick="saveFormPublish()">Save & Publish →</button></div>
 </div></div>
+
+<!-- FORM FILL -->
 <div class="view" id="view-form-fill"><div class="print-toolbar no-print"><div><div class="print-ref-label">Filling Form</div><div class="print-ref-val" id="ff-form-title">—</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="ff-form-sub">—</div></div><button class="btn btn-ghost btn-sm" onclick="goto('forms-lib',document.getElementById('nav-forms-lib'))">← Back</button></div><div style="max-width:860px" id="ff-form-body"></div><div style="max-width:860px;display:flex;justify-content:flex-end;gap:10px;margin-bottom:28px"><button class="btn btn-ghost" id="ff-reset-btn">↺ Reset</button><button class="btn btn-primary" id="ff-submit-btn">Submit →</button></div></div>
-<div class="view" id="view-settings"><div class="page-header"><div class="page-title">Settings</div><div class="page-sub">Manage assessor accounts, admin roles, system security, and audit logs.</div></div><div class="table-card" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">Registered Assessors</div><button class="btn btn-primary btn-sm" onclick="openAddAssessor()">+ Add Assessor</button></div><div id="assessors-wrap" style="min-height:60px"></div></div><div class="table-card superadmin-only" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">👑 Admins</div><button class="btn btn-primary btn-sm" onclick="openAddAdmin()">+ Add Admin</button></div><div id="admins-wrap" style="min-height:60px"></div></div><div class="table-card superadmin-only" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">🔒 Kill Switch</div></div><div style="padding:18px 20px"><div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">When <strong>ON</strong>, the login page is locked and shows a maintenance screen. No admin can log in until you turn it off. Use this during system updates or emergencies.</div><div style="display:flex;align-items:center;gap:16px"><div id="kill-status-label" style="font-size:13px;font-weight:600"></div><button id="kill-toggle-btn" class="btn btn-sm" onclick="toggleKillSwitch()" style="min-width:120px">Loading…</button></div></div></div><div class="table-card superadmin-only" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">📋 Audit Log</div><button class="btn btn-ghost btn-sm" onclick="loadAuditLog()">↺ Refresh</button></div><div id="audit-wrap" style="min-height:60px"></div></div></div>
+
+<!-- SETTINGS -->
+<div class="view" id="view-settings"><div class="page-header"><div class="page-title">Settings</div><div class="page-sub">Manage assessor accounts, admin roles, system security, and audit logs.</div></div><div class="table-card" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">Registered Assessors</div><button class="btn btn-primary btn-sm" onclick="openAddAssessor()">+ Add Assessor</button></div><div id="assessors-wrap" style="min-height:60px"></div></div><div class="table-card superadmin-only" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">👑 Admins</div><button class="btn btn-primary btn-sm" onclick="openAddAdmin()">+ Add Admin</button></div><div id="admins-wrap" style="min-height:60px"></div></div><div class="table-card superadmin-only" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">🔒 Kill Switch</div></div><div style="padding:18px 20px"><div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">When <strong>ON</strong>, the login page is locked and shows a maintenance screen. No admin can log in until you turn it off.</div><div style="display:flex;align-items:center;gap:16px"><div id="kill-status-label" style="font-size:13px;font-weight:600"></div><button id="kill-toggle-btn" class="btn btn-sm" onclick="toggleKillSwitch()" style="min-width:120px">Loading…</button></div></div></div><div class="table-card superadmin-only" style="margin-bottom:20px"><div class="table-toolbar"><div class="table-title">📋 Audit Log</div><button class="btn btn-ghost btn-sm" onclick="loadAuditLog()">↺ Refresh</button></div><div id="audit-wrap" style="min-height:60px"></div></div></div>
+
 </div></div>
-<div class="modal-overlay" id="add-assessor-modal"><div class="modal-box" style="max-width:460px"><h3>Add Assessor</h3><p>Register an assessor so they can access and fill out forms via share link. They will verify their email when opening the link — no login or password needed.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label><input type="text" id="asr-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="asr-email" placeholder="assessor@email.com" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div id="add-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeAddAssessor()">Cancel</button><button class="btn btn-primary btn-sm" id="add-asr-btn" onclick="doAddAssessor()">Add</button></div></div></div>
-<div class="modal-overlay" id="add-admin-modal"><div class="modal-box" style="max-width:460px"><h3>Add Admin</h3><p>Add a new admin account. The person must have already signed up and logged in at least once so their account exists in the system.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="adm-email" placeholder="admin@pab.gov.ph" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Name *</label><input type="text" id="adm-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Role *</label><select id="adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"><option value="viewer">👁 Viewer</option><option value="admin">🔧 Admin</option><option value="super_admin">👑 Super Admin</option></select></div><div id="add-adm-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeAddAdmin()">Cancel</button><button class="btn btn-primary btn-sm" onclick="doAddAdmin()">Add</button></div></div></div>
-<div class="modal-overlay" id="edit-assessor-modal"><div class="modal-box" style="max-width:460px"><h3>Edit Assessor</h3><p>Update the assessor's name and email. Changes apply immediately.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label><input type="text" id="edit-asr-name" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="edit-asr-email" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"><div style="font-size:11px;color:var(--text3);margin-top:4px">⚠️ If you change the email, the assessor must use the new one to access form links.</div></div><div id="edit-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeEditAssessor()">Cancel</button><button class="btn btn-primary btn-sm" id="edit-asr-btn" onclick="doEditAssessor()">Save Changes</button></div></div></div>
-<div class="modal-overlay" id="share-modal"><div class="share-modal-box"><h3>🔗 Share Form</h3><p>Copy and send this link to your assessors. They will enter their registered email to verify their identity, then fill out the form. Submissions appear on your dashboard automatically.</p><div class="share-link-box"><span class="share-link-text" id="share-link-text">—</span><button class="btn btn-primary btn-xs" onclick="copyShareLink()">Copy</button></div><div class="share-notice">⚠️ Submissions appear on your dashboard instantly.</div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeShareModal()">Close</button></div></div></div>
-<div class="modal-overlay" id="del-form-modal"><div class="modal-box"><h3>Delete Form</h3><p>Are you sure you want to delete this form? This will permanently remove it from the library. This action cannot be undone.</p><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeDelFormModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDelForm()">Delete</button></div></div></div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="add-assessor-modal"><div class="modal-box" style="max-width:460px"><h3>Add Assessor</h3><p>Register an assessor so they can access and fill out forms via share link.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label><input type="text" id="asr-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="asr-email" placeholder="assessor@email.com" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div id="add-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeAddAssessor()">Cancel</button><button class="btn btn-primary btn-sm" id="add-asr-btn" onclick="doAddAssessor()">Add</button></div></div></div>
+<div class="modal-overlay" id="add-admin-modal"><div class="modal-box" style="max-width:460px"><h3>Add Admin</h3><p>Add a new admin account. The person must have already signed up and logged in at least once.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="adm-email" placeholder="admin@pab.gov.ph" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Name *</label><input type="text" id="adm-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Role *</label><select id="adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"><option value="viewer">👁 Viewer</option><option value="admin">🔧 Admin</option><option value="super_admin">👑 Super Admin</option></select></div><div id="add-adm-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeAddAdmin()">Cancel</button><button class="btn btn-primary btn-sm" onclick="doAddAdmin()">Add</button></div></div></div>
+<div class="modal-overlay" id="edit-assessor-modal"><div class="modal-box" style="max-width:460px"><h3>Edit Assessor</h3><p>Update the assessor's name and email.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label><input type="text" id="edit-asr-name" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="edit-asr-email" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div id="edit-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeEditAssessor()">Cancel</button><button class="btn btn-primary btn-sm" id="edit-asr-btn" onclick="doEditAssessor()">Save Changes</button></div></div></div>
+<div class="modal-overlay" id="share-modal"><div class="share-modal-box"><h3>🔗 Share Form</h3><p>Copy and send this link to your assessors.</p><div class="share-link-box"><span class="share-link-text" id="share-link-text">—</span><button class="btn btn-primary btn-xs" onclick="copyShareLink()">Copy</button></div><div class="share-notice">⚠️ Submissions appear on your dashboard instantly.</div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeShareModal()">Close</button></div></div></div>
+<div class="modal-overlay" id="del-form-modal"><div class="modal-box"><h3>Delete Form</h3><p>Are you sure you want to delete this form? This will permanently remove it from the library.</p><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeDelFormModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDelForm()">Delete</button></div></div></div>
+
+<!-- BULK DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="bulk-del-modal"><div class="modal-box"><h3>Delete Selected Submissions</h3><p id="bulk-del-msg">Are you sure? This will permanently delete the selected submissions and cannot be undone.</p><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('bulk-del-modal').classList.remove('open')">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmBulkDelete()">Delete</button></div></div></div>
+
 <div class="toast" id="toast"><div class="toast-ico" id="t-ico"></div><div class="toast-body"><div class="toast-title" id="t-title"></div><div class="toast-sub" id="t-sub"></div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const sb=supabase.createClient('https://yayovhfettjrxryluvbz.supabase.co','sb_publishable_pgKRjgTXeL7GGqeWFj1BfQ_c4Vjs_gn');
 let currentUser=null,currentAdmin=null,allSubmissions=[],customForms=[],builderFields=[],editingFieldIdx=null,currentEditFormId=null,currentFillFormId=null,currentViewSub=null,directorVisible=false,delFormTarget=null;
+
+// ── PAGINATION + SELECTION STATE ──
+const PAGE_SIZE = 20;
+let currentPage = 1;
+let selectedIds = new Set(); // Set of submission IDs currently selected
+
 const _m={};const storage=(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage}catch(e){return{getItem:k=>_m[k]||null,setItem:(k,v)=>{_m[k]=v},removeItem:k=>{delete _m[k]}}}})();
 let isDark=storage.getItem('pab_theme')!=='light';
 function applyTheme(){document.documentElement.setAttribute('data-theme',isDark?'dark':'light');document.getElementById('theme-btn').textContent=isDark?'☀️ Light':'🌙 Dark'}
@@ -156,17 +175,218 @@ async function auditLog(a,d){try{await sb.from('audit_logs').insert({admin_id:cu
 async function doLogout(){await auditLog('LOGOUT',currentAdmin?.full_name+' logged out');await sb.auth.signOut();window.location.href='login.html'}
 let inactivityTimer;function setupInactivityTimer(){const r=()=>{clearTimeout(inactivityTimer);inactivityTimer=setTimeout(async()=>{await sb.auth.signOut();toast('⏰','Expired','');setTimeout(()=>window.location.href='login.html',2000)},3600000)};['mousemove','keydown','click','scroll'].forEach(e=>document.addEventListener(e,r,{passive:true}));r()}
 
-// ═══ UNIFIED SUBMISSIONS ═══
-async function loadAllSubmissions(){try{const{data}=await sb.from('form_submissions').select('*').order('submitted_at',{ascending:false});if(data)allSubmissions=data}catch(e){}renderMainTable()}
-function refreshStats(){const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};s('s-total',allSubmissions.length);s('s-unread',allSubmissions.filter(x=>!x.is_read).length);s('s-forms',customForms.length);s('nav-badge',allSubmissions.length);s('forms-badge',customForms.length)}
-function renderMainTable(){refreshStats();const q=(document.getElementById('search-q')?.value||'').toLowerCase(),sf=document.getElementById('filter-source')?.value||'',st=document.getElementById('filter-status')?.value||'';
-const filtered=allSubmissions.filter(s=>{const txt=`${s.assessor_name||''} ${s.assessor_email||''} ${s.form_title||''}`.toLowerCase();if(q&&!txt.includes(q))return false;const src=(s.assessor_email&&currentAdmin&&s.assessor_email===currentAdmin.email)?'admin':'assessor';if(sf&&src!==sf)return false;if(st==='unread'&&s.is_read)return false;if(st==='read'&&!s.is_read)return false;return true});
-const wrap=document.getElementById('main-table-wrap');if(!wrap)return;
-if(!filtered.length){wrap.innerHTML=`<div class="empty-state"><div class="empty-icon">${allSubmissions.length?'🔍':'📭'}</div><div class="empty-title">${allSubmissions.length?'No matches':'No submissions yet'}</div><div class="empty-sub">Share a form or fill one yourself.</div></div>`;return}
-wrap.innerHTML=`<table><thead><tr><th>Ref</th><th>Name</th><th>Email</th><th>Form</th><th>Source</th><th>Date</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead><tbody>${filtered.map(s=>{const src=(s.assessor_email&&currentAdmin&&s.assessor_email===currentAdmin.email)?'admin':'assessor';const ref='SUB-'+String(s.id).padStart(4,'0');return`<tr style="${!s.is_read?'background:var(--accent-bg)':''}" onclick="viewSubmission(${s.id})"><td style="font-weight:700;color:var(--accent);font-size:12px;font-family:monospace">${ref}</td><td class="td-name"><strong>${s.assessor_name||'—'}</strong></td><td style="font-size:12px;color:var(--text2)">${s.assessor_email||'—'}</td><td style="font-size:12px;color:var(--text2)">${s.form_title||'—'}</td><td><span class="badge badge-${src}">${src==='admin'?'👤 Admin':'📧 Assessor'}</span></td><td style="font-size:12px;color:var(--text2)">${s.submitted_at?new Date(s.submitted_at).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}):'—'}</td><td><span class="badge ${s.is_read?'badge-printed':'badge-new'}">${s.is_read?'Read':'Unread'}</span></td><td onclick="event.stopPropagation()" style="text-align:right"><div class="row-acts always"><button class="btn btn-ghost btn-xs" onclick="viewSubmission(${s.id})">👁</button>${!s.is_read?`<button class="btn btn-primary btn-xs" onclick="markSubRead(${s.id})">✓</button>`:''}</div></td></tr>`}).join('')}</tbody></table>`}
-async function markSubRead(id){await sb.from('form_submissions').update({is_read:true}).eq('id',id);const s=allSubmissions.find(x=>x.id===id);if(s)s.is_read=true;renderMainTable();loadNotifBell()}
+// ── SUBMISSIONS ──
+async function loadAllSubmissions(){
+  try{const{data}=await sb.from('form_submissions').select('*').order('submitted_at',{ascending:false});if(data)allSubmissions=data}catch(e){}
+  renderMainTable();
+}
 
-// ═══ VIEW SUBMISSION + DIRECTOR SIGN-OFF ═══
+function getFilteredSubmissions(){
+  const q=(document.getElementById('search-q')?.value||'').toLowerCase();
+  const sf=document.getElementById('filter-source')?.value||'';
+  const st=document.getElementById('filter-status')?.value||'';
+  return allSubmissions.filter(s=>{
+    const txt=`${s.assessor_name||''} ${s.assessor_email||''} ${s.form_title||''}`.toLowerCase();
+    if(q&&!txt.includes(q))return false;
+    const src=(s.assessor_email&&currentAdmin&&s.assessor_email===currentAdmin.email)?'admin':'assessor';
+    if(sf&&src!==sf)return false;
+    if(st==='unread'&&s.is_read)return false;
+    if(st==='read'&&!s.is_read)return false;
+    return true;
+  });
+}
+
+function resetPageAndRender(){currentPage=1;clearSelection();renderMainTable();}
+
+function refreshStats(){
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  s('s-total',allSubmissions.length);
+  s('s-unread',allSubmissions.filter(x=>!x.is_read).length);
+  s('s-forms',customForms.length);
+  s('nav-badge',allSubmissions.length);
+  s('forms-badge',customForms.length);
+}
+
+function renderMainTable(){
+  refreshStats();
+  const filtered=getFilteredSubmissions();
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  if(currentPage>totalPages)currentPage=totalPages;
+  const start=(currentPage-1)*PAGE_SIZE;
+  const pageItems=filtered.slice(start,start+PAGE_SIZE);
+
+  const wrap=document.getElementById('main-table-wrap');
+  const pgBar=document.getElementById('pagination-bar');
+  const pgInfo=document.getElementById('pagination-info');
+  const pgCtrl=document.getElementById('pagination-controls');
+  if(!wrap)return;
+
+  if(!filtered.length){
+    wrap.innerHTML=`<div class="empty-state"><div class="empty-icon">${allSubmissions.length?'🔍':'📭'}</div><div class="empty-title">${allSubmissions.length?'No matches':'No submissions yet'}</div><div class="empty-sub">Share a form or fill one yourself.</div></div>`;
+    pgBar.style.display='none';
+    updateBulkBar();
+    return;
+  }
+
+  // Check if ALL visible items on this page are selected
+  const allPageSelected = pageItems.length>0 && pageItems.every(s=>selectedIds.has(s.id));
+
+  wrap.innerHTML=`<table>
+    <thead><tr>
+      <th style="width:40px"><input type="checkbox" id="select-all-cb" ${allPageSelected?'checked':''} onchange="toggleSelectAll(this.checked)" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" title="Select all on this page"></th>
+      <th>Ref</th><th>Name</th><th>Email</th><th>Form</th><th>Source</th><th>Date</th><th>Status</th><th style="text-align:right">Actions</th>
+    </tr></thead>
+    <tbody>${pageItems.map(s=>{
+      const src=(s.assessor_email&&currentAdmin&&s.assessor_email===currentAdmin.email)?'admin':'assessor';
+      const ref='SUB-'+String(s.id).padStart(4,'0');
+      const isChecked=selectedIds.has(s.id);
+      return`<tr style="${!s.is_read?'background:var(--accent-bg)':''}" onclick="viewSubmission(${s.id})">
+        <td onclick="event.stopPropagation()"><input type="checkbox" ${isChecked?'checked':''} onchange="toggleSelectRow(this.checked,${s.id})" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer"></td>
+        <td style="font-weight:700;color:var(--accent);font-size:12px;font-family:monospace">${ref}</td>
+        <td class="td-name"><strong>${s.assessor_name||'—'}</strong></td>
+        <td style="font-size:12px;color:var(--text2)">${s.assessor_email||'—'}</td>
+        <td style="font-size:12px;color:var(--text2)">${s.form_title||'—'}</td>
+        <td><span class="badge badge-${src}">${src==='admin'?'👤 Admin':'📧 Assessor'}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${s.submitted_at?new Date(s.submitted_at).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}):'—'}</td>
+        <td><span class="badge ${s.is_read?'badge-printed':'badge-new'}">${s.is_read?'Read':'Unread'}</span></td>
+        <td onclick="event.stopPropagation()" style="text-align:right"><div class="row-acts always">
+          <button class="btn btn-ghost btn-xs" onclick="viewSubmission(${s.id})">👁</button>
+          ${!s.is_read?`<button class="btn btn-primary btn-xs" onclick="markSubRead(${s.id})">✓</button>`:''}
+          <button class="btn btn-danger btn-xs" onclick="deleteSingleSub(${s.id})">🗑</button>
+        </div></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+
+  // Pagination bar
+  pgBar.style.display='flex';
+  const from=start+1, to=Math.min(start+PAGE_SIZE,filtered.length);
+  pgInfo.textContent=`Showing ${from}–${to} of ${filtered.length} submission${filtered.length!==1?'s':''}`;
+
+  // Build page buttons (max 7 visible)
+  let pgHTML='';
+  pgHTML+=`<button class="pg-btn" onclick="goToPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>‹</button>`;
+  const WINDOW=2;
+  let pages=new Set([1,totalPages]);
+  for(let i=Math.max(1,currentPage-WINDOW);i<=Math.min(totalPages,currentPage+WINDOW);i++)pages.add(i);
+  const sortedPages=[...pages].sort((a,b)=>a-b);
+  let prev=0;
+  sortedPages.forEach(p=>{
+    if(prev&&p-prev>1)pgHTML+=`<span class="pg-btn" style="pointer-events:none;border:none;background:transparent;color:var(--text3)">…</span>`;
+    pgHTML+=`<button class="pg-btn${p===currentPage?' active':''}" onclick="goToPage(${p})">${p}</button>`;
+    prev=p;
+  });
+  pgHTML+=`<button class="pg-btn" onclick="goToPage(${currentPage+1})" ${currentPage>=totalPages?'disabled':''}>›</button>`;
+  pgCtrl.innerHTML=pgHTML;
+
+  updateBulkBar();
+}
+
+function goToPage(p){
+  const filtered=getFilteredSubmissions();
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  if(p<1||p>totalPages)return;
+  currentPage=p;
+  renderMainTable();
+}
+
+// ── SELECTION ──
+function toggleSelectRow(checked,id){
+  if(checked)selectedIds.add(id);
+  else selectedIds.delete(id);
+  updateBulkBar();
+  // update select-all checkbox state
+  const filtered=getFilteredSubmissions();
+  const start=(currentPage-1)*PAGE_SIZE;
+  const pageItems=filtered.slice(start,start+PAGE_SIZE);
+  const allCb=document.getElementById('select-all-cb');
+  if(allCb)allCb.checked=pageItems.length>0&&pageItems.every(s=>selectedIds.has(s.id));
+}
+
+function toggleSelectAll(checked){
+  const filtered=getFilteredSubmissions();
+  const start=(currentPage-1)*PAGE_SIZE;
+  const pageItems=filtered.slice(start,start+PAGE_SIZE);
+  pageItems.forEach(s=>{if(checked)selectedIds.add(s.id);else selectedIds.delete(s.id);});
+  updateBulkBar();
+  renderMainTable();
+}
+
+function clearSelection(){
+  selectedIds.clear();
+  updateBulkBar();
+}
+
+function updateBulkBar(){
+  const bar=document.getElementById('bulk-action-bar');
+  const label=document.getElementById('bulk-count-label');
+  const count=selectedIds.size;
+  if(count>0){
+    bar.classList.add('visible');
+    label.textContent=count+' submission'+(count!==1?'s':'')+' selected';
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+// ── BULK ACTIONS ──
+async function bulkMarkRead(){
+  if(!selectedIds.size)return;
+  const ids=[...selectedIds];
+  try{
+    await sb.from('form_submissions').update({is_read:true}).in('id',ids);
+    ids.forEach(id=>{
+      const s=allSubmissions.find(x=>x.id===id);
+      if(s)s.is_read=true;
+    });
+    toast('✅','Done',`${ids.length} submission${ids.length!==1?'s':''} marked as read.`);
+    clearSelection();
+    renderMainTable();
+    loadNotifBell();
+  }catch(e){toast('❌','Failed',e.message);}
+}
+
+function bulkDelete(){
+  if(!selectedIds.size)return;
+  const count=selectedIds.size;
+  document.getElementById('bulk-del-msg').textContent=`Are you sure you want to permanently delete ${count} selected submission${count!==1?'s':''}? This cannot be undone.`;
+  document.getElementById('bulk-del-modal').classList.add('open');
+}
+
+async function confirmBulkDelete(){
+  const ids=[...selectedIds];
+  document.getElementById('bulk-del-modal').classList.remove('open');
+  try{
+    await sb.from('form_submissions').delete().in('id',ids);
+    allSubmissions=allSubmissions.filter(s=>!selectedIds.has(s.id));
+    toast('🗑️','Deleted',`${ids.length} submission${ids.length!==1?'s':''} deleted.`);
+    await auditLog('BULK_DELETE',`Deleted ${ids.length} submission(s): IDs ${ids.join(', ')}`);
+    clearSelection();
+    renderMainTable();
+    loadNotifBell();
+  }catch(e){toast('❌','Failed',e.message);}
+}
+
+async function deleteSingleSub(id){
+  if(!confirm('Delete this submission?'))return;
+  try{
+    await sb.from('form_submissions').delete().eq('id',id);
+    allSubmissions=allSubmissions.filter(s=>s.id!==id);
+    selectedIds.delete(id);
+    toast('🗑️','Deleted','Submission removed.');
+    await auditLog('DELETE_SUBMISSION','SUB-'+String(id).padStart(4,'0'));
+    renderMainTable();
+    loadNotifBell();
+  }catch(e){toast('❌','Failed',e.message);}
+}
+
+async function markSubRead(id){
+  await sb.from('form_submissions').update({is_read:true}).eq('id',id);
+  const s=allSubmissions.find(x=>x.id===id);if(s)s.is_read=true;
+  renderMainTable();loadNotifBell();
+}
+
+// ── VIEW SUBMISSION + DIRECTOR SIGN-OFF ──
 function viewSubmission(id){const s=allSubmissions.find(x=>x.id===id);if(!s)return;currentViewSub=s;directorVisible=false;if(!s.is_read)markSubRead(id);
 const answers=s.answers||{},ref='SUB-'+String(s.id).padStart(4,'0'),dir=s.director_signoff||{};
 let fh='';Object.entries(answers).forEach(([k,v])=>{fh+=`<div class="pf"><label>${k}</label><div class="val">${v||'<span class="empty">N/A</span>'}</div></div>`});
@@ -181,7 +401,7 @@ function clearDirSig(){const c=document.getElementById('dir-sig-canvas');if(c)c.
 async function saveDirectorSignoff(){if(!currentViewSub)return;const c=document.getElementById('dir-sig-canvas');const so={qualifiedBy:document.getElementById('dir-qualified-by')?.value.trim()||'',qualifiedDate:document.getElementById('dir-date')?.value||'',signatureData:(c&&!dirSigEmpty)?c.toDataURL('image/png'):null,evaluationRemarks:document.getElementById('dir-remarks')?.value.trim()||'',recommendation:document.getElementById('dir-recommendation')?.value.trim()||''};try{const{error}=await sb.from('form_submissions').update({director_signoff:so}).eq('id',currentViewSub.id);if(error)throw error;currentViewSub.director_signoff=so;toast('✅','Saved!','Director sign-off recorded.');await auditLog('DIRECTOR_SIGNOFF','SUB-'+String(currentViewSub.id).padStart(4,'0'))}catch(e){toast('❌','Failed',e.message)}}
 function doPrint(){window.print()}
 
-// ═══ NOTIFICATION BELL ═══
+// ── NOTIFICATION BELL ──
 let notifBellData=[];
 async function loadNotifBell(){try{const{data}=await sb.from('form_submissions').select('*').order('submitted_at',{ascending:false}).limit(25);if(data)notifBellData=data}catch(e){}renderNotifBell()}
 function renderNotifBell(){const uc=notifBellData.filter(n=>!n.is_read).length;const b=document.getElementById('notif-count-bell');if(b){b.textContent=uc;b.classList.toggle('show',uc>0)}const list=document.getElementById('notif-dd-list');if(!list)return;if(!notifBellData.length){list.innerHTML='<div class="notif-dd-empty">No notifications</div>';return}list.innerHTML=notifBellData.map(n=>{const d=Math.floor((Date.now()-new Date(n.submitted_at).getTime())/1000);const ago=d<60?'Just now':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':d<604800?Math.floor(d/86400)+'d ago':new Date(n.submitted_at).toLocaleDateString('en-PH');return`<div class="notif-dd-item ${n.is_read?'':'unread'}" onclick="viewSubmission(${n.id});toggleNotifDD()"><span class="notif-dd-icon">${n.is_read?'📬':'🔔'}</span><div class="notif-dd-body"><div class="notif-dd-text"><strong>${n.assessor_name||'Someone'}</strong> submitted <strong>${n.form_title||'a form'}</strong></div><div class="notif-dd-time">${ago}</div></div></div>`}).join('')}
@@ -189,15 +409,15 @@ function toggleNotifDD(){const dd=document.getElementById('notif-dropdown');if(d
 document.addEventListener('click',e=>{const w=document.getElementById('notif-wrap');if(w&&!w.contains(e.target)){const dd=document.getElementById('notif-dropdown');if(dd)dd.classList.remove('open')}});
 async function markAllReadBell(){await sb.from('form_submissions').update({is_read:true}).eq('is_read',false);notifBellData.forEach(n=>n.is_read=true);allSubmissions.forEach(s=>s.is_read=true);renderNotifBell();renderMainTable();toast('✅','Done','All read.')}
 
-// ═══ NAVIGATION ═══
+// ── NAVIGATION ──
 function goto(view,navEl){const v=document.getElementById('view-'+view);if(!v)return;document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));v.classList.add('active');document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));if(navEl)navEl.classList.add('active');const labels={dashboard:'Dashboard',print:'Print View','forms-lib':'Forms Library','form-builder':'Form Builder','form-fill':'Fill Form',settings:'Settings'};document.getElementById('bc-current').textContent=labels[view]||view;const ta=document.getElementById('topbar-actions');if(view==='dashboard'){ta.innerHTML='';refreshStats();renderMainTable();loadNotifBell()}else if(view==='forms-lib'){document.getElementById('nav-forms-lib')?.classList.add('active');ta.innerHTML='';renderFormsLib()}else if(view==='settings'){document.getElementById('nav-settings')?.classList.add('active');ta.innerHTML='';loadSettings()}else if(view==='print'){document.getElementById('nav-dash')?.classList.add('active');ta.innerHTML=`<button class="btn btn-ghost btn-sm" onclick="goto('dashboard',document.getElementById('nav-dash'))">← Back</button>`}else ta.innerHTML=''}
 function openFormBuilder(){resetBuilder();goto('form-builder',document.getElementById('nav-forms-lib'))}
 
-// ═══ CUSTOM FORMS ═══
+// ── CUSTOM FORMS ──
 async function loadCustomForms(){try{const{data}=await sb.from('custom_forms').select('*').order('created_at',{ascending:false});if(data)customForms=data.map(f=>({id:f.id,title:f.title,label:f.label||'',desc:f.description||'',status:f.status,fields:f.fields||[],submissions:f.submissions||[]}))}catch(e){}}
 function renderFormsLib(){refreshStats();const wrap=document.getElementById('forms-lib-wrap');if(!wrap)return;const cap=s=>s?s[0].toUpperCase()+s.slice(1):'';const rows=customForms.map((f,i)=>`<tr onclick="openFormFill(${f.id})"><td style="width:36px;text-align:center;font-size:11px;font-weight:700;color:var(--text3)">${i+1}</td><td class="td-name"><strong>${f.title}</strong><small>${f.desc||f.label||''}</small></td><td style="font-size:12px;color:var(--text2)">${f.fields.length} fields</td><td><span class="badge badge-${f.status}">${cap(f.status)}</span></td><td onclick="event.stopPropagation()" style="text-align:right"><div class="row-acts always"><button class="btn btn-ghost btn-xs" onclick="openShareModal(${f.id})">🔗</button><button class="btn btn-ghost btn-xs" onclick="editCustomForm(${f.id})">✏️</button><button class="btn btn-danger btn-xs" onclick="askDelForm(${f.id})">✕</button></div></td></tr>`).join('');wrap.innerHTML=`<div class="table-card"><div class="table-toolbar"><div class="table-title">All Forms</div></div><table><thead><tr><th>#</th><th>Form</th><th>Fields</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No forms</div></div></td></tr>'}</tbody></table></div>`}
 
-// ═══ INLINE FORM BUILDER ═══
+// ── INLINE FORM BUILDER ──
 const FT={text:{label:'📝 Text Box',hint:'Short answer'},textarea:{label:'📄 Long Text',hint:'Long answer'},number:{label:'🔢 Number',hint:'Numeric answer'},email:{label:'📧 Email',hint:'Email address'},date:{label:'📅 Date',hint:'Date picker'},time:{label:'🕐 Time',hint:'Time picker'},checkbox:{label:'☑️ Checkboxes',hint:'Pick multiple'},radio:{label:'⚪ Multiple Choice',hint:'Pick one'},dropdown:{label:'🔽 Dropdown',hint:'Pick one from list'},section:{label:'📑 Section Header',hint:'Divider / title'}};
 
 function renderBuilderFields(){
@@ -206,11 +426,7 @@ function renderBuilderFields(){
   const count=document.getElementById('fb-field-count');
   if(!container)return;
   count.textContent='('+builderFields.length+')';
-  if(!builderFields.length){
-    container.innerHTML='';
-    if(empty)empty.style.display='block';
-    return;
-  }
+  if(!builderFields.length){container.innerHTML='';if(empty)empty.style.display='block';return;}
   if(empty)empty.style.display='none';
   container.innerHTML=builderFields.map((f,i)=>renderFieldCard(f,i)).join('')+renderAddButton(builderFields.length);
 }
@@ -220,9 +436,7 @@ function renderAddButton(idx){
 }
 
 function renderFieldCard(f,i){
-  if(f.type==='section'){
-    return `${renderAddButton(i)}<div class="fb-section-divider"><input type="text" class="fb-section-divider-input" placeholder="Section title (e.g. Personal Information)" value="${(f.label||'').replace(/"/g,'&quot;')}" oninput="updateField(${i},'label',this.value)"><button class="fb-icon-btn danger" style="position:absolute;top:10px;right:10px" onclick="removeField(${i})" title="Delete section">✕</button></div>`;
-  }
+  if(f.type==='section'){return `${renderAddButton(i)}<div class="fb-section-divider"><input type="text" class="fb-section-divider-input" placeholder="Section title (e.g. Personal Information)" value="${(f.label||'').replace(/"/g,'&quot;')}" oninput="updateField(${i},'label',this.value)"><button class="fb-icon-btn danger" style="position:absolute;top:10px;right:10px" onclick="removeField(${i})" title="Delete section">✕</button></div>`;}
   const typeSel=Object.entries(FT).filter(([k])=>k!=='section').map(([k,v])=>`<option value="${k}" ${k===f.type?'selected':''}>${v.label}</option>`).join('');
   return `${renderAddButton(i)}<div class="fb-field-card" id="fb-field-${i}">
     <div class="fb-field-top">
@@ -285,17 +499,17 @@ function askDelForm(id){delFormTarget=id;document.getElementById('del-form-modal
 function closeDelFormModal(){document.getElementById('del-form-modal').classList.remove('open');delFormTarget=null}
 async function confirmDelForm(){const f=customForms.find(x=>x.id===delFormTarget);if(f?.id)await sb.from('custom_forms').delete().eq('id',f.id);customForms=customForms.filter(x=>x.id!==delFormTarget);refreshStats();renderFormsLib();closeDelFormModal();toast('🗑️','Deleted','')}
 
-// ═══ FORM FILL → saves to form_submissions (dashboard) ═══
+// ── FORM FILL ──
 function openFormFill(id){const form=customForms.find(f=>f.id===id);if(!form)return;if(form.status!=='published'){toast('⚠️','Not Published','');return}currentFillFormId=id;document.getElementById('ff-form-title').textContent=form.title;document.getElementById('ff-form-sub').textContent=form.fields.length+' fields';renderFormFill(form);goto('form-fill',null);document.getElementById('nav-forms-lib').classList.add('active')}
 function renderFormFill(form){const body=document.getElementById('ff-form-body');let html='',inSec=false;form.fields.forEach((f,i)=>{if(f.type==='section'){if(inSec)html+='</div></div>';html+=`<div class="ff-section"><div class="ff-section-head"><div class="ff-section-title">${f.label}</div></div><div class="ff-section-body">`;inSec=true;return}if(!inSec){html+='<div class="ff-section"><div class="ff-section-body">';inSec=true}const req=f.required?'<span style="color:var(--danger)"> *</span>':'';html+=`<div class="ff-field"><label>${f.label||'Field '+(i+1)}${req}</label>`;if(['text','email','number','date','time'].includes(f.type))html+=`<input type="${f.type}" id="ff-field-${i}" placeholder="${f.placeholder||''}">`;else if(f.type==='textarea')html+=`<textarea id="ff-field-${i}" placeholder="${f.placeholder||''}"></textarea>`;else if(f.type==='dropdown')html+=`<select id="ff-field-${i}"><option value="">Select…</option>${(f.options||[]).map(o=>`<option>${o}</option>`).join('')}</select>`;else if(f.type==='checkbox')html+=`<div class="ff-cb-grid" id="ff-field-${i}">${(f.options||[]).map(o=>`<label class="cb-item"><input type="checkbox" value="${o}"><span>${o}</span></label>`).join('')}</div>`;else if(f.type==='radio')html+=`<div class="ff-cb-grid" id="ff-field-${i}">${(f.options||[]).map(o=>`<label class="cb-item"><input type="radio" name="ff-radio-${i}" value="${o}"><span>${o}</span></label>`).join('')}</div>`;html+='</div>'});if(inSec)html+='</div></div>';body.innerHTML=html;document.getElementById('ff-reset-btn').onclick=()=>renderFormFill(form);document.getElementById('ff-submit-btn').onclick=()=>submitFormFill(form)}
 async function submitFormFill(form){const answers={};form.fields.forEach((f,i)=>{if(f.type==='section')return;const el=document.getElementById('ff-field-'+i);if(!el)return;if(f.type==='checkbox')answers[f.label||'Field '+i]=[...el.querySelectorAll('input:checked')].map(c=>c.value).join(', ');else if(f.type==='radio'){const sel=el.querySelector('input:checked');answers[f.label||'Field '+i]=sel?sel.value:''}else answers[f.label||'Field '+i]=el.value||''});try{const{error}=await sb.from('form_submissions').insert({form_id:Number(form.id),form_title:form.title,assessor_id:null,assessor_name:currentAdmin?.full_name||'Admin',assessor_email:currentUser?.email||'',answers,is_read:false,submitted_at:new Date().toISOString()});if(error)throw error;toast('✅','Submitted!','Saved to dashboard.');await loadAllSubmissions();renderFormFill(form)}catch(e){toast('❌','Failed',e.message)}}
 
-// ═══ SHARE ═══
+// ── SHARE ──
 function openShareModal(id){const base=window.location.href.split('?')[0].split('#')[0].replace('index.html','');document.getElementById('share-link-text').textContent=base+'assessor.html?form='+id;document.getElementById('share-modal').classList.add('open')}
 function closeShareModal(){document.getElementById('share-modal').classList.remove('open')}
 function copyShareLink(){const t=document.getElementById('share-link-text').textContent;navigator.clipboard?.writeText(t).then(()=>toast('✅','Copied!','')).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✅','Copied!','')})}
 
-// ═══ SETTINGS ═══
+// ── SETTINGS ──
 function loadSettings(){loadAssessors();if(currentAdmin?.role==='super_admin'){loadAdmins();loadKillSwitch();loadAuditLog()}}
 async function loadAssessors(){const w=document.getElementById('assessors-wrap');if(!w)return;w.innerHTML='<div style="padding:16px;color:var(--text3)">Loading…</div>';try{const{data,error}=await sb.from('assessors').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data.length){w.innerHTML='<div style="padding:24px 16px;color:var(--text3)">No assessors.</div>';return}w.innerHTML=`<table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Added</th><th style="text-align:right">Actions</th></tr></thead><tbody>${data.map(a=>`<tr><td style="padding:11px 14px;font-weight:600">${a.full_name}</td><td style="padding:11px 14px;font-size:12px;color:var(--text2)">${a.email}</td><td style="padding:11px 14px"><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${a.is_active?'var(--success-bg)':'var(--danger-bg)'};color:${a.is_active?'var(--success)':'var(--danger)'}">${a.is_active?'● Active':'● Inactive'}</span></td><td style="padding:11px 14px;font-size:11px;color:var(--text3)">${new Date(a.created_at).toLocaleDateString('en-PH')}</td><td style="padding:11px 14px;text-align:right"><button class="btn btn-ghost btn-xs" onclick="openEditAssessor('${a.id}','${(a.full_name||'').replace(/'/g,"\\'")}','${a.email}')">✏️ Edit</button><button class="btn btn-ghost btn-xs" style="margin-left:4px" onclick="toggleAssessorStatus('${a.id}',${a.is_active})">${a.is_active?'Deactivate':'Activate'}</button><button class="btn btn-danger btn-xs" style="margin-left:4px" onclick="removeAssessor('${a.id}','${a.full_name}')">Remove</button></td></tr>`).join('')}</tbody></table>`}catch(e){w.innerHTML=`<div style="padding:16px;color:var(--danger)">${e.message}</div>`}}
 function openAddAssessor(){document.getElementById('asr-name').value='';document.getElementById('asr-email').value='';document.getElementById('add-asr-err').style.display='none';document.getElementById('add-assessor-modal').classList.add('open')}
