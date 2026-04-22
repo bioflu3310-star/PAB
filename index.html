@@ -389,7 +389,20 @@ async function markSubRead(id){
 // ── VIEW SUBMISSION + DIRECTOR SIGN-OFF ──
 function viewSubmission(id){const s=allSubmissions.find(x=>x.id===id);if(!s)return;currentViewSub=s;directorVisible=false;if(!s.is_read)markSubRead(id);
 const answers=s.answers||{},ref='SUB-'+String(s.id).padStart(4,'0'),dir=s.director_signoff||{};
-let fh='';Object.entries(answers).forEach(([k,v])=>{fh+=`<div class="pf"><label>${k}</label><div class="val">${v||'<span class="empty">N/A</span>'}</div></div>`});
+
+// ── ORDER FIX: use the saved form's field order, fall back to Object.entries only if form not found ──
+let orderedKeys=[];
+const sourceForm=customForms.find(f=>f.id==s.form_id||f.title===s.form_title);
+if(sourceForm&&sourceForm.fields&&sourceForm.fields.length){
+  // Walk the original field order, skip section headers (they have no answer key)
+  sourceForm.fields.forEach(f=>{if(f.type!=='section'&&f.label&&f.label in answers)orderedKeys.push(f.label);});
+  // Append any answer keys not found in form fields (safety net)
+  Object.keys(answers).forEach(k=>{if(!orderedKeys.includes(k))orderedKeys.push(k);});
+}else{
+  orderedKeys=Object.keys(answers);
+}
+
+let fh='';orderedKeys.forEach(k=>{const v=answers[k];fh+=`<div class="pf"><label>${k}</label><div class="val">${v||'<span class="empty">N/A</span>'}</div></div>`});
 document.getElementById('pt-ref').textContent=ref;document.getElementById('pt-sub').textContent=`${s.assessor_name||''} · ${s.submitted_at?new Date(s.submitted_at).toLocaleString('en-PH'):''}`;
 document.getElementById('director-toggle-btn').textContent=dir.qualifiedBy?'🏛 Show Director Sign-Off':'🏛 Add Director Sign-Off';
 document.getElementById('print-doc').innerHTML=`<div class="print-banner"><div><h1>${s.form_title||'Submission'}</h1><div class="sub">${s.assessor_name||''} · ${s.assessor_email||''}</div></div><div class="print-meta"><div>Reference</div><div class="val">${ref}</div><div style="margin-top:4px;font-size:11px">${s.submitted_at?new Date(s.submitted_at).toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):'—'}</div></div></div><div class="print-body"><div class="print-sec"><div class="print-sec-title">Answers</div><div class="print-fields g1">${fh}</div></div></div><div class="director-section" id="director-section"><div class="director-header"><div class="director-header-icon">🏛</div><div><div class="director-header-title">PAB Officers — Director Sign-Off</div><div class="director-header-sub">To be filled by authorized PAB personnel</div></div></div><div class="director-body"><div class="director-field"><label>Qualified By</label><input type="text" id="dir-qualified-by" placeholder="e.g. Mr. Roderick Dela Cruz" value="${dir.qualifiedBy||''}"><label style="margin-top:10px">Date</label><input type="date" id="dir-date" value="${dir.qualifiedDate||''}"><label style="margin-top:10px">Signature</label><div class="director-canvas-wrap"><canvas id="dir-sig-canvas" width="300" height="100"></canvas></div><button class="btn btn-ghost btn-xs" style="margin-top:6px" onclick="clearDirSig()">✕ Clear</button></div><div class="director-field"><label>Evaluation Remarks</label><textarea id="dir-remarks" placeholder="e.g. Completed all requirements">${dir.evaluationRemarks||''}</textarea></div><div class="director-field"><label>Recommendation</label><textarea id="dir-recommendation" placeholder="e.g. Technical Assessor">${dir.recommendation||''}</textarea></div><div class="director-actions"><button class="btn btn-ghost btn-sm" onclick="toggleDirectorSection()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveDirectorSignoff()">💾 Save Sign-Off</button></div></div></div><div class="print-footer"><div style="font-size:11px;color:var(--text3)"><div style="font-size:12px;font-weight:700;margin-bottom:4px">PAB Information System</div><div>Ref: ${ref} · ${new Date().toLocaleString('en-PH')}</div></div></div>`;
