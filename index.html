@@ -139,7 +139,58 @@
 
 <!-- MODALS -->
 <div class="modal-overlay" id="add-assessor-modal"><div class="modal-box" style="max-width:460px"><h3>Add Assessor</h3><p>Register an assessor so they can access and fill out forms via share link.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label><input type="text" id="asr-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="asr-email" placeholder="assessor@email.com" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div id="add-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeAddAssessor()">Cancel</button><button class="btn btn-primary btn-sm" id="add-asr-btn" onclick="doAddAssessor()">Add</button></div></div></div>
-<div class="modal-overlay" id="add-admin-modal"><div class="modal-box" style="max-width:460px"><h3>Add Admin</h3><p>Add a new admin account. The person must have already signed up and logged in at least once.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="adm-email" placeholder="admin@pab.gov.ph" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Name *</label><input type="text" id="adm-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Password *</label><input type="password" id="adm-password" placeholder="Set a strong password" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Role *</label><select id="adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"><option value="viewer">👁 Viewer</option><option value="admin">🔧 Admin</option><option value="super_admin">👑 Super Admin</option></select></div><div id="add-adm-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeAddAdmin()">Cancel</button><button class="btn btn-primary btn-sm" onclick="doAddAdmin()">Add</button></div></div></div>
+<div class="modal-overlay" id="add-admin-modal">
+  <div class="modal-box" style="max-width:480px">
+
+    <!-- STEP 1: Verify your own password -->
+    <div id="adm-step1">
+      <h3>🔐 Verify Identity</h3>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6">For security, enter <strong>your own password</strong> before adding a new admin account.</p>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Your Password *</label>
+        <input type="password" id="adm-verify-pw" placeholder="Enter your current password" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif" onkeydown="if(event.key==='Enter')verifyAdminPassword()">
+      </div>
+      <div id="adm-verify-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div>
+      <div class="modal-acts">
+        <button class="btn btn-ghost btn-sm" onclick="closeAddAdmin()">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="adm-verify-btn" onclick="verifyAdminPassword()">Verify →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Fill new admin details -->
+    <div id="adm-step2" style="display:none">
+      <h3>Add New Admin</h3>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6">Create a new admin account with login credentials.</p>
+      <div style="margin-bottom:14px">
+        <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label>
+        <input type="text" id="adm-name" placeholder="Juan Dela Cruz" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label>
+        <input type="email" id="adm-email" placeholder="admin@pab.gov.ph" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">New Admin Password *</label>
+        <input type="password" id="adm-password" placeholder="Set a strong password (min. 8 characters)" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif">
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">This will be the new admin's login password.</div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Role *</label>
+        <select id="adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif">
+          <option value="viewer">👁 Viewer — Read only</option>
+          <option value="admin">🔧 Admin — Manage forms & assessors</option>
+          <option value="super_admin">👑 Super Admin — Full access</option>
+        </select>
+      </div>
+      <div id="add-adm-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div>
+      <div class="modal-acts">
+        <button class="btn btn-ghost btn-sm" onclick="closeAddAdmin()">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="adm-add-btn" onclick="doAddAdmin()">✚ Create Admin</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 <div class="modal-overlay" id="edit-assessor-modal"><div class="modal-box" style="max-width:460px"><h3>Edit Assessor</h3><p>Update the assessor's name and email.</p><div style="margin-bottom:14px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Full Name *</label><input type="text" id="edit-asr-name" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div style="margin-bottom:20px"><label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Email *</label><input type="email" id="edit-asr-email" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif"></div><div id="edit-asr-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeEditAssessor()">Cancel</button><button class="btn btn-primary btn-sm" id="edit-asr-btn" onclick="doEditAssessor()">Save Changes</button></div></div></div>
 <div class="modal-overlay" id="share-modal"><div class="share-modal-box"><h3>🔗 Share Form</h3><p>Copy and send this link to your assessors.</p><div class="share-link-box"><span class="share-link-text" id="share-link-text">—</span><button class="btn btn-primary btn-xs" onclick="copyShareLink()">Copy</button></div><div class="share-notice">⚠️ Submissions appear on your dashboard instantly.</div><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeShareModal()">Close</button></div></div></div>
 <div class="modal-overlay" id="del-form-modal"><div class="modal-box"><h3>Delete Form</h3><p>Are you sure you want to delete this form? This will permanently remove it from the library.</p><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="closeDelFormModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDelForm()">Delete</button></div></div></div>
@@ -148,6 +199,23 @@
 <div class="modal-overlay" id="bulk-del-modal"><div class="modal-box"><h3>Delete Selected Submissions</h3><p id="bulk-del-msg">Are you sure? This will permanently delete the selected submissions and cannot be undone.</p><div class="modal-acts"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('bulk-del-modal').classList.remove('open')">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmBulkDelete()">Delete</button></div></div></div>
 
 <div class="toast" id="toast"><div class="toast-ico" id="t-ico"></div><div class="toast-body"><div class="toast-title" id="t-title"></div><div class="toast-sub" id="t-sub"></div></div></div>
+
+<!-- SECURITY CONFIRM MODAL -->
+<div class="modal-overlay" id="security-confirm-modal">
+  <div class="modal-box" style="max-width:420px">
+    <h3 id="sec-confirm-title">⚠️ Confirm Action</h3>
+    <p id="sec-confirm-msg" style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6"></p>
+    <div style="margin-bottom:16px">
+      <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Enter your password to confirm *</label>
+      <input type="password" id="sec-confirm-pw" placeholder="Your current password" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif" onkeydown="if(event.key==='Enter')secConfirmSubmit()">
+    </div>
+    <div id="sec-confirm-err" style="display:none;padding:8px 12px;border-radius:7px;font-size:12px;margin-bottom:14px;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3)"></div>
+    <div class="modal-acts">
+      <button class="btn btn-ghost btn-sm" onclick="closeSecConfirm()">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="sec-confirm-btn" onclick="secConfirmSubmit()">Confirm</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -539,15 +607,122 @@ function openAddAssessor(){document.getElementById('asr-name').value='';document
 function closeAddAssessor(){document.getElementById('add-assessor-modal').classList.remove('open')}
 async function doAddAssessor(){const err=document.getElementById('add-asr-err');err.style.display='none';const name=document.getElementById('asr-name').value.trim(),email=document.getElementById('asr-email').value.trim().toLowerCase();if(!name||!email){err.textContent='Fill all fields.';err.style.display='block';return}const btn=document.getElementById('add-asr-btn');btn.disabled=true;btn.textContent='Adding…';try{const{data:ex}=await sb.from('assessors').select('id').eq('email',email).single();if(ex){err.textContent='Already registered.';err.style.display='block';btn.disabled=false;btn.textContent='Add';return}const{error}=await sb.from('assessors').insert({id:crypto.randomUUID(),email,full_name:name,is_active:true,created_by:currentUser?.id,created_at:new Date().toISOString()});if(error)throw error;closeAddAssessor();toast('✅','Added',name);await auditLog('ADD_ASSESSOR',name+' ('+email+')');loadAssessors()}catch(e){err.textContent='❌ '+e.message;err.style.display='block'}btn.disabled=false;btn.textContent='Add'}
 async function toggleAssessorStatus(id,a){await sb.from('assessors').update({is_active:!a}).eq('id',id);loadAssessors();toast('✅','Updated','')}
-async function removeAssessor(id,n){if(!confirm('Remove '+n+'?'))return;await sb.from('assessors').delete().eq('id',id);loadAssessors();toast('🗑️','Removed','')}
+function removeAssessor(id,n){openSecConfirm('Remove Assessor','You are about to permanently remove <strong>'+n+'</strong> from the system. This cannot be undone.',async function(){await sb.from('assessors').delete().eq('id',id);await auditLog('REMOVE_ASSESSOR',n);loadAssessors();toast('🗑️','Removed',n+' removed.');});}
 let editingAssessorId=null;
 function openEditAssessor(id,name,email){editingAssessorId=id;document.getElementById('edit-asr-name').value=name||'';document.getElementById('edit-asr-email').value=email||'';document.getElementById('edit-asr-err').style.display='none';document.getElementById('edit-assessor-modal').classList.add('open')}
 function closeEditAssessor(){document.getElementById('edit-assessor-modal').classList.remove('open');editingAssessorId=null}
 async function doEditAssessor(){const err=document.getElementById('edit-asr-err');err.style.display='none';const name=document.getElementById('edit-asr-name').value.trim(),email=document.getElementById('edit-asr-email').value.trim().toLowerCase();if(!name||!email){err.textContent='Fill all fields.';err.style.display='block';return}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Invalid email format.';err.style.display='block';return}const btn=document.getElementById('edit-asr-btn');btn.disabled=true;btn.textContent='Saving…';try{const{data:ex}=await sb.from('assessors').select('id').eq('email',email).neq('id',editingAssessorId).single();if(ex){err.textContent='Email already used by another assessor.';err.style.display='block';btn.disabled=false;btn.textContent='Save Changes';return}const{error}=await sb.from('assessors').update({full_name:name,email}).eq('id',editingAssessorId);if(error)throw error;closeEditAssessor();toast('✅','Updated',name+' updated.');await auditLog('EDIT_ASSESSOR','Updated: '+name+' ('+email+')');loadAssessors()}catch(e){err.textContent='❌ '+e.message;err.style.display='block'}btn.disabled=false;btn.textContent='Save Changes'}
-function openAddAdmin(){document.getElementById('adm-email').value='';document.getElementById('adm-name').value='';document.getElementById('adm-role').value='viewer';document.getElementById('add-adm-err').style.display='none';document.getElementById('add-admin-modal').classList.add('open')}
-function closeAddAdmin(){document.getElementById('add-admin-modal').classList.remove('open')}
-async function doAddAdmin(){const err=document.getElementById('add-adm-err');err.style.display='none';const email=document.getElementById('adm-email').value.trim().toLowerCase(),name=document.getElementById('adm-name').value.trim(),role=document.getElementById('adm-role').value;if(!email||!name){err.textContent='Fill all fields.';err.style.display='block';return}const sql=`INSERT INTO public.admins (id,email,full_name,role,is_active)\nSELECT id,email,'${name}','${role}',true\nFROM auth.users WHERE email='${email}';`;err.innerHTML=`⚠️ Run in SQL Editor:<br><code style="display:block;background:rgba(0,0,0,.2);padding:8px;border-radius:6px;font-size:11px;white-space:pre;margin-top:6px">${sql}</code>`;err.style.display='block'}
-async function loadAdmins(){const w=document.getElementById('admins-wrap');if(!w)return;w.innerHTML='<div style="padding:16px;color:var(--text3)">Loading…</div>';try{const{data,error}=await sb.from('admins').select('*').order('created_at',{ascending:true});if(error)throw error;const rl=r=>({super_admin:'👑 Super Admin',admin:'🔧 Admin',viewer:'👁 Viewer'})[r]||r;w.innerHTML=`<table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr></thead><tbody>${data.map(a=>`<tr><td style="padding:11px 14px;font-weight:600">${a.full_name}${a.id===currentUser?.id?' <span style="font-size:10px;color:var(--accent)">(you)</span>':''}</td><td style="padding:11px 14px;font-size:12px;color:var(--text2)">${a.email}</td><td style="padding:11px 14px">${rl(a.role)}</td><td style="padding:11px 14px"><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${a.is_active?'var(--success-bg)':'var(--danger-bg)'};color:${a.is_active?'var(--success)':'var(--danger)'}">${a.is_active?'● Active':'● Inactive'}</span></td></tr>`).join('')}</tbody></table>`}catch(e){w.innerHTML=`<div style="padding:16px;color:var(--danger)">${e.message}</div>`}}
+function openAddAdmin(){
+  // reset both steps
+  document.getElementById('adm-step1').style.display='block';
+  document.getElementById('adm-step2').style.display='none';
+  document.getElementById('adm-verify-pw').value='';
+  document.getElementById('adm-verify-err').style.display='none';
+  document.getElementById('adm-email').value='';
+  document.getElementById('adm-name').value='';
+  document.getElementById('adm-password').value='';
+  document.getElementById('adm-role').value='admin';
+  document.getElementById('add-adm-err').style.display='none';
+  document.getElementById('add-admin-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('adm-verify-pw').focus();},100);
+}
+function closeAddAdmin(){document.getElementById('add-admin-modal').classList.remove('open');}
+async function verifyAdminPassword(){
+  const pw=document.getElementById('adm-verify-pw').value;
+  const err=document.getElementById('adm-verify-err');
+  const btn=document.getElementById('adm-verify-btn');
+  err.style.display='none';
+  if(!pw){err.textContent='Please enter your password.';err.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Verifying…';
+  try{
+    const{error}=await sb.auth.signInWithPassword({email:currentUser.email,password:pw});
+    if(error)throw error;
+    // Password correct — show step 2
+    document.getElementById('adm-step1').style.display='none';
+    document.getElementById('adm-step2').style.display='block';
+    setTimeout(function(){document.getElementById('adm-name').focus();},100);
+  }catch(e){
+    err.textContent='❌ Incorrect password. Try again.';
+    err.style.display='block';
+    document.getElementById('adm-verify-pw').value='';
+    document.getElementById('adm-verify-pw').focus();
+  }
+  btn.disabled=false;btn.textContent='Verify →';
+}
+
+async function doAddAdmin(){
+  const err=document.getElementById('add-adm-err');
+  err.style.display='none';
+  const name=document.getElementById('adm-name').value.trim();
+  const email=document.getElementById('adm-email').value.trim().toLowerCase();
+  const password=document.getElementById('adm-password').value;
+  const role=document.getElementById('adm-role').value;
+  if(!name||!email||!password){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  if(password.length<8){err.textContent='Password must be at least 8 characters.';err.style.display='block';return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Invalid email format.';err.style.display='block';return;}
+  const btn=document.getElementById('adm-add-btn');
+  btn.disabled=true;btn.textContent='Creating…';
+  try{
+    // 1. Create the auth user via Supabase signUp
+    const{data:signUpData,error:signUpErr}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+    if(signUpErr)throw signUpErr;
+    const newUserId=signUpData?.user?.id;
+    if(!newUserId)throw new Error('Could not create user account. Email may already be registered.');
+    // 2. Insert into admins table
+    const{error:admErr}=await sb.from('admins').insert({id:newUserId,email,full_name:name,role,is_active:true});
+    if(admErr)throw admErr;
+    await auditLog('ADD_ADMIN',name+' ('+email+') as '+role);
+    closeAddAdmin();
+    toast('✅','Admin Created',''+name+' can now log in.');
+    loadAdmins();
+  }catch(e){
+    err.textContent='❌ '+e.message;
+    err.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='✚ Create Admin';
+}
+async function loadAdmins(){
+  const w=document.getElementById('admins-wrap');
+  if(!w)return;
+  w.innerHTML='<div style="padding:16px;color:var(--text3)">Loading\u2026</div>';
+  try{
+    const{data,error}=await sb.from('admins').select('*').order('created_at',{ascending:true});
+    if(error)throw error;
+    const roleLabel=function(r){return({super_admin:'\ud83d\udc51 Super Admin',admin:'\ud83d\udd27 Admin',viewer:'\ud83d\udc41 Viewer'})[r]||r;};
+    const rows=data.map(function(a){
+      const isYou=a.id===currentUser?.id;
+      const statusBg=a.is_active?'var(--success-bg)':'var(--danger-bg)';
+      const statusColor=a.is_active?'var(--success)':'var(--danger)';
+      const statusText=a.is_active?'\u25cf Active':'\u25cf Inactive';
+      let actionCell;
+      if(isYou){
+        actionCell='<span style="font-size:11px;color:var(--text3)">\u2014</span>';
+      }else{
+        const btn=document.createElement('button');
+        btn.className='btn btn-danger btn-xs';
+        btn.textContent='Remove';
+        btn.setAttribute('data-aid',a.id);
+        btn.setAttribute('data-aname',a.full_name);
+        btn.setAttribute('onclick','removeAdminById(this)');
+        actionCell=btn.outerHTML;
+      }
+      return '<tr>'
+        +'<td style="padding:11px 14px;font-weight:600">'+a.full_name+(isYou?' <span style="font-size:10px;color:var(--accent)">(you)</span>':'')+'</td>'
+        +'<td style="padding:11px 14px;font-size:12px;color:var(--text2)">'+a.email+'</td>'
+        +'<td style="padding:11px 14px">'+roleLabel(a.role)+'</td>'
+        +'<td style="padding:11px 14px"><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:'+statusBg+';color:'+statusColor+'">'+statusText+'</span></td>'
+        +'<td style="padding:11px 14px;text-align:right">'+actionCell+'</td>'
+        +'</tr>';
+    }).join('');
+    w.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }catch(e){w.innerHTML='<div style="padding:16px;color:var(--danger)">'+e.message+'</div>';}
+}
+function removeAdminById(btn){
+  const id=btn.getAttribute('data-aid');
+  const name=btn.getAttribute('data-aname');
+  removeAdmin(id,name);
+}
+function removeAdmin(id,name){openSecConfirm('Remove Admin','You are about to permanently remove admin <strong>'+name+'</strong>. They will lose all access immediately.',async function(){const{error}=await sb.from('admins').delete().eq('id',id);if(error){toast('❌','Failed',error.message);return;}await auditLog('REMOVE_ADMIN',name);loadAdmins();toast('🗑️','Removed',name+' removed.');});}
 let killSwitchValue=false;
 async function loadKillSwitch(){try{const{data}=await sb.from('system_settings').select('value').eq('key','kill_switch').single();killSwitchValue=data?.value==='true';renderKillSwitch()}catch(e){}}
 function renderKillSwitch(){const l=document.getElementById('kill-status-label'),b=document.getElementById('kill-toggle-btn');if(!l||!b)return;if(killSwitchValue){l.innerHTML='<span style="color:var(--danger)">🔴 LOCKED</span>';b.textContent='Unlock';b.className='btn btn-success btn-sm'}else{l.innerHTML='<span style="color:var(--success)">🟢 ONLINE</span>';b.textContent='Lock';b.className='btn btn-danger btn-sm'}}
@@ -557,9 +732,48 @@ async function loadAuditByType(type){const loginActions=['LOGIN','LOGOUT'];const
 async function loadAuditLog(){loadAuditByType('login');loadAuditByType('assessor');loadAuditByType('forms');}
 
 let toastTmr;function toast(ico,title,sub){document.getElementById('t-ico').textContent=ico;document.getElementById('t-title').textContent=title;document.getElementById('t-sub').textContent=sub;const el=document.getElementById('toast');el.classList.add('show');clearTimeout(toastTmr);toastTmr=setTimeout(()=>el.classList.remove('show'),4000)}
+
+// ── SECURITY CONFIRM (password-gated destructive actions) ──
+let _secConfirmCallback=null;
+function openSecConfirm(title,msg,callback){
+  _secConfirmCallback=callback;
+  document.getElementById('sec-confirm-title').innerHTML='⚠️ '+title;
+  document.getElementById('sec-confirm-msg').innerHTML=msg+'<br><br><span style="font-size:12px;color:var(--warning)">⚠️ This action is permanent and cannot be undone.</span>';
+  document.getElementById('sec-confirm-pw').value='';
+  document.getElementById('sec-confirm-err').style.display='none';
+  document.getElementById('sec-confirm-btn').textContent='Confirm';
+  document.getElementById('security-confirm-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('sec-confirm-pw').focus();},100);
+}
+function closeSecConfirm(){
+  document.getElementById('security-confirm-modal').classList.remove('open');
+  _secConfirmCallback=null;
+}
+async function secConfirmSubmit(){
+  const pw=document.getElementById('sec-confirm-pw').value;
+  const err=document.getElementById('sec-confirm-err');
+  const btn=document.getElementById('sec-confirm-btn');
+  err.style.display='none';
+  if(!pw){err.textContent='Please enter your password.';err.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Verifying…';
+  try{
+    const{error}=await sb.auth.signInWithPassword({email:currentUser.email,password:pw});
+    if(error)throw error;
+    closeSecConfirm();
+    if(_secConfirmCallback)await _secConfirmCallback();
+  }catch(e){
+    err.textContent='❌ Incorrect password. Action cancelled.';
+    err.style.display='block';
+    document.getElementById('sec-confirm-pw').value='';
+    document.getElementById('sec-confirm-pw').focus();
+  }
+  btn.disabled=false;btn.textContent='Confirm';
+}
+
 function toggleOtherInput(cb,inputId){var inp=document.getElementById(inputId);if(!inp)return;inp.style.display=cb.checked?'block':'none';if(cb.checked)inp.focus();else inp.value='';}
 function doLogout(){auditLog('LOGOUT',(currentAdmin?currentAdmin.full_name:'')+' logged out').then(function(){sb.auth.signOut().then(function(){window.location.href='login.html';});});}
 initAuth();
 </script>
+
 </body>
 </html>
