@@ -177,7 +177,6 @@
       <div style="margin-bottom:20px">
         <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px">Role *</label>
         <select id="adm-role" style="background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--text);outline:none;width:100%;font-family:'Inter',sans-serif">
-          <option value="viewer">👁 Viewer — Read only</option>
           <option value="admin">🔧 Admin — Manage forms & assessors</option>
           <option value="super_admin">👑 Super Admin — Full access</option>
         </select>
@@ -602,12 +601,12 @@ function copyShareLink(){const t=document.getElementById('share-link-text').text
 
 // ── SETTINGS ──
 function loadSettings(){loadAssessors();if(currentAdmin&&currentAdmin.role==='super_admin'){loadAdmins();loadKillSwitch();loadAuditLog();}}
-async function loadAssessors(){const w=document.getElementById('assessors-wrap');if(!w)return;w.innerHTML='<div style="padding:16px;color:var(--text3)">Loading…</div>';try{const{data,error}=await sb.from('assessors').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data.length){w.innerHTML='<div style="padding:24px 16px;color:var(--text3)">No assessors.</div>';return}w.innerHTML=`<table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Added</th><th style="text-align:right">Actions</th></tr></thead><tbody>${data.map(a=>`<tr><td style="padding:11px 14px;font-weight:600">${a.full_name}</td><td style="padding:11px 14px;font-size:12px;color:var(--text2)">${a.email}</td><td style="padding:11px 14px"><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${a.is_active?'var(--success-bg)':'var(--danger-bg)'};color:${a.is_active?'var(--success)':'var(--danger)'}">${a.is_active?'● Active':'● Inactive'}</span></td><td style="padding:11px 14px;font-size:11px;color:var(--text3)">${new Date(a.created_at).toLocaleDateString('en-PH')}</td><td style="padding:11px 14px;text-align:right"><button class="btn btn-ghost btn-xs" onclick="openEditAssessor('${a.id}','${(a.full_name||'').replace(/'/g,"\\'")}','${a.email}')">✏️ Edit</button><button class="btn btn-ghost btn-xs" style="margin-left:4px" onclick="toggleAssessorStatus('${a.id}',${a.is_active})">${a.is_active?'Deactivate':'Activate'}</button><button class="btn btn-danger btn-xs" style="margin-left:4px" onclick="removeAssessor('${a.id}','${a.full_name}')">Remove</button></td></tr>`).join('')}</tbody></table>`}catch(e){w.innerHTML=`<div style="padding:16px;color:var(--danger)">${e.message}</div>`}}
+async function loadAssessors(){const w=document.getElementById('assessors-wrap');if(!w)return;w.innerHTML='<div style="padding:16px;color:var(--text3)">Loading...</div>';try{const{data,error}=await sb.from('assessors').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data.length){w.innerHTML='<div style="padding:24px 16px;color:var(--text3)">No assessors.</div>';return;}const canManage=currentAdmin&&(currentAdmin.role==='admin'||currentAdmin.role==='super_admin');const rows=data.map(function(a){const statusBg=a.is_active?'var(--success-bg)':'var(--danger-bg)';const statusColor=a.is_active?'var(--success)':'var(--danger)';const safeName=(a.full_name||'').replace(/'/g,"\\'");const actions=canManage?('<button class="btn btn-ghost btn-xs" onclick="openEditAssessor(\''+a.id+'\',\''+safeName+'\',\''+a.email+'\')">Edit</button>'+'<button class="btn btn-ghost btn-xs" style="margin-left:4px" onclick="toggleAssessorStatus(\''+a.id+'\','+a.is_active+')">'+(a.is_active?'Deactivate':'Activate')+'</button>'+'<button class="btn btn-danger btn-xs" style="margin-left:4px" onclick="removeAssessor(\''+a.id+'\',\''+safeName+'\')">Remove</button>'):'<span style="font-size:11px;color:var(--text3)">No actions</span>';return '<tr><td style="padding:11px 14px;font-weight:600">'+a.full_name+'</td><td style="padding:11px 14px;font-size:12px;color:var(--text2)">'+a.email+'</td><td style="padding:11px 14px"><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:'+statusBg+';color:'+statusColor+'">'+(a.is_active?'Active':'Inactive')+'</span></td><td style="padding:11px 14px;font-size:11px;color:var(--text3)">'+new Date(a.created_at).toLocaleDateString('en-PH')+'</td><td style="padding:11px 14px;text-align:right">'+actions+'</td></tr>';}).join('');w.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Added</th><th style="text-align:right">Actions</th></tr></thead><tbody>'+rows+'</tbody></table>';}catch(e){w.innerHTML='<div style="padding:16px;color:var(--danger)">'+e.message+'</div>';}}
 function openAddAssessor(){document.getElementById('asr-name').value='';document.getElementById('asr-email').value='';document.getElementById('add-asr-err').style.display='none';document.getElementById('add-assessor-modal').classList.add('open')}
 function closeAddAssessor(){document.getElementById('add-assessor-modal').classList.remove('open')}
 async function doAddAssessor(){const err=document.getElementById('add-asr-err');err.style.display='none';const name=document.getElementById('asr-name').value.trim(),email=document.getElementById('asr-email').value.trim().toLowerCase();if(!name||!email){err.textContent='Fill all fields.';err.style.display='block';return}const btn=document.getElementById('add-asr-btn');btn.disabled=true;btn.textContent='Adding…';try{const{data:ex}=await sb.from('assessors').select('id').eq('email',email).single();if(ex){err.textContent='Already registered.';err.style.display='block';btn.disabled=false;btn.textContent='Add';return}const{error}=await sb.from('assessors').insert({id:crypto.randomUUID(),email,full_name:name,is_active:true,created_by:currentUser?.id,created_at:new Date().toISOString()});if(error)throw error;closeAddAssessor();toast('✅','Added',name);await auditLog('ADD_ASSESSOR',name+' ('+email+')');loadAssessors()}catch(e){err.textContent='❌ '+e.message;err.style.display='block'}btn.disabled=false;btn.textContent='Add'}
 async function toggleAssessorStatus(id,a){await sb.from('assessors').update({is_active:!a}).eq('id',id);loadAssessors();toast('✅','Updated','')}
-function removeAssessor(id,n){openSecConfirm('Remove Assessor','You are about to permanently remove <strong>'+n+'</strong> from the system. This cannot be undone.',async function(){await sb.from('assessors').delete().eq('id',id);await auditLog('REMOVE_ASSESSOR',n);loadAssessors();toast('🗑️','Removed',n+' removed.');});}
+function removeAssessor(id,n){openSecConfirm('Remove Assessor','You are about to permanently remove <strong>'+n+'</strong> from the system. This cannot be undone.',async function(){const{error}=await sb.from('assessors').delete().eq('id',id);if(error){toast('Error','Could not remove: '+error.message,'');return;}await auditLog('REMOVE_ASSESSOR',n);loadAssessors();toast('Removed',n+' removed.','');});}
 let editingAssessorId=null;
 function openEditAssessor(id,name,email){editingAssessorId=id;document.getElementById('edit-asr-name').value=name||'';document.getElementById('edit-asr-email').value=email||'';document.getElementById('edit-asr-err').style.display='none';document.getElementById('edit-assessor-modal').classList.add('open')}
 function closeEditAssessor(){document.getElementById('edit-assessor-modal').classList.remove('open');editingAssessorId=null}
@@ -650,37 +649,7 @@ async function verifyAdminPassword(){
   btn.disabled=false;btn.textContent='Verify →';
 }
 
-async function doAddAdmin(){
-  const err=document.getElementById('add-adm-err');
-  err.style.display='none';
-  const name=document.getElementById('adm-name').value.trim();
-  const email=document.getElementById('adm-email').value.trim().toLowerCase();
-  const password=document.getElementById('adm-password').value;
-  const role=document.getElementById('adm-role').value;
-  if(!name||!email||!password){err.textContent='Please fill in all fields.';err.style.display='block';return;}
-  if(password.length<8){err.textContent='Password must be at least 8 characters.';err.style.display='block';return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Invalid email format.';err.style.display='block';return;}
-  const btn=document.getElementById('adm-add-btn');
-  btn.disabled=true;btn.textContent='Creating…';
-  try{
-    // 1. Create the auth user via Supabase signUp
-    const{data:signUpData,error:signUpErr}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
-    if(signUpErr)throw signUpErr;
-    const newUserId=signUpData?.user?.id;
-    if(!newUserId)throw new Error('Could not create user account. Email may already be registered.');
-    // 2. Insert into admins table
-    const{error:admErr}=await sb.from('admins').insert({id:newUserId,email,full_name:name,role,is_active:true});
-    if(admErr)throw admErr;
-    await auditLog('ADD_ADMIN',name+' ('+email+') as '+role);
-    closeAddAdmin();
-    toast('✅','Admin Created',''+name+' can now log in.');
-    loadAdmins();
-  }catch(e){
-    err.textContent='❌ '+e.message;
-    err.style.display='block';
-  }
-  btn.disabled=false;btn.textContent='✚ Create Admin';
-}
+async function doAddAdmin(){const err=document.getElementById('add-adm-err');err.style.display='none';const name=document.getElementById('adm-name').value.trim();const email=document.getElementById('adm-email').value.trim().toLowerCase();const password=document.getElementById('adm-password').value;const role=document.getElementById('adm-role').value;if(!name||!email||!password){err.textContent='Please fill in all fields.';err.style.display='block';return;}if(password.length<8){err.textContent='Password must be at least 8 characters.';err.style.display='block';return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Invalid email format.';err.style.display='block';return;}const btn=document.getElementById('adm-add-btn');btn.disabled=true;btn.textContent='Creating...';try{const{data:existing}=await sb.from('admins').select('id').eq('email',email).maybeSingle();if(existing){err.textContent='This email is already registered as an admin.';err.style.display='block';btn.disabled=false;btn.textContent='+ Create Admin';return;}const{data:signUpData,error:signUpErr}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});if(signUpErr)throw signUpErr;const newUserId=signUpData?.user?.id;if(!newUserId)throw new Error('Sign up failed. The email may already have a Supabase account.');const{error:admErr}=await sb.from('admins').upsert({id:newUserId,email,full_name:name,role,is_active:true},{onConflict:'id'});if(admErr)throw admErr;await auditLog('ADD_ADMIN',name+' ('+email+') as '+role);closeAddAdmin();toast('Added!',name+' can now log in.','');loadAdmins();}catch(e){err.textContent='Error: '+e.message;err.style.display='block';}btn.disabled=false;btn.textContent='+ Create Admin';}
 async function loadAdmins(){
   const w=document.getElementById('admins-wrap');
   if(!w)return;
@@ -722,7 +691,7 @@ function removeAdminById(btn){
   const name=btn.getAttribute('data-aname');
   removeAdmin(id,name);
 }
-function removeAdmin(id,name){openSecConfirm('Remove Admin','You are about to permanently remove admin <strong>'+name+'</strong>. They will lose all access immediately.',async function(){const{error}=await sb.from('admins').delete().eq('id',id);if(error){toast('❌','Failed',error.message);return;}await auditLog('REMOVE_ADMIN',name);loadAdmins();toast('🗑️','Removed',name+' removed.');});}
+function removeAdmin(id,name){openSecConfirm('Remove Admin','You are about to permanently remove admin <strong>'+name+'</strong>. They will lose all access immediately.',async function(){const{error}=await sb.from('admins').delete().eq('id',id);if(error){const{error:e2}=await sb.from('admins').update({is_active:false}).eq('id',id);if(e2){toast('Error','Could not remove admin. Run setup SQL to fix RLS.','');return;}toast('Deactivated',name+' has been deactivated.','');} else {toast('Removed',name+' removed.','');}await auditLog('REMOVE_ADMIN',name);loadAdmins();});}
 let killSwitchValue=false;
 async function loadKillSwitch(){try{const{data}=await sb.from('system_settings').select('value').eq('key','kill_switch').single();killSwitchValue=data?.value==='true';renderKillSwitch()}catch(e){}}
 function renderKillSwitch(){const l=document.getElementById('kill-status-label'),b=document.getElementById('kill-toggle-btn');if(!l||!b)return;if(killSwitchValue){l.innerHTML='<span style="color:var(--danger)">🔴 LOCKED</span>';b.textContent='Unlock';b.className='btn btn-success btn-sm'}else{l.innerHTML='<span style="color:var(--success)">🟢 ONLINE</span>';b.textContent='Lock';b.className='btn btn-danger btn-sm'}}
