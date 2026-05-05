@@ -359,6 +359,8 @@ async function submitForm() {
     });
     if (error) throw error;
 
+    try{await sb.from('audit_logs').insert({admin_id:null,action:'FORM_SUBMITTED',details:'Assessor "'+assessor.full_name+'" ('+assessor.email+') submitted "'+formData.title+'"',ip_address:'client'});}catch(e){}
+
     document.getElementById('ty-name').textContent = assessor.full_name;
     show('thanks');
 
