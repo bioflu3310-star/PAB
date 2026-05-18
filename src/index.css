@@ -1,0 +1,67 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+/* ── Theme Variables ── */
+[data-theme="dark"] {
+  --bg: #0d0d12;
+  --surface: #14141c;
+  --surface2: #1c1c28;
+  --surface3: #242432;
+  --border: #2a2a3a;
+  --border2: #353548;
+  --text: #e8e8f0;
+  --text2: #9090a8;
+  --text3: #5a5a72;
+  --accent: #4f8ef7;
+  --accent-bg: rgba(79,142,247,0.12);
+  --accent-border: rgba(79,142,247,0.3);
+  --success: #3ecf8e;
+  --success-bg: rgba(62,207,142,0.1);
+  --danger: #f76f6f;
+  --danger-bg: rgba(247,111,111,0.1);
+  --warning: #f5a623;
+  --warning-bg: rgba(245,166,35,0.1);
+  --section-bg: #1a1a26;
+  --input-bg: #1c1c28;
+  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --badge-new: rgba(79,142,247,0.15);
+  --badge-new-text: #4f8ef7;
+}
+[data-theme="light"] {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface2: #f8f9fb;
+  --surface3: #f0f1f4;
+  --border: #e2e4ea;
+  --border2: #d0d3dc;
+  --text: #1a1a2e;
+  --text2: #5a5d72;
+  --text3: #9598a8;
+  --accent: #1a56db;
+  --accent-bg: rgba(26,86,219,0.08);
+  --accent-border: rgba(26,86,219,0.25);
+  --success: #0d9963;
+  --success-bg: rgba(13,153,99,0.08);
+  --danger: #d93025;
+  --danger-bg: rgba(217,48,37,0.08);
+  --warning: #b06000;
+  --warning-bg: rgba(176,96,0,0.08);
+  --section-bg: #f8f9fb;
+  --input-bg: #ffffff;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --badge-new: rgba(26,86,219,0.1);
+  --badge-new-text: #1a56db;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
