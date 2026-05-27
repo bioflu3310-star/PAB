@@ -3,6 +3,99 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, auditLog } from '../lib/supabase'
 import { useToast } from '../contexts/ToastContext'
 
+// Keywords that suggest a field has a short answer
+const SHORT_FIELD_HINTS = [
+  'title', 'name', 'date', 'time', 'gender', 'age', 'year', 'phone', 'contact',
+  'number', 'no.', 'region', 'position', 'designation', 'rank', 'level',
+  'status', 'type', 'category', 'code', 'id', 'score', 'rating', 'batch',
+  'sector', 'field', 'course', 'degree', 'units', 'hours',
+]
+
+// Determine if a field's answer is short (to place in compact multi-col grid)
+function isShortField(key, value) {
+  const keyLower = key.toLowerCase()
+  const valueStr = String(value || '')
+  // Long answer or textarea-style content → full width
+  if (valueStr.length > 80) return false
+  if (valueStr.includes('\n')) return false
+  // Keyword match on label
+  if (SHORT_FIELD_HINTS.some(hint => keyLower.includes(hint))) return true
+  // Short value regardless of label
+  if (valueStr.length <= 40) return true
+  return false
+}
+
+function AnswerField({ label, value }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <label style={{
+        fontSize: 9.5, fontWeight: 700, letterSpacing: 0.8,
+        textTransform: 'uppercase', color: 'var(--text3)',
+        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+      }}>{label}</label>
+      <div style={{
+        fontSize: 12.5, padding: '6px 10px',
+        background: 'var(--surface2)', borderRadius: 5,
+        border: '1px solid var(--border)', minHeight: 30,
+        lineHeight: 1.5, wordBreak: 'break-word',
+      }}>
+        {value || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>N/A</span>}
+      </div>
+    </div>
+  )
+}
+
+function AnswersGrid({ orderedKeys, answers, form }) {
+  // Group consecutive short fields together, long fields get their own row
+  const rows = []
+  let shortBuffer = []
+
+  function flushShort() {
+    if (!shortBuffer.length) return
+    rows.push({ type: 'short-group', items: [...shortBuffer] })
+    shortBuffer = []
+  }
+
+  orderedKeys.forEach(k => {
+    const val = answers[k]
+    if (isShortField(k, val)) {
+      shortBuffer.push({ key: k, value: val })
+    } else {
+      flushShort()
+      rows.push({ type: 'long', key: k, value: val })
+    }
+  })
+  flushShort()
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {rows.map((row, i) => {
+        if (row.type === 'long') {
+          return (
+            <AnswerField key={row.key} label={row.key} value={row.value} />
+          )
+        }
+        // Short group: up to 3 per row
+        const chunks = []
+        for (let j = 0; j < row.items.length; j += 3) {
+          chunks.push(row.items.slice(j, j + 3))
+        }
+        return chunks.map((chunk, ci) => (
+          <div key={`${i}-${ci}`} style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${chunk.length}, 1fr)`,
+            gap: 10,
+          }}>
+            {chunk.map(item => (
+              <AnswerField key={item.key} label={item.key} value={item.value} />
+            ))}
+          </div>
+        ))
+      })}
+    </div>
+  )
+}
+
 export default function PrintView() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -18,11 +111,9 @@ export default function PrintView() {
       if (data) {
         setSub(data)
         if (data.director_signoff) setDirData(data.director_signoff)
-        // Mark as read
         if (!data.is_read) {
           await supabase.from('form_submissions').update({ is_read: true }).eq('id', data.id)
         }
-        // Load form for field ordering
         if (data.form_id) {
           const { data: f } = await supabase.from('custom_forms').select('*').eq('id', data.form_id).single()
           if (f) setForm(f)
@@ -37,7 +128,6 @@ export default function PrintView() {
   const answers = sub.answers || {}
   const ref = 'SUB-' + String(sub.id).padStart(4, '0')
 
-  // Order keys by form field order if available
   let orderedKeys = []
   if (form?.fields?.length) {
     form.fields.forEach(f => { if (f.type !== 'section' && f.label && f.label in answers) orderedKeys.push(f.label) })
@@ -89,17 +179,8 @@ export default function PrintView() {
 
         {/* Answers */}
         <div style={{ padding: '28px 32px' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 7, borderBottom: '1px solid var(--border)', marginBottom: 14 }}>Answers</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
-            {orderedKeys.map(k => (
-              <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: 'var(--text3)' }}>{k}</label>
-                <div style={{ fontSize: 13, padding: '7px 10px', background: 'var(--surface2)', borderRadius: 5, border: '1px solid var(--border)', minHeight: 32, lineHeight: 1.5, wordBreak: 'break-word' }}>
-                  {answers[k] || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>N/A</span>}
-                </div>
-              </div>
-            ))}
-          </div>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 7, borderBottom: '1px solid var(--border)', marginBottom: 18 }}>Answers</div>
+          <AnswersGrid orderedKeys={orderedKeys} answers={answers} form={form} />
         </div>
 
         {/* Director Sign-Off */}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAB Information System — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+[data-theme="dark"]{--bg:#0d0d12;--surface:#14141c;--surface2:#1c1c28;--border:#2a2a3a;--border2:#353548;--text:#e8e8f0;--text2:#9090a8;--text3:#5a5a72;--accent:#4f8ef7;--accent-bg:rgba(79,142,247,0.12);--accent-border:rgba(79,142,247,0.3);--success:#3ecf8e;--success-bg:rgba(62,207,142,0.1);--danger:#f76f6f;--danger-bg:rgba(247,111,111,0.1);--warning:#f5a623;--input-bg:#1c1c28;--shadow:0 4px 20px rgba(0,0,0,0.4);}
+[data-theme="light"]{--bg:#f4f5f7;--surface:#ffffff;--surface2:#f8f9fb;--border:#e2e4ea;--border2:#d0d3dc;--text:#1a1a2e;--text2:#5a5d72;--text3:#9598a8;--accent:#1a56db;--accent-bg:rgba(26,86,219,0.08);--accent-border:rgba(26,86,219,0.25);--success:#0d9963;--success-bg:rgba(13,153,99,0.08);--danger:#d93025;--danger-bg:rgba(217,48,37,0.08);--warning:#b06000;--input-bg:#ffffff;--shadow:0 4px 20px rgba(0,0,0,0.08);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.wrap{width:100%;max-width:420px;padding:24px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:36px 32px;box-shadow:var(--shadow);}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.emblem{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.logo-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;line-height:1.2;}
+.logo-sub{font-size:11px;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-top:2px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.fg label{font-size:11.5px;font-weight:600;color:var(--text2);}
+.fg input{background:var(--input-bg);border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .13s,box-shadow .13s;width:100%;}
+.fg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.btn{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .13s;margin-top:4px;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.alert{padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px;line-height:1.5;display:none;}
+.alert.show{display:block;}
+.alert-err{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(247,111,111,.3);}
+.alert-ok{background:var(--success-bg);color:var(--success);border:1px solid rgba(62,207,142,.3);}
+.alert-warn{background:rgba(245,166,35,.1);color:var(--warning);border:1px solid rgba(245,166,35,.3);}
+.divider{height:1px;background:var(--border);margin:18px 0;}
+.theme-btn{position:fixed;top:16px;right:16px;padding:7px 13px;border-radius:7px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:40px;}
+.eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:4px;}
+.hp{position:absolute;left:-9999px;opacity:0;pointer-events:none;}
+.footer{text-align:center;font-size:11px;color:var(--text3);margin-top:20px;line-height:1.6;}
+.kill{display:none;position:fixed;inset:0;background:#0d0d12;z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.kill.show{display:flex;}
+.admin-note{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
+
+<div class="kill" id="kill-screen">
+  <div style="font-size:48px">🔒</div>
+  <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#e8e8f0">System Locked</div>
+  <div style="font-size:14px;color:#5a5a72;text-align:center;max-width:320px">Under maintenance. Contact your system administrator.</div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="logo">
+      <div class="emblem">🏛</div>
+      <div>
+        <div class="logo-title">PAB Information System</div>
+        <div class="logo-sub">DTI · Accreditation Bureau</div>
+      </div>
+    </div>
+
+    <div class="admin-note">🔐 Admin access only. Assessors use the form link provided to them by the admin.</div>
+
+    <div class="alert alert-err"  id="alert-err"></div>
+    <div class="alert alert-ok"   id="alert-ok"></div>
+    <div class="alert alert-warn" id="alert-warn"></div>
+
+    <!-- Honeypot — catches bots -->
+    <input type="text" class="hp" id="hp" tabindex="-1" autocomplete="off">
+
+    <div class="fg">
+      <label>Email Address *</label>
+      <input type="email" id="email" placeholder="admin@pab.gov.ph" autocomplete="email">
+    </div>
+    <div class="fg">
+      <label>Password *</label>
+      <div class="pw-wrap">
+        <input type="password" id="pw" placeholder="Enter your password" autocomplete="current-password">
+        <button class="eye" onclick="togglePw()" type="button" id="eye-btn">👁</button>
+      </div>
+    </div>
+
+    <button class="btn" id="login-btn" onclick="doLogin()">Sign In →</button>
+
+    <div class="divider"></div>
+    <div style="text-align:center;font-size:12px;color:var(--text3)">
+      Forgot your password? <span style="color:var(--accent);cursor:pointer" onclick="doReset()">Reset it</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    PAB Technical Assessors & Experts Information System<br>
+    Philippine Accreditation Bureau · DTI · ver.2<br>
+    <span style="color:var(--danger)">🔒 Secured with end-to-end encryption</span>
+  </div>
+</div>
+
+<script>
+// ─── Supabase ─────────────────────────────────────────────────────────────────
+const sb = supabase.createClient(
+  'https://yayovhfettjrxryluvbz.supabase.co',
+  'sb_publishable_pgKRjgTXeL7GGqeWFj1BfQ_c4Vjs_gn'
+);
+
+// ─── Theme ────────────────────────────────────────────────────────────────────
+let dark = localStorage.getItem('pab_theme') !== 'light';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
+}
+function toggleTheme() { dark = !dark; localStorage.setItem('pab_theme', dark?'dark':'light'); applyTheme(); }
+applyTheme();
+
+// ─── Rate limiting (stored in localStorage per browser) ───────────────────────
+const MAX_ATTEMPTS = 5, LOCK_MINS = 15;
+const getA  = () => JSON.parse(localStorage.getItem('pab_login_attempts') || '{"count":0,"time":0}');
+const saveA = d => localStorage.setItem('pab_login_attempts', JSON.stringify(d));
+function lockedOut() {
+  const a = getA();
+  if (a.count >= MAX_ATTEMPTS) {
+    const mins = Math.ceil((LOCK_MINS * 60000 - (Date.now() - a.time)) / 60000);
+    if (mins > 0) return mins;
+    saveA({ count:0, time:0 }); // lockout expired, reset
+  }
+  return false;
+}
+function recordFail() {
+  const a = getA(); a.count=(a.count||0)+1; a.time=Date.now(); saveA(a);
+  const rem = MAX_ATTEMPTS - a.count;
+  if (rem > 0 && rem <= 2) showWarn(`⚠️ ${rem} attempt${rem!==1?'s':''} remaining before lockout.`);
+}
+function clearAttempts() { saveA({ count:0, time:0 }); }
+
+// ─── Alerts ───────────────────────────────────────────────────────────────────
+function showErr(m)  { const e=document.getElementById('alert-err');  e.textContent=m; e.classList.add('show'); }
+function showOk(m)   { const e=document.getElementById('alert-ok');   e.textContent=m; e.classList.add('show'); }
+function showWarn(m) { const e=document.getElementById('alert-warn'); e.textContent=m; e.classList.add('show'); }
+function clearAlerts() {
+  ['alert-err','alert-ok','alert-warn'].forEach(id => {
+    const e=document.getElementById(id); e.classList.remove('show'); e.textContent='';
+  });
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function togglePw() {
+  const i=document.getElementById('pw');
+  i.type = i.type==='password' ? 'text' : 'password';
+  document.getElementById('eye-btn').textContent = i.type==='password' ? '👁' : '🙈';
+}
+function isMalicious(s) {
+  return [/<script/i,/javascript:/i,/union\s+select/i,/drop\s+table/i].some(p=>p.test(s));
+}
+
+// ─── Kill switch ──────────────────────────────────────────────────────────────
+async function checkKill() {
+  try {
+    const { data } = await sb.from('system_settings').select('value').eq('key','kill_switch').single();
+    if (data?.value === 'true') { document.getElementById('kill-screen').classList.add('show'); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ─── Login ────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  clearAlerts();
+
+  // Bot check
+  if (document.getElementById('hp').value) { showErr('🤖 Bot detected.'); return; }
+
+  // Lockout check
+  const lock = lockedOut();
+  if (lock) { showErr(`🔒 Too many failed attempts. Try again in ${lock} minute${lock!==1?'s':''}.`); return; }
+
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('pw').value;
+  if (!email || !pw) { showErr('Please fill in all fields.'); return; }
+  if (isMalicious(email)) { showErr('⚠️ Invalid input detected.'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled=true; btn.textContent='Signing in…';
+
+  try {
+    // Step 1: Authenticate with Supabase Auth
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error) {
+      recordFail();
+      const l = lockedOut();
+      showErr(l ? `🔒 Account locked. Try again in ${l} minutes.` : '❌ Invalid email or password.');
+      btn.disabled=false; btn.textContent='Sign In →';
+      return;
+    }
+
+    // Step 2: Verify this user is in the admins table and is active
+    const { data: admin } = await sb
+      .from('admins').select('role,is_active,full_name').eq('id', data.user.id).single();
+    if (!admin || !admin.is_active) {
+      await sb.auth.signOut();
+      showErr('❌ Admin account not found or deactivated. Contact your Super Admin.');
+      btn.disabled=false; btn.textContent='Sign In →';
+      return;
+    }
+
+    // Step 3: Log the login event
+    await sb.from('audit_logs').insert({
+      admin_id: data.user.id, action:'LOGIN',
+      details:`${admin.full_name} logged in`, ip_address:'client'
+    });
+
+    clearAttempts();
+    localStorage.setItem('pab_user', JSON.stringify({
+      id: data.user.id, email: data.user.email,
+      name: admin.full_name, role: admin.role
+    }));
+    showOk(`✅ Welcome back, ${admin.full_name}! Redirecting…`);
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+
+  } catch(e) {
+    showErr('Something went wrong. Please try again.');
+    btn.disabled=false; btn.textContent='Sign In →';
+  }
+}
+
+// ─── Password reset ───────────────────────────────────────────────────────────
+async function doReset() {
+  clearAlerts();
+  const email = document.getElementById('email').value.trim();
+  if (!email) { showErr('Enter your email address first.'); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/index.html'
+  });
+  if (error) { showErr('❌ ' + error.message); return; }
+  showOk('✅ Password reset email sent! Check your inbox.');
+}
+
+// ─── Page init ────────────────────────────────────────────────────────────────
+async function init() {
+  if (await checkKill()) return;
+  // If already logged in, go straight to dashboard
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) window.location.href = 'index.html';
+}
+document.addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+init();
+</script>
+</body>
+</html>
