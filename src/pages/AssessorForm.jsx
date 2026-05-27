@@ -20,12 +20,14 @@ export default function AssessorForm() {
 
   useEffect(() => {
     async function load() {
-      if (!formId) { setScreen('error'); return }
+    if (!formId) { setScreen('error'); return }
       const { data, error } = await supabase.from('custom_forms')
-        .select('*').eq('id', formId).eq('status', 'published').single()
-      if (error || !data) { setScreen('error'); return }
-      setForm(data)
-    }
+          .select('*').eq('id', formId).eq('status', 'published').single()
+            console.log('Form data:', data)
+           console.log('Form error:', error)
+           if (error || !data) { setScreen('error'); return }
+    setForm(data)
+}
     load()
   }, [formId])
 
@@ -35,6 +37,8 @@ export default function AssessorForm() {
     if (!e || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setError('Enter a valid email.'); return }
     const { data: asr } = await supabase.from('assessors').select('*').eq('email', e).eq('is_active', true).single()
     if (!asr) { setError('Not registered. Contact your admin.'); return }
+    const { data: existing } = await supabase.from('form_submissions').select('id').eq('form_id', formId).eq('assessor_id', asr.id).single()
+    if (existing) { setScreen('done'); return }
     setAssessor(asr)
     setScreen('form')
   }
