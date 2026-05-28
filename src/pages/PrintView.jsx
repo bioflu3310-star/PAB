@@ -212,7 +212,7 @@ export default function PrintView() {
                   <label style={{ ...labelStyle, color: 'var(--warning)' }}>Qualified By</label>
                   <input className="input" value={dirData.qualifiedBy}
                     onChange={e => { setDirData(p => ({ ...p, qualifiedBy: e.target.value })); setDirSaved(false) }}
-                    placeholder="e.g. Mr. Roderick Dela Cruz" />
+                    placeholder="" />
                 </div>
                 <div style={{ marginTop: 14 }}>
                   <label style={{ ...labelStyle, color: 'var(--warning)' }}>Date</label>
@@ -224,13 +224,13 @@ export default function PrintView() {
                 <label style={{ ...labelStyle, color: 'var(--warning)' }}>Evaluation Remarks</label>
                 <textarea className="input" value={dirData.evaluationRemarks}
                   onChange={e => { setDirData(p => ({ ...p, evaluationRemarks: e.target.value })); setDirSaved(false) }}
-                  placeholder="Evaluation remarks…" style={{ minHeight: 120 }} />
+                  placeholder="" style={{ minHeight: 120 }} />
               </div>
               <div>
                 <label style={{ ...labelStyle, color: 'var(--warning)' }}>Recommendation</label>
                 <textarea className="input" value={dirData.recommendation}
                   onChange={e => { setDirData(p => ({ ...p, recommendation: e.target.value })); setDirSaved(false) }}
-                  placeholder="Recommendation…" style={{ minHeight: 120 }} />
+                  placeholder="" style={{ minHeight: 120 }} />
               </div>
             </div>
           </div>
