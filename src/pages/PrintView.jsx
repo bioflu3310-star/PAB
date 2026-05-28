@@ -44,6 +44,29 @@ function smartLayout(keys, answers) {
   return rows
 }
 
+// Answer box style — consistent height based on content
+function AnswerBox({ value }) {
+  const isEmpty = !value || value === 'N/A' || value.trim() === ''
+  return (
+    <div style={{
+      fontSize: 13,
+      fontWeight: 600,
+      padding: '9px 12px',
+      background: 'var(--surface2)',
+      borderRadius: 6,
+      border: '1px solid var(--border)',
+      minHeight: 38,
+      lineHeight: 1.5,
+      wordBreak: 'break-word',
+      whiteSpace: 'pre-wrap',
+      color: isEmpty ? 'var(--text3)' : 'var(--text)',
+      fontStyle: isEmpty ? 'italic' : 'normal',
+    }}>
+      {isEmpty ? 'N/A' : value}
+    </div>
+  )
+}
+
 export default function PrintView() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -98,6 +121,20 @@ export default function PrintView() {
     } catch (e) { toast('❌', 'Failed', e.message) }
   }
 
+  // Label style — consistent, uppercase, fixed height
+  const labelStyle = {
+    fontSize: 9,
+    fontWeight: 700,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    color: 'var(--text3)',
+    display: 'block',
+    marginBottom: 5,
+    lineHeight: 1.4,
+    minHeight: 24, // ← keeps all labels same height so answer boxes align
+    wordBreak: 'break-word',
+  }
+
   return (
     <div className="fade-in">
       {/* Toolbar */}
@@ -110,7 +147,7 @@ export default function PrintView() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>← Back</button>
           <button className="btn btn-warning btn-sm" onClick={() => setShowDirector(!showDirector)}>
-            🏛 {showDirector ? 'Hide' : 'Director Sign-Off'}
+            🏛 {showDirector ? 'Hide Director' : 'Director'}
           </button>
           <button className="btn btn-primary btn-sm" onClick={() => window.print()}>🖨 Print</button>
         </div>
@@ -139,22 +176,17 @@ export default function PrintView() {
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 8, borderBottom: '1px solid var(--border)', marginBottom: 20 }}>Answers</div>
 
           {layout.map((row, ri) => (
-            <div key={ri} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
+            <div key={ri} style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 12,
+              marginBottom: 12,
+              alignItems: 'end', // ← aligns answer boxes to bottom so they line up
+            }}>
               {row.map(({ key: k, span }) => (
-                <div key={k} style={{ gridColumn: `span ${span}` }}>
-                  <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--text3)', display: 'block', marginBottom: 5 }}>{k}</label>
-                  <div style={{
-                    fontSize: 13, padding: '8px 12px',
-                    background: 'var(--surface2)', borderRadius: 6,
-                    border: '1px solid var(--border)',
-                    minHeight: 36, lineHeight: 1.5,
-                    wordBreak: 'break-word',
-                    whiteSpace: 'pre-wrap',
-                    color: answers[k] ? 'var(--text)' : 'var(--text3)',
-                    fontStyle: answers[k] ? 'normal' : 'italic'
-                  }}>
-                    {answers[k] || 'N/A'}
-                  </div>
+                <div key={k} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column' }}>
+                  <label style={labelStyle}>{k}</label>
+                  <AnswerBox value={answers[k]} />
                 </div>
               ))}
             </div>
@@ -167,29 +199,38 @@ export default function PrintView() {
             <div style={{ padding: '14px 32px', borderBottom: '1px solid rgba(245,166,35,.2)', background: 'rgba(245,166,35,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 18 }}>🏛</span>
-                <div>
-                  <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director Sign-Off</div>
-                  <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 1 }}>To be filled by authorized PAB personnel</div>
-                </div>
+                {/* ← Only shows "Director" not "Director Sign-Off" */}
+                <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director</div>
               </div>
               <button className="btn btn-warning btn-sm" onClick={saveDirector}>
-                {dirSaved ? '✅ Saved' : '💾 Save Sign-Off'}
+                {dirSaved ? '✅ Saved' : '💾 Save'}
               </button>
             </div>
-            <div style={{ padding: '20px 32px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18 }}>
-              <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Qualified By</label>
-                <input className="input" value={dirData.qualifiedBy} onChange={e => { setDirData(p => ({ ...p, qualifiedBy: e.target.value })); setDirSaved(false) }} placeholder="e.g. Mr. Roderick Dela Cruz" />
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, marginTop: 14, textTransform: 'uppercase', letterSpacing: 1 }}>Date</label>
-                <input className="input" type="date" value={dirData.qualifiedDate} onChange={e => { setDirData(p => ({ ...p, qualifiedDate: e.target.value })); setDirSaved(false) }} />
+            <div style={{ padding: '20px 32px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18, alignItems: 'end' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                <div>
+                  <label style={{ ...labelStyle, color: 'var(--warning)' }}>Qualified By</label>
+                  <input className="input" value={dirData.qualifiedBy}
+                    onChange={e => { setDirData(p => ({ ...p, qualifiedBy: e.target.value })); setDirSaved(false) }}
+                    placeholder="e.g. Mr. Roderick Dela Cruz" />
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <label style={{ ...labelStyle, color: 'var(--warning)' }}>Date</label>
+                  <input className="input" type="date" value={dirData.qualifiedDate}
+                    onChange={e => { setDirData(p => ({ ...p, qualifiedDate: e.target.value })); setDirSaved(false) }} />
+                </div>
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Evaluation Remarks</label>
-                <textarea className="input" value={dirData.evaluationRemarks} onChange={e => { setDirData(p => ({ ...p, evaluationRemarks: e.target.value })); setDirSaved(false) }} placeholder="Evaluation remarks…" style={{ minHeight: 120 }} />
+                <label style={{ ...labelStyle, color: 'var(--warning)' }}>Evaluation Remarks</label>
+                <textarea className="input" value={dirData.evaluationRemarks}
+                  onChange={e => { setDirData(p => ({ ...p, evaluationRemarks: e.target.value })); setDirSaved(false) }}
+                  placeholder="Evaluation remarks…" style={{ minHeight: 120 }} />
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Recommendation</label>
-                <textarea className="input" value={dirData.recommendation} onChange={e => { setDirData(p => ({ ...p, recommendation: e.target.value })); setDirSaved(false) }} placeholder="Recommendation…" style={{ minHeight: 120 }} />
+                <label style={{ ...labelStyle, color: 'var(--warning)' }}>Recommendation</label>
+                <textarea className="input" value={dirData.recommendation}
+                  onChange={e => { setDirData(p => ({ ...p, recommendation: e.target.value })); setDirSaved(false) }}
+                  placeholder="Recommendation…" style={{ minHeight: 120 }} />
               </div>
             </div>
           </div>
