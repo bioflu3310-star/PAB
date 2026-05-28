@@ -2,9 +2,55 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
+// ── Smart layout helpers (shared with PrintView) ──────────────────────────────
+const SHORT_KEYWORDS = ['title','prefix','gender','sex','date','birth','age','civil','status',
+  'nationality','region','province','city','zip','postal','contact','mobile','cellular','phone',
+  'fax','number','no.','no ','tin','sss','gsis','id','code','year','month','day','time',
+  'rate','salary','amount','score','rating','level','type']
+const LONG_KEYWORDS = ['address','description','remarks','comment','notes','detail','experience',
+  'background','qualification','education','training','accomplishment','achievement','publication',
+  'summary','objective','reason','explain','specify','others','other','name','full name',
+  'first name','middle name','last name','surname','given']
+
+function getFieldSize(label) {
+  const k = (label || '').toLowerCase()
+  if (LONG_KEYWORDS.some(w => k.includes(w))) return 'full'
+  if (SHORT_KEYWORDS.some(w => k.includes(w))) return 'short'
+  return 'auto'
+}
+
+// Groups fields into rows of up to 3 short fields, or 1 full-width field
+function groupFields(fields) {
+  const rows = []
+  let i = 0
+  while (i < fields.length) {
+    const f = fields[i]
+    const size = getFieldSize(f.label)
+    const isLong = size === 'full' || ['textarea', 'checkbox', 'radio'].includes(f.type)
+    if (isLong) {
+      rows.push([f])
+      i++
+    } else {
+      const group = []
+      let j = i
+      while (j < fields.length && group.length < 3) {
+        const fj = fields[j]
+        const sj = getFieldSize(fj.label)
+        const isLongJ = sj === 'full' || ['textarea', 'checkbox', 'radio'].includes(fj.type)
+        if (isLongJ) break
+        group.push(fj)
+        j++
+      }
+      if (group.length === 0) { rows.push([f]); i++ }
+      else { rows.push(group); i = j }
+    }
+  }
+  return rows
+}
+
 export default function AssessorForm() {
   const { formId } = useParams()
-  const [screen, setScreen] = useState('gate') // gate | form | thanks | done | error
+  const [screen, setScreen] = useState('gate')
   const [form, setForm] = useState(null)
   const [assessor, setAssessor] = useState(null)
   const [email, setEmail] = useState('')
@@ -14,20 +60,16 @@ export default function AssessorForm() {
   const [submitting, setSubmitting] = useState(false)
   const [theme, setTheme] = useState(() => localStorage.getItem('pab_theme') || 'dark')
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
+  useEffect(() => { document.documentElement.setAttribute('data-theme', theme) }, [theme])
 
   useEffect(() => {
     async function load() {
-    if (!formId) { setScreen('error'); return }
+      if (!formId) { setScreen('error'); return }
       const { data, error } = await supabase.from('custom_forms')
-          .select('*').eq('id', formId).eq('status', 'published').single()
-            console.log('Form data:', data)
-           console.log('Form error:', error)
-           if (error || !data) { setScreen('error'); return }
-    setForm(data)
-}
+        .select('*').eq('id', formId).eq('status', 'published').single()
+      if (error || !data) { setScreen('error'); return }
+      setForm(data)
+    }
     load()
   }, [formId])
 
@@ -73,7 +115,80 @@ export default function AssessorForm() {
     setSubmitting(false)
   }
 
-  // Render sections from form fields
+  function renderFieldInput(f) {
+    const key = f.label || 'Field ' + (f.idx + 1)
+    const req = f.required ? <span style={{ color: 'var(--danger)' }}> *</span> : null
+    return (
+      <div key={f.idx} style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <label style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text2)' }}>{key}{req}</label>
+        {['text', 'email', 'number', 'date', 'time'].includes(f.type) && (
+          <input className="input" type={f.type} value={answers[key] || ''}
+            onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder} />
+        )}
+        {f.type === 'textarea' && (
+          <textarea className="input" value={answers[key] || ''}
+            onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder}
+            style={{ minHeight: 80 }} />
+        )}
+        {f.type === 'dropdown' && (
+          <>
+            <select className="input" value={answers[key] || ''} onChange={e => setAnswer(key, e.target.value)}>
+              <option value="">Select…</option>
+              {(f.options || []).map(o => <option key={o}>{o}</option>)}
+              <option value="__other__">Other…</option>
+            </select>
+            {answers[key] === '__other__' && (
+              <input className="input" style={{ marginTop: 6 }} placeholder="Please specify…"
+                value={otherVals[key] || ''} onChange={e => setOther(key, e.target.value)} />
+            )}
+          </>
+        )}
+        {f.type === 'radio' && (
+          <>
+            <div className="ff-radio-row">
+              {(f.options || []).map(o => (
+                <label key={o} className="ff-radio-pill">
+                  <input type="radio" name={`r-${f.idx}`} value={o} checked={answers[key] === o} onChange={() => setAnswer(key, o)} />
+                  <span>{o}</span>
+                </label>
+              ))}
+              <label className="ff-radio-pill">
+                <input type="radio" name={`r-${f.idx}`} value="__other__" checked={answers[key] === '__other__'} onChange={() => setAnswer(key, '__other__')} />
+                <span>Other</span>
+              </label>
+            </div>
+            {answers[key] === '__other__' && (
+              <input className="input" style={{ marginTop: 6 }} placeholder="Please specify…"
+                value={otherVals[key] || ''} onChange={e => setOther(key, e.target.value)} />
+            )}
+          </>
+        )}
+        {f.type === 'checkbox' && (
+          <>
+            <div className="cb-grid">
+              {(f.options || []).map(o => (
+                <label key={o} className="cb-item">
+                  <input type="checkbox" checked={(answers[key] || []).includes(o)}
+                    onChange={e => { const v = answers[key] || []; setAnswer(key, e.target.checked ? [...v, o] : v.filter(x => x !== o)) }} />
+                  <span>{o}</span>
+                </label>
+              ))}
+              <label className="cb-item">
+                <input type="checkbox" checked={(answers[key] || []).includes('__other__')}
+                  onChange={e => { const v = answers[key] || []; setAnswer(key, e.target.checked ? [...v, '__other__'] : v.filter(x => x !== '__other__')) }} />
+                <span>Other</span>
+              </label>
+            </div>
+            {(answers[key] || []).includes('__other__') && (
+              <input className="input" style={{ marginTop: 6 }} placeholder="Please specify…"
+                value={otherVals[key] || ''} onChange={e => setOther(key, e.target.value)} />
+            )}
+          </>
+        )}
+      </div>
+    )
+  }
+
   function renderForm() {
     const sections = []
     let current = { title: '', fields: [] }
@@ -87,72 +202,30 @@ export default function AssessorForm() {
     })
     if (current.fields.length || current.title) sections.push(current)
 
-    return sections.map((sec, si) => (
-      <div key={si} className="ff-section">
-        {sec.title && <div className="ff-section-head"><div style={{ fontWeight: 700, fontSize: 13 }}>{sec.title}</div></div>}
-        <div className="ff-section-body">
-          {sec.fields.map(f => {
-            const key = f.label || 'Field ' + (f.idx + 1)
-            const req = f.required ? <span style={{ color: 'var(--danger)' }}> *</span> : null
-            return (
-              <div key={f.idx} className="ff-field">
-                <label>{key}{req}</label>
-                {['text', 'email', 'number', 'date', 'time'].includes(f.type) && (
-                  <input className="input" type={f.type} value={answers[key] || ''} onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder} />
-                )}
-                {f.type === 'textarea' && <textarea className="input" value={answers[key] || ''} onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder} />}
-                {f.type === 'dropdown' && (
-                  <>
-                    <select className="input" value={answers[key] || ''} onChange={e => setAnswer(key, e.target.value)}>
-                      <option value="">Select…</option>
-                      {(f.options || []).map(o => <option key={o}>{o}</option>)}
-                      <option value="__other__">Other…</option>
-                    </select>
-                    {answers[key] === '__other__' && <input className="input" style={{ marginTop: 6 }} placeholder="Please specify…" value={otherVals[key] || ''} onChange={e => setOther(key, e.target.value)} />}
-                  </>
-                )}
-                {f.type === 'radio' && (
-                  <>
-                    <div className="ff-radio-row">
-                      {(f.options || []).map(o => (
-                        <label key={o} className="ff-radio-pill">
-                          <input type="radio" name={`r-${f.idx}`} value={o} checked={answers[key] === o} onChange={() => setAnswer(key, o)} />
-                          <span>{o}</span>
-                        </label>
-                      ))}
-                      <label className="ff-radio-pill">
-                        <input type="radio" name={`r-${f.idx}`} value="__other__" checked={answers[key] === '__other__'} onChange={() => setAnswer(key, '__other__')} />
-                        <span>Other</span>
-                      </label>
-                    </div>
-                    {answers[key] === '__other__' && <input className="input" style={{ marginTop: 6 }} placeholder="Please specify…" value={otherVals[key] || ''} onChange={e => setOther(key, e.target.value)} />}
-                  </>
-                )}
-                {f.type === 'checkbox' && (
-                  <>
-                    <div className="cb-grid">
-                      {(f.options || []).map(o => (
-                        <label key={o} className="cb-item">
-                          <input type="checkbox" checked={(answers[key] || []).includes(o)}
-                            onChange={e => { const v = answers[key] || []; setAnswer(key, e.target.checked ? [...v, o] : v.filter(x => x !== o)) }} />
-                          <span>{o}</span>
-                        </label>
-                      ))}
-                      <label className="cb-item">
-                        <input type="checkbox" checked={(answers[key] || []).includes('__other__')}
-                          onChange={e => { const v = answers[key] || []; setAnswer(key, e.target.checked ? [...v, '__other__'] : v.filter(x => x !== '__other__')) }} />
-                        <span>Other</span>
-                      </label>
-                    </div>
-                    {(answers[key] || []).includes('__other__') && <input className="input" style={{ marginTop: 6 }} placeholder="Please specify…" value={otherVals[key] || ''} onChange={e => setOther(key, e.target.value)} />}
-                  </>
-                )}
+    return sections.map((sec, si) => {
+      const rows = groupFields(sec.fields)
+      return (
+        <div key={si} className="ff-section">
+          {sec.title && (
+            <div className="ff-section-head">
+              <div style={{ fontWeight: 700, fontSize: 13 }}>{sec.title}</div>
+            </div>
+          )}
+          <div className="ff-section-body">
+            {rows.map((row, ri) => (
+              <div key={ri} style={{
+                display: 'grid',
+                gridTemplateColumns: row.length === 1 ? '1fr' : `repeat(${row.length}, 1fr)`,
+                gap: 14,
+                marginBottom: 14
+              }}>
+                {row.map(f => renderFieldInput(f))}
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
-      </div>
-    ))
+      )
+    })
   }
 
   const cardStyle = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '40px 36px', maxWidth: 480, margin: '60px auto 0', textAlign: 'center', boxShadow: 'var(--shadow)' }
@@ -170,7 +243,7 @@ export default function AssessorForm() {
         </button>
       </div>
 
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '32px 20px' }}>
+      <div style={{ maxWidth: 860, margin: '0 auto', padding: '32px 20px' }}>
         {/* Gate */}
         {screen === 'gate' && (
           <div style={{ ...cardStyle, textAlign: 'left', maxWidth: 420 }}>

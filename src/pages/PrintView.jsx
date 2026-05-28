@@ -3,6 +3,69 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, auditLog } from '../lib/supabase'
 import { useToast } from '../contexts/ToastContext'
 
+// Keywords that suggest a SHORT field (1 column)
+const SHORT_KEYWORDS = [
+  'title', 'prefix', 'gender', 'sex', 'date', 'birth', 'age', 'civil',
+  'status', 'nationality', 'region', 'province', 'city', 'zip', 'postal',
+  'contact', 'mobile', 'cellular', 'phone', 'fax', 'number', 'no.', 'no ',
+  'tin', 'sss', 'gsis', 'id', 'code', 'year', 'month', 'day', 'time',
+  'rate', 'salary', 'amount', 'score', 'rating', 'level', 'type',
+]
+
+// Keywords that suggest a LONG field (full width)
+const LONG_KEYWORDS = [
+  'address', 'description', 'remarks', 'comment', 'notes', 'detail',
+  'experience', 'background', 'qualification', 'education', 'training',
+  'accomplishment', 'achievement', 'publication', 'summary', 'objective',
+  'reason', 'explain', 'specify', 'others', 'other', 'name', 'full name',
+  'first name', 'middle name', 'last name', 'surname', 'given',
+]
+
+function getFieldSize(key) {
+  const k = key.toLowerCase()
+  if (LONG_KEYWORDS.some(w => k.includes(w))) return 'full'
+  if (SHORT_KEYWORDS.some(w => k.includes(w))) return 'short'
+  // If answer value is short, make it short
+  return 'auto'
+}
+
+function smartLayout(keys, answers) {
+  // Returns array of rows, each row is array of {key, span}
+  const rows = []
+  let i = 0
+  while (i < keys.length) {
+    const k = keys[i]
+    const val = String(answers[k] || '')
+    const size = getFieldSize(k)
+    const isLong = size === 'full' || val.length > 60
+
+    if (isLong) {
+      rows.push([{ key: k, span: 3 }])
+      i++
+    } else {
+      // Try to pack 3 short fields in a row
+      const group = []
+      let j = i
+      while (j < keys.length && group.length < 3) {
+        const kj = keys[j]
+        const vj = String(answers[kj] || '')
+        const sj = getFieldSize(kj)
+        if (sj === 'full' || vj.length > 60) break
+        group.push({ key: kj, span: 1 })
+        j++
+      }
+      if (group.length === 0) {
+        rows.push([{ key: k, span: 3 }])
+        i++
+      } else {
+        rows.push(group)
+        i = j
+      }
+    }
+  }
+  return rows
+}
+
 export default function PrintView() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -18,11 +81,9 @@ export default function PrintView() {
       if (data) {
         setSub(data)
         if (data.director_signoff) setDirData(data.director_signoff)
-        // Mark as read
         if (!data.is_read) {
           await supabase.from('form_submissions').update({ is_read: true }).eq('id', data.id)
         }
-        // Load form for field ordering
         if (data.form_id) {
           const { data: f } = await supabase.from('custom_forms').select('*').eq('id', data.form_id).single()
           if (f) setForm(f)
@@ -37,7 +98,7 @@ export default function PrintView() {
   const answers = sub.answers || {}
   const ref = 'SUB-' + String(sub.id).padStart(4, '0')
 
-  // Order keys by form field order if available
+  // Order keys by form field order
   let orderedKeys = []
   if (form?.fields?.length) {
     form.fields.forEach(f => { if (f.type !== 'section' && f.label && f.label in answers) orderedKeys.push(f.label) })
@@ -45,6 +106,8 @@ export default function PrintView() {
   } else {
     orderedKeys = Object.keys(answers)
   }
+
+  const layout = smartLayout(orderedKeys, answers)
 
   async function saveDirector() {
     try {
@@ -89,17 +152,20 @@ export default function PrintView() {
 
         {/* Answers */}
         <div style={{ padding: '28px 32px' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 7, borderBottom: '1px solid var(--border)', marginBottom: 14 }}>Answers</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
-            {orderedKeys.map(k => (
-              <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: 'var(--text3)' }}>{k}</label>
-                <div style={{ fontSize: 13, padding: '7px 10px', background: 'var(--surface2)', borderRadius: 5, border: '1px solid var(--border)', minHeight: 32, lineHeight: 1.5, wordBreak: 'break-word' }}>
-                  {answers[k] || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>N/A</span>}
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 7, borderBottom: '1px solid var(--border)', marginBottom: 16 }}>Answers</div>
+
+          {layout.map((row, ri) => (
+            <div key={ri} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
+              {row.map(({ key: k, span }) => (
+                <div key={k} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: 'var(--text3)' }}>{k}</label>
+                  <div style={{ fontSize: 13, padding: '7px 10px', background: 'var(--surface2)', borderRadius: 5, border: '1px solid var(--border)', minHeight: 32, lineHeight: 1.5, wordBreak: 'break-word' }}>
+                    {answers[k] || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>N/A</span>}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ))}
         </div>
 
         {/* Director Sign-Off */}
