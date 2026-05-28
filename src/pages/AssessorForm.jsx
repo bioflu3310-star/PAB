@@ -2,46 +2,39 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-// ── Smart layout helpers (shared with PrintView) ──────────────────────────────
 const SHORT_KEYWORDS = ['title','prefix','gender','sex','date','birth','age','civil','status',
   'nationality','region','province','city','zip','postal','contact','mobile','cellular','phone',
-  'fax','number','no.','no ','tin','sss','gsis','id','code','year','month','day','time',
+  'fax','number','no.','tin','sss','gsis','id','code','year','month','day','time',
   'rate','salary','amount','score','rating','level','type']
 const LONG_KEYWORDS = ['address','description','remarks','comment','notes','detail','experience',
-  'background','qualification','education','training','accomplishment','achievement','publication',
+  'background','qualification','education','training','accomplishment','achievement',
   'summary','objective','reason','explain','specify','others','other','name','full name',
   'first name','middle name','last name','surname','given']
 
-function getFieldSize(label) {
+function getFieldSize(label, type) {
+  if (['textarea','checkbox','radio'].includes(type)) return 'full'
   const k = (label || '').toLowerCase()
   if (LONG_KEYWORDS.some(w => k.includes(w))) return 'full'
   if (SHORT_KEYWORDS.some(w => k.includes(w))) return 'short'
   return 'auto'
 }
 
-// Groups fields into rows of up to 3 short fields, or 1 full-width field
 function groupFields(fields) {
   const rows = []
   let i = 0
   while (i < fields.length) {
     const f = fields[i]
-    const size = getFieldSize(f.label)
-    const isLong = size === 'full' || ['textarea', 'checkbox', 'radio'].includes(f.type)
-    if (isLong) {
-      rows.push([f])
-      i++
+    if (getFieldSize(f.label, f.type) === 'full') {
+      rows.push([f]); i++
     } else {
       const group = []
       let j = i
       while (j < fields.length && group.length < 3) {
         const fj = fields[j]
-        const sj = getFieldSize(fj.label)
-        const isLongJ = sj === 'full' || ['textarea', 'checkbox', 'radio'].includes(fj.type)
-        if (isLongJ) break
-        group.push(fj)
-        j++
+        if (getFieldSize(fj.label, fj.type) === 'full') break
+        group.push(fj); j++
       }
-      if (group.length === 0) { rows.push([f]); i++ }
+      if (!group.length) { rows.push([f]); i++ }
       else { rows.push(group); i = j }
     }
   }
@@ -115,20 +108,20 @@ export default function AssessorForm() {
     setSubmitting(false)
   }
 
-  function renderFieldInput(f) {
+  function renderField(f) {
     const key = f.label || 'Field ' + (f.idx + 1)
     const req = f.required ? <span style={{ color: 'var(--danger)' }}> *</span> : null
     return (
       <div key={f.idx} style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <label style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text2)' }}>{key}{req}</label>
-        {['text', 'email', 'number', 'date', 'time'].includes(f.type) && (
+        <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>{key}{req}</label>
+        {['text','email','number','date','time'].includes(f.type) && (
           <input className="input" type={f.type} value={answers[key] || ''}
-            onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder} />
+            onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder || ''} />
         )}
         {f.type === 'textarea' && (
           <textarea className="input" value={answers[key] || ''}
-            onChange={e => setAnswer(key, e.target.value)} placeholder={f.placeholder}
-            style={{ minHeight: 80 }} />
+            onChange={e => setAnswer(key, e.target.value)}
+            placeholder={f.placeholder || ''} style={{ minHeight: 90 }} />
         )}
         {f.type === 'dropdown' && (
           <>
@@ -211,15 +204,15 @@ export default function AssessorForm() {
               <div style={{ fontWeight: 700, fontSize: 13 }}>{sec.title}</div>
             </div>
           )}
-          <div className="ff-section-body">
+          <div className="ff-section-body" style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {rows.map((row, ri) => (
               <div key={ri} style={{
                 display: 'grid',
                 gridTemplateColumns: row.length === 1 ? '1fr' : `repeat(${row.length}, 1fr)`,
                 gap: 14,
-                marginBottom: 14
+                marginBottom: ri < rows.length - 1 ? 14 : 0
               }}>
-                {row.map(f => renderFieldInput(f))}
+                {row.map(f => renderField(f))}
               </div>
             ))}
           </div>
@@ -228,12 +221,16 @@ export default function AssessorForm() {
     })
   }
 
-  const cardStyle = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '40px 36px', maxWidth: 480, margin: '60px auto 0', textAlign: 'center', boxShadow: 'var(--shadow)' }
+  const cardStyle = {
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14,
+    padding: '40px 36px', maxWidth: 460, margin: '60px auto 0',
+    textAlign: 'center', boxShadow: 'var(--shadow)'
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Header */}
-      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 30, height: 30, background: 'var(--accent)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 }}>🏛</div>
           <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>PAB Information System</span>
@@ -246,13 +243,13 @@ export default function AssessorForm() {
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '32px 20px' }}>
         {/* Gate */}
         {screen === 'gate' && (
-          <div style={{ ...cardStyle, textAlign: 'left', maxWidth: 420 }}>
-            <div style={{ fontSize: 36, marginBottom: 16 }}>📋</div>
+          <div style={{ ...cardStyle, textAlign: 'left', maxWidth: 420, margin: '60px auto 0' }}>
+            <div style={{ fontSize: 36, marginBottom: 16, textAlign: 'center' }}>📋</div>
             <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, marginBottom: 6 }}>Access Form</h2>
             <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 24 }}>Enter your registered email to access this form.</p>
-            {error && <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--danger-bg)', color: 'var(--danger)', fontSize: 12, marginBottom: 16 }}>{error}</div>}
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 11.5, fontWeight: 600, display: 'block', marginBottom: 5 }}>Email *</label>
+            {error && <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--danger-bg)', color: 'var(--danger)', fontSize: 12, marginBottom: 16, border: '1px solid rgba(247,111,111,.3)' }}>{error}</div>}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 11.5, fontWeight: 600, display: 'block', marginBottom: 5 }}>Email Address *</label>
               <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="yourname@email.com" onKeyDown={e => e.key === 'Enter' && verifyEmail()} />
             </div>
@@ -263,15 +260,15 @@ export default function AssessorForm() {
         {/* Form */}
         {screen === 'form' && form && (
           <>
-            <div style={{ marginBottom: 24 }}>
+            <div style={{ marginBottom: 24, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '20px 24px', boxShadow: 'var(--shadow-sm)' }}>
               <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 700 }}>{form.title}</h1>
-              <p style={{ fontSize: 13, color: 'var(--text2)', marginTop: 4 }}>{form.description}</p>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 20, padding: '5px 14px', fontSize: 12, color: 'var(--accent)', fontWeight: 600, marginTop: 10 }}>
+              {form.description && <p style={{ fontSize: 13, color: 'var(--text2)', marginTop: 6, lineHeight: 1.6 }}>{form.description}</p>}
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 20, padding: '5px 14px', fontSize: 12, color: 'var(--accent)', fontWeight: 600, marginTop: 12 }}>
                 📧 {assessor.email}
               </div>
             </div>
             {renderForm()}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20, padding: 16, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20, padding: '14px 18px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, boxShadow: 'var(--shadow-sm)' }}>
               <button className="btn btn-ghost" onClick={() => { setAnswers({}); setOtherVals({}) }}>↺ Reset</button>
               <button className="btn btn-primary" disabled={submitting} onClick={submit}>{submitting ? 'Submitting…' : 'Submit Form →'}</button>
             </div>
@@ -284,7 +281,8 @@ export default function AssessorForm() {
             <div style={{ fontSize: 56, marginBottom: 20 }}>✅</div>
             <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 26, marginBottom: 12 }}>Thank You!</h2>
             <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.7 }}>
-              Your response has been submitted, <strong style={{ color: 'var(--accent)' }}>{assessor?.full_name}</strong>.
+              Your response has been submitted,{' '}
+              <strong style={{ color: 'var(--accent)' }}>{assessor?.full_name}</strong>.
               <br /><br />The PAB team will review your submission.
             </p>
           </div>

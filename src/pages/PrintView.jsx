@@ -3,64 +3,42 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, auditLog } from '../lib/supabase'
 import { useToast } from '../contexts/ToastContext'
 
-// Keywords that suggest a SHORT field (1 column)
-const SHORT_KEYWORDS = [
-  'title', 'prefix', 'gender', 'sex', 'date', 'birth', 'age', 'civil',
-  'status', 'nationality', 'region', 'province', 'city', 'zip', 'postal',
-  'contact', 'mobile', 'cellular', 'phone', 'fax', 'number', 'no.', 'no ',
-  'tin', 'sss', 'gsis', 'id', 'code', 'year', 'month', 'day', 'time',
-  'rate', 'salary', 'amount', 'score', 'rating', 'level', 'type',
-]
+const SHORT_KEYWORDS = ['title','prefix','gender','sex','date','birth','age','civil','status',
+  'nationality','region','province','city','zip','postal','contact','mobile','cellular','phone',
+  'fax','number','no.','tin','sss','gsis','id','code','year','month','day','time',
+  'rate','salary','amount','score','rating','level','type']
+const LONG_KEYWORDS = ['address','description','remarks','comment','notes','detail','experience',
+  'background','qualification','education','training','accomplishment','achievement',
+  'summary','objective','reason','explain','specify','others','other','name','full name',
+  'first name','middle name','last name','surname','given']
 
-// Keywords that suggest a LONG field (full width)
-const LONG_KEYWORDS = [
-  'address', 'description', 'remarks', 'comment', 'notes', 'detail',
-  'experience', 'background', 'qualification', 'education', 'training',
-  'accomplishment', 'achievement', 'publication', 'summary', 'objective',
-  'reason', 'explain', 'specify', 'others', 'other', 'name', 'full name',
-  'first name', 'middle name', 'last name', 'surname', 'given',
-]
-
-function getFieldSize(key) {
-  const k = key.toLowerCase()
+function getFieldSize(key, val) {
+  const k = (key || '').toLowerCase()
+  const v = String(val || '')
   if (LONG_KEYWORDS.some(w => k.includes(w))) return 'full'
+  if (v.length > 60) return 'full'
   if (SHORT_KEYWORDS.some(w => k.includes(w))) return 'short'
-  // If answer value is short, make it short
   return 'auto'
 }
 
 function smartLayout(keys, answers) {
-  // Returns array of rows, each row is array of {key, span}
   const rows = []
   let i = 0
   while (i < keys.length) {
     const k = keys[i]
-    const val = String(answers[k] || '')
-    const size = getFieldSize(k)
-    const isLong = size === 'full' || val.length > 60
-
+    const isLong = getFieldSize(k, answers[k]) === 'full'
     if (isLong) {
-      rows.push([{ key: k, span: 3 }])
-      i++
+      rows.push([{ key: k, span: 3 }]); i++
     } else {
-      // Try to pack 3 short fields in a row
       const group = []
       let j = i
       while (j < keys.length && group.length < 3) {
         const kj = keys[j]
-        const vj = String(answers[kj] || '')
-        const sj = getFieldSize(kj)
-        if (sj === 'full' || vj.length > 60) break
-        group.push({ key: kj, span: 1 })
-        j++
+        if (getFieldSize(kj, answers[kj]) === 'full') break
+        group.push({ key: kj, span: 1 }); j++
       }
-      if (group.length === 0) {
-        rows.push([{ key: k, span: 3 }])
-        i++
-      } else {
-        rows.push(group)
-        i = j
-      }
+      if (!group.length) { rows.push([{ key: k, span: 3 }]); i++ }
+      else { rows.push(group); i = j }
     }
   }
   return rows
@@ -74,16 +52,18 @@ export default function PrintView() {
   const [form, setForm] = useState(null)
   const [showDirector, setShowDirector] = useState(false)
   const [dirData, setDirData] = useState({ qualifiedBy: '', qualifiedDate: '', evaluationRemarks: '', recommendation: '' })
+  const [dirSaved, setDirSaved] = useState(false)
 
   useEffect(() => {
     async function load() {
       const { data } = await supabase.from('form_submissions').select('*').eq('id', id).single()
       if (data) {
         setSub(data)
-        if (data.director_signoff) setDirData(data.director_signoff)
-        if (!data.is_read) {
-          await supabase.from('form_submissions').update({ is_read: true }).eq('id', data.id)
+        if (data.director_signoff) {
+          setDirData(data.director_signoff)
+          if (data.director_signoff.qualifiedBy) setDirSaved(true)
         }
+        if (!data.is_read) await supabase.from('form_submissions').update({ is_read: true }).eq('id', data.id)
         if (data.form_id) {
           const { data: f } = await supabase.from('custom_forms').select('*').eq('id', data.form_id).single()
           if (f) setForm(f)
@@ -93,12 +73,11 @@ export default function PrintView() {
     load()
   }, [id])
 
-  if (!sub) return <div style={{ padding: 40, color: 'var(--text3)' }}>Loading…</div>
+  if (!sub) return <div style={{ padding: 40, color: 'var(--text3)', textAlign: 'center' }}>Loading…</div>
 
   const answers = sub.answers || {}
   const ref = 'SUB-' + String(sub.id).padStart(4, '0')
 
-  // Order keys by form field order
   let orderedKeys = []
   if (form?.fields?.length) {
     form.fields.forEach(f => { if (f.type !== 'section' && f.label && f.label in answers) orderedKeys.push(f.label) })
@@ -113,6 +92,7 @@ export default function PrintView() {
     try {
       const { error } = await supabase.from('form_submissions').update({ director_signoff: dirData }).eq('id', sub.id)
       if (error) throw error
+      setDirSaved(true)
       toast('✅', 'Saved!', 'Director sign-off recorded.')
       await auditLog('DIRECTOR_SIGNOFF', ref)
     } catch (e) { toast('❌', 'Failed', e.message) }
@@ -121,16 +101,16 @@ export default function PrintView() {
   return (
     <div className="fade-in">
       {/* Toolbar */}
-      <div className="no-print" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
+      <div className="no-print" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10, boxShadow: 'var(--shadow-sm)' }}>
         <div>
-          <div style={{ fontSize: 11, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: 1 }}>Reference</div>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, fontWeight: 700 }}>{ref}</div>
+          <div style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 2 }}>Reference</div>
+          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, fontWeight: 700 }}>{ref}</div>
           <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{sub.assessor_name} · {sub.submitted_at ? new Date(sub.submitted_at).toLocaleString('en-PH') : ''}</div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>← Back</button>
           <button className="btn btn-warning btn-sm" onClick={() => setShowDirector(!showDirector)}>
-            🏛 {showDirector ? 'Hide' : 'Show'} Sign-Off
+            🏛 {showDirector ? 'Hide' : 'Director Sign-Off'}
           </button>
           <button className="btn btn-primary btn-sm" onClick={() => window.print()}>🖨 Print</button>
         </div>
@@ -138,29 +118,42 @@ export default function PrintView() {
 
       {/* Document */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', boxShadow: 'var(--shadow)' }}>
+
         {/* Banner */}
-        <div style={{ background: 'var(--accent)', padding: '24px 32px', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ background: 'var(--accent)', padding: '24px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, fontWeight: 700, color: '#fff' }}>{sub.form_title || 'Submission'}</h1>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.75)', marginTop: 3 }}>{sub.assessor_name} · {sub.assessor_email}</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{sub.assessor_name} · {sub.assessor_email}</div>
           </div>
-          <div style={{ textAlign: 'right', color: 'rgba(255,255,255,.85)', fontSize: 12 }}>
-            <div>Reference</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginTop: 2 }}>{ref}</div>
+          <div style={{ textAlign: 'right', color: 'rgba(255,255,255,.85)', fontSize: 12, flexShrink: 0 }}>
+            <div style={{ marginBottom: 2 }}>Reference</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{ref}</div>
+            <div style={{ fontSize: 11, marginTop: 4, color: 'rgba(255,255,255,.7)' }}>
+              {sub.submitted_at ? new Date(sub.submitted_at).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
+            </div>
           </div>
         </div>
 
         {/* Answers */}
         <div style={{ padding: '28px 32px' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 7, borderBottom: '1px solid var(--border)', marginBottom: 16 }}>Answers</div>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 8, borderBottom: '1px solid var(--border)', marginBottom: 20 }}>Answers</div>
 
           {layout.map((row, ri) => (
             <div key={ri} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
               {row.map(({ key: k, span }) => (
-                <div key={k} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: 'var(--text3)' }}>{k}</label>
-                  <div style={{ fontSize: 13, padding: '7px 10px', background: 'var(--surface2)', borderRadius: 5, border: '1px solid var(--border)', minHeight: 32, lineHeight: 1.5, wordBreak: 'break-word' }}>
-                    {answers[k] || <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>N/A</span>}
+                <div key={k} style={{ gridColumn: `span ${span}` }}>
+                  <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--text3)', display: 'block', marginBottom: 5 }}>{k}</label>
+                  <div style={{
+                    fontSize: 13, padding: '8px 12px',
+                    background: 'var(--surface2)', borderRadius: 6,
+                    border: '1px solid var(--border)',
+                    minHeight: 36, lineHeight: 1.5,
+                    wordBreak: 'break-word',
+                    whiteSpace: 'pre-wrap',
+                    color: answers[k] ? 'var(--text)' : 'var(--text3)',
+                    fontStyle: answers[k] ? 'normal' : 'italic'
+                  }}>
+                    {answers[k] || 'N/A'}
                   </div>
                 </div>
               ))}
@@ -170,37 +163,45 @@ export default function PrintView() {
 
         {/* Director Sign-Off */}
         {showDirector && (
-          <div style={{ borderTop: '2px solid var(--warning)', background: 'rgba(245,166,35,.04)' }}>
-            <div style={{ padding: '12px 24px', borderBottom: '1px solid rgba(245,166,35,.25)', background: 'rgba(245,166,35,.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: 16 }}>🏛</span>
-              <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 13, fontWeight: 700 }}>Director Sign-Off</div>
+          <div style={{ borderTop: '2px solid var(--warning)', background: 'rgba(245,166,35,.03)' }}>
+            <div style={{ padding: '14px 32px', borderBottom: '1px solid rgba(245,166,35,.2)', background: 'rgba(245,166,35,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 18 }}>🏛</span>
+                <div>
+                  <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director Sign-Off</div>
+                  <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 1 }}>To be filled by authorized PAB personnel</div>
+                </div>
+              </div>
+              <button className="btn btn-warning btn-sm" onClick={saveDirector}>
+                {dirSaved ? '✅ Saved' : '💾 Save Sign-Off'}
+              </button>
             </div>
-            <div style={{ padding: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+            <div style={{ padding: '20px 32px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18 }}>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6 }}>QUALIFIED BY</label>
-                <input className="input" value={dirData.qualifiedBy} onChange={e => setDirData(p => ({ ...p, qualifiedBy: e.target.value }))} placeholder="e.g. Mr. Roderick Dela Cruz" />
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, marginTop: 14 }}>DATE</label>
-                <input className="input" type="date" value={dirData.qualifiedDate} onChange={e => setDirData(p => ({ ...p, qualifiedDate: e.target.value }))} />
+                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Qualified By</label>
+                <input className="input" value={dirData.qualifiedBy} onChange={e => { setDirData(p => ({ ...p, qualifiedBy: e.target.value })); setDirSaved(false) }} placeholder="e.g. Mr. Roderick Dela Cruz" />
+                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, marginTop: 14, textTransform: 'uppercase', letterSpacing: 1 }}>Date</label>
+                <input className="input" type="date" value={dirData.qualifiedDate} onChange={e => { setDirData(p => ({ ...p, qualifiedDate: e.target.value })); setDirSaved(false) }} />
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6 }}>REMARKS</label>
-                <textarea className="input" value={dirData.evaluationRemarks} onChange={e => setDirData(p => ({ ...p, evaluationRemarks: e.target.value }))} placeholder="Evaluation remarks…" />
+                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Evaluation Remarks</label>
+                <textarea className="input" value={dirData.evaluationRemarks} onChange={e => { setDirData(p => ({ ...p, evaluationRemarks: e.target.value })); setDirSaved(false) }} placeholder="Evaluation remarks…" style={{ minHeight: 120 }} />
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6 }}>RECOMMENDATION</label>
-                <textarea className="input" value={dirData.recommendation} onChange={e => setDirData(p => ({ ...p, recommendation: e.target.value }))} placeholder="Recommendation…" />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                <button className="btn btn-primary btn-sm" onClick={saveDirector}>💾 Save Sign-Off</button>
+                <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--warning)', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Recommendation</label>
+                <textarea className="input" value={dirData.recommendation} onChange={e => { setDirData(p => ({ ...p, recommendation: e.target.value })); setDirSaved(false) }} placeholder="Recommendation…" style={{ minHeight: 120 }} />
               </div>
             </div>
           </div>
         )}
 
         {/* Footer */}
-        <div style={{ padding: '18px 32px', borderTop: '1px solid var(--border)', background: 'var(--section-bg)' }}>
-          <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 4 }}>PAB Information System</div>
-          <div style={{ fontSize: 11, color: 'var(--text3)' }}>Ref: {ref} · {new Date().toLocaleString('en-PH')}</div>
+        <div style={{ padding: '16px 32px', borderTop: '1px solid var(--border)', background: 'var(--section-bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 3 }}>PAB Information System</div>
+            <div style={{ fontSize: 11, color: 'var(--text3)' }}>Ref: {ref} · Generated: {new Date().toLocaleString('en-PH')}</div>
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'right' }}>Philippine Accreditation Bureau · DTI</div>
         </div>
       </div>
     </div>
