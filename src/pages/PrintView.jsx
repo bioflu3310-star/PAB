@@ -61,6 +61,7 @@ function AnswerBox({ value }) {
       whiteSpace: 'pre-wrap',
       color: isEmpty ? 'var(--text3)' : 'var(--text)',
       fontStyle: isEmpty ? 'italic' : 'normal',
+      fontWeight: isEmpty ? 600 : 800,
     }}>
       {isEmpty ? 'N/A' : value}
     </div>
