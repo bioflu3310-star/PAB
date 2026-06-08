@@ -44,27 +44,56 @@ function smartLayout(keys, answers) {
   return rows
 }
 
-// FIX 1: Removed stray `S` after 'var(--surface2)'
-// FIX 2: Removed duplicate fontWeight (was declared twice: 600 then 800)
+// Screen: clean outlined box using theme colors (matches Image 1)
+// Print:  white background, black text — only applied when printing
 function AnswerBox({ value }) {
   const isEmpty = !value || value === 'N/A' || value.trim() === ''
   return (
-    <div style={{
-      fontSize: 13,
-      fontWeight: isEmpty ? 400 : 700,
-      padding: '9px 12px',
-      background: 'var(--surface2)',
-      borderRadius: 6,
-      border: '1px solid var(--border)',
-      minHeight: 38,
-      lineHeight: 1.5,
-      wordBreak: 'break-word',
-      whiteSpace: 'pre-wrap',
-      color: isEmpty ? 'var(--text3)' : '#000000',
-      fontStyle: isEmpty ? 'italic' : 'normal',
-    }}>
-      {isEmpty ? 'N/A' : value}
-    </div>
+    <>
+      <style>{`
+        @media print {
+          .answer-box-screen { display: none !important; }
+          .answer-box-print  { display: block !important; }
+        }
+      `}</style>
+
+      {/* Shown on screen — uses theme variables, no forced black */}
+      <div className="answer-box-screen" style={{
+        fontSize: 14,
+        fontWeight: 600,
+        padding: '10px 14px',
+        background: 'transparent',
+        borderRadius: 8,
+        border: '1.5px solid var(--border)',
+        minHeight: 42,
+        lineHeight: 1.6,
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+        color: isEmpty ? 'var(--text3)' : 'var(--text)',
+        fontStyle: isEmpty ? 'italic' : 'normal',
+      }}>
+        {isEmpty ? 'N/A' : value}
+      </div>
+
+      {/* Shown only when printing — black text on white */}
+      <div className="answer-box-print" style={{
+        display: 'none',
+        fontSize: 13,
+        fontWeight: 700,
+        padding: '9px 12px',
+        background: '#fff',
+        borderRadius: 6,
+        border: '1px solid #aaa',
+        minHeight: 38,
+        lineHeight: 1.5,
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+        color: isEmpty ? '#aaa' : '#000',
+        fontStyle: isEmpty ? 'italic' : 'normal',
+      }}>
+        {isEmpty ? 'N/A' : value}
+      </div>
+    </>
   )
 }
 
@@ -122,7 +151,6 @@ export default function PrintView() {
     } catch (e) { toast('❌', 'Failed', e.message) }
   }
 
-  // Label style — consistent, uppercase, fixed height
   const labelStyle = {
     fontSize: 9,
     fontWeight: 700,
@@ -197,7 +225,6 @@ export default function PrintView() {
         {/* Director Sign-Off */}
         {showDirector && (
           <div style={{ borderTop: '2px solid var(--warning)', background: 'rgba(245,166,35,.03)' }}>
-            {/* FIX 3: Removed Save button from the header */}
             <div style={{ padding: '14px 32px', borderBottom: '1px solid rgba(245,166,35,.2)', background: 'rgba(245,166,35,.06)', display: 'flex', alignItems: 'center' }}>
               <span style={{ fontSize: 18, marginRight: 10 }}>🏛</span>
               <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director</div>
