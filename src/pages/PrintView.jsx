@@ -44,24 +44,24 @@ function smartLayout(keys, answers) {
   return rows
 }
 
-// Answer box style — consistent height based on content
+// FIX 1: Removed stray `S` after 'var(--surface2)'
+// FIX 2: Removed duplicate fontWeight (was declared twice: 600 then 800)
 function AnswerBox({ value }) {
   const isEmpty = !value || value === 'N/A' || value.trim() === ''
   return (
     <div style={{
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: isEmpty ? 400 : 700,
       padding: '9px 12px',
-      background: 'var(--surface2)',S
+      background: 'var(--surface2)',
       borderRadius: 6,
       border: '1px solid var(--border)',
       minHeight: 38,
       lineHeight: 1.5,
       wordBreak: 'break-word',
       whiteSpace: 'pre-wrap',
-      color: isEmpty ? 'var(--text3)' : 'var(--text)',
+      color: isEmpty ? 'var(--text3)' : '#000000',
       fontStyle: isEmpty ? 'italic' : 'normal',
-      fontWeight: isEmpty ? 600 : 800,
     }}>
       {isEmpty ? 'N/A' : value}
     </div>
@@ -132,7 +132,7 @@ export default function PrintView() {
     display: 'block',
     marginBottom: 5,
     lineHeight: 1.4,
-    minHeight: 24, // ← keeps all labels same height so answer boxes align
+    minHeight: 24,
     wordBreak: 'break-word',
   }
 
@@ -182,7 +182,7 @@ export default function PrintView() {
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: 12,
               marginBottom: 12,
-              alignItems: 'end', // ← aligns answer boxes to bottom so they line up
+              alignItems: 'end',
             }}>
               {row.map(({ key: k, span }) => (
                 <div key={k} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column' }}>
@@ -197,13 +197,10 @@ export default function PrintView() {
         {/* Director Sign-Off */}
         {showDirector && (
           <div style={{ borderTop: '2px solid var(--warning)', background: 'rgba(245,166,35,.03)' }}>
-            <div style={{ padding: '14px 32px', borderBottom: '1px solid rgba(245,166,35,.2)', background: 'rgba(245,166,35,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 18 }}>🏛</span>
-                {/* ← Only shows "Director" not "Director Sign-Off" */}
-                <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director</div>
-              </div>
-          
+            {/* FIX 3: Removed Save button from the header */}
+            <div style={{ padding: '14px 32px', borderBottom: '1px solid rgba(245,166,35,.2)', background: 'rgba(245,166,35,.06)', display: 'flex', alignItems: 'center' }}>
+              <span style={{ fontSize: 18, marginRight: 10 }}>🏛</span>
+              <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director</div>
             </div>
             <div style={{ padding: '20px 32px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18, alignItems: 'end' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
