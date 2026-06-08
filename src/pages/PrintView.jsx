@@ -52,7 +52,7 @@ function AnswerBox({ value }) {
       fontSize: 13,
       fontWeight: 600,
       padding: '9px 12px',
-      background: 'var(--surface2)',
+      background: 'var(--surface2)',S
       borderRadius: 6,
       border: '1px solid var(--border)',
       minHeight: 38,
@@ -203,9 +203,7 @@ export default function PrintView() {
                 {/* ← Only shows "Director" not "Director Sign-Off" */}
                 <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director</div>
               </div>
-              <button className="btn btn-warning btn-sm" onClick={saveDirector}>
-                {dirSaved ? '✅ Saved' : '💾 Save'}
-              </button>
+          
             </div>
             <div style={{ padding: '20px 32px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18, alignItems: 'end' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
