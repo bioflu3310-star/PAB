@@ -3,100 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, auditLog } from '../lib/supabase'
 import { useToast } from '../contexts/ToastContext'
 
-const SHORT_KEYWORDS = ['title','prefix','gender','sex','date','birth','age','civil','status',
-  'nationality','region','province','city','zip','postal','contact','mobile','cellular','phone',
-  'fax','number','no.','tin','sss','gsis','id','code','year','month','day','time',
-  'rate','salary','amount','score','rating','level','type']
-const LONG_KEYWORDS = ['address','description','remarks','comment','notes','detail','experience',
-  'background','qualification','education','training','accomplishment','achievement',
-  'summary','objective','reason','explain','specify','others','other','name','full name',
-  'first name','middle name','last name','surname','given']
-
-function getFieldSize(key, val) {
-  const k = (key || '').toLowerCase()
-  const v = String(val || '')
-  if (LONG_KEYWORDS.some(w => k.includes(w))) return 'full'
-  if (v.length > 60) return 'full'
-  if (SHORT_KEYWORDS.some(w => k.includes(w))) return 'short'
-  return 'auto'
-}
-
-function smartLayout(keys, answers) {
-  const rows = []
-  let i = 0
-  while (i < keys.length) {
-    const k = keys[i]
-    const isLong = getFieldSize(k, answers[k]) === 'full'
-    if (isLong) {
-      rows.push([{ key: k, span: 3 }]); i++
-    } else {
-      const group = []
-      let j = i
-      while (j < keys.length && group.length < 3) {
-        const kj = keys[j]
-        if (getFieldSize(kj, answers[kj]) === 'full') break
-        group.push({ key: kj, span: 1 }); j++
-      }
-      if (!group.length) { rows.push([{ key: k, span: 3 }]); i++ }
-      else { rows.push(group); i = j }
-    }
-  }
-  return rows
-}
-
-// Screen: clean outlined box using theme colors (matches Image 1)
-// Print:  white background, black text — only applied when printing
-function AnswerBox({ value }) {
-  const isEmpty = !value || value === 'N/A' || value.trim() === ''
-  return (
-    <>
-      <style>{`
-        @media print {
-          .answer-box-screen { display: none !important; }
-          .answer-box-print  { display: block !important; }
-        }
-      `}</style>
-
-      {/* Shown on screen — uses theme variables, no forced black */}
-      <div className="answer-box-screen" style={{
-        fontSize: 14,
-        fontWeight: 600,
-        padding: '10px 14px',
-        background: 'transparent',
-        borderRadius: 8,
-        border: '1.5px solid var(--border)',
-        minHeight: 42,
-        lineHeight: 1.6,
-        wordBreak: 'break-word',
-        whiteSpace: 'pre-wrap',
-        color: isEmpty ? 'var(--text3)' : 'var(--text)',
-        fontStyle: isEmpty ? 'italic' : 'normal',
-      }}>
-        {isEmpty ? 'N/A' : value}
-      </div>
-
-      {/* Shown only when printing — black text on white */}
-      <div className="answer-box-print" style={{
-        display: 'none',
-        fontSize: 13,
-        fontWeight: 700,
-        padding: '9px 12px',
-        background: '#fff',
-        borderRadius: 6,
-        border: '1px solid #aaa',
-        minHeight: 38,
-        lineHeight: 1.5,
-        wordBreak: 'break-word',
-        whiteSpace: 'pre-wrap',
-        color: isEmpty ? '#aaa' : '#000',
-        fontStyle: isEmpty ? 'italic' : 'normal',
-      }}>
-        {isEmpty ? 'N/A' : value}
-      </div>
-    </>
-  )
-}
-
 export default function PrintView() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -104,18 +10,16 @@ export default function PrintView() {
   const [sub, setSub] = useState(null)
   const [form, setForm] = useState(null)
   const [showDirector, setShowDirector] = useState(false)
-  const [dirData, setDirData] = useState({ qualifiedBy: '', qualifiedDate: '', evaluationRemarks: '', recommendation: '' })
-  const [dirSaved, setDirSaved] = useState(false)
+  const [dirData, setDirData] = useState({
+    qualifiedBy: '', qualifiedDate: '', evaluationRemarks: '', recommendation: ''
+  })
 
   useEffect(() => {
     async function load() {
       const { data } = await supabase.from('form_submissions').select('*').eq('id', id).single()
       if (data) {
         setSub(data)
-        if (data.director_signoff) {
-          setDirData(data.director_signoff)
-          if (data.director_signoff.qualifiedBy) setDirSaved(true)
-        }
+        if (data.director_signoff) setDirData(data.director_signoff)
         if (!data.is_read) await supabase.from('form_submissions').update({ is_read: true }).eq('id', data.id)
         if (data.form_id) {
           const { data: f } = await supabase.from('custom_forms').select('*').eq('id', data.form_id).single()
@@ -131,141 +35,179 @@ export default function PrintView() {
   const answers = sub.answers || {}
   const ref = 'SUB-' + String(sub.id).padStart(4, '0')
 
+  // Order keys by original form field order
   let orderedKeys = []
   if (form?.fields?.length) {
-    form.fields.forEach(f => { if (f.type !== 'section' && f.label && f.label in answers) orderedKeys.push(f.label) })
+    form.fields.forEach(f => {
+      if (f.type !== 'section' && f.label && f.label in answers) orderedKeys.push(f.label)
+    })
     Object.keys(answers).forEach(k => { if (!orderedKeys.includes(k)) orderedKeys.push(k) })
   } else {
     orderedKeys = Object.keys(answers)
   }
 
-  const layout = smartLayout(orderedKeys, answers)
-
   async function saveDirector() {
     try {
       const { error } = await supabase.from('form_submissions').update({ director_signoff: dirData }).eq('id', sub.id)
       if (error) throw error
-      setDirSaved(true)
       toast('✅', 'Saved!', 'Director sign-off recorded.')
       await auditLog('DIRECTOR_SIGNOFF', ref)
     } catch (e) { toast('❌', 'Failed', e.message) }
   }
 
-  const labelStyle = {
-    fontSize: 9,
-    fontWeight: 700,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    color: 'var(--text3)',
-    display: 'block',
-    marginBottom: 5,
-    lineHeight: 1.4,
-    minHeight: 24,
-    wordBreak: 'break-word',
+  // Field style — label on top, answer box below, full width
+  function AnswerField({ label, value }) {
+    const isEmpty = !value || value.trim() === '' || value === 'N/A'
+    return (
+      <div style={{ marginBottom: 18 }}>
+        <label style={{
+          display: 'block',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--text)',
+          marginBottom: 6,
+        }}>
+          {label}
+        </label>
+        <div style={{
+          width: '100%',
+          padding: '10px 14px',
+          background: 'var(--input-bg)',
+          border: '1px solid var(--border)',
+          borderRadius: 8,
+          fontSize: 14,
+          fontWeight: isEmpty ? 400 : 500,
+          color: isEmpty ? 'var(--text3)' : 'var(--text)',
+          fontStyle: isEmpty ? 'italic' : 'normal',
+          minHeight: 42,
+          lineHeight: 1.6,
+          wordBreak: 'break-word',
+          whiteSpace: 'pre-wrap',
+        }}>
+          {isEmpty ? 'N/A' : value}
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="fade-in">
-      {/* Toolbar */}
-      <div className="no-print" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10, boxShadow: 'var(--shadow-sm)' }}>
+      {/* Toolbar — hidden on print */}
+      <div className="no-print" style={{
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 10, padding: '12px 18px',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        marginBottom: 18, flexWrap: 'wrap', gap: 10, boxShadow: 'var(--shadow-sm)'
+      }}>
         <div>
-          <div style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 2 }}>Reference</div>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, fontWeight: 700 }}>{ref}</div>
-          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{sub.assessor_name} · {sub.submitted_at ? new Date(sub.submitted_at).toLocaleString('en-PH') : ''}</div>
+          <div style={{ fontSize: 10, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: 1 }}>Reference</div>
+          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, fontWeight: 700 }}>{ref}</div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>
+            {sub.assessor_name} · {sub.submitted_at ? new Date(sub.submitted_at).toLocaleString('en-PH') : ''}
+          </div>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>← Back</button>
           <button className="btn btn-warning btn-sm" onClick={() => setShowDirector(!showDirector)}>
-            🏛 {showDirector ? 'Hide Director' : 'Director'}
+            🏛 {showDirector ? 'Hide' : 'Show'} Sign-Off
           </button>
           <button className="btn btn-primary btn-sm" onClick={() => window.print()}>🖨 Print</button>
         </div>
       </div>
 
       {/* Document */}
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', boxShadow: 'var(--shadow)' }}>
+      <div style={{
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 10, overflow: 'hidden', boxShadow: 'var(--shadow)'
+      }}>
 
         {/* Banner */}
         <div style={{ background: 'var(--accent)', padding: '24px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, fontWeight: 700, color: '#fff' }}>{sub.form_title || 'Submission'}</h1>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{sub.assessor_name} · {sub.assessor_email}</div>
+            <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 20, fontWeight: 700, color: '#fff' }}>
+              {sub.form_title || 'Submission'}
+            </h1>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.75)', marginTop: 3 }}>
+              {sub.assessor_name} · {sub.assessor_email}
+            </div>
           </div>
-          <div style={{ textAlign: 'right', color: 'rgba(255,255,255,.85)', fontSize: 12, flexShrink: 0 }}>
-            <div style={{ marginBottom: 2 }}>Reference</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{ref}</div>
-            <div style={{ fontSize: 11, marginTop: 4, color: 'rgba(255,255,255,.7)' }}>
+          <div style={{ textAlign: 'right', color: 'rgba(255,255,255,.85)', fontSize: 12 }}>
+            <div>Reference</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginTop: 2 }}>{ref}</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>
               {sub.submitted_at ? new Date(sub.submitted_at).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
             </div>
           </div>
         </div>
 
-        {/* Answers */}
+        {/* Answers — full width stacked like the form */}
         <div style={{ padding: '28px 32px' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--accent)', paddingBottom: 8, borderBottom: '1px solid var(--border)', marginBottom: 20 }}>Answers</div>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: 2,
+            textTransform: 'uppercase', color: 'var(--accent)',
+            paddingBottom: 8, borderBottom: '1px solid var(--border)', marginBottom: 24
+          }}>Answers</div>
 
-          {layout.map((row, ri) => (
-            <div key={ri} style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 12,
-              marginBottom: 12,
-              alignItems: 'end',
-            }}>
-              {row.map(({ key: k, span }) => (
-                <div key={k} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column' }}>
-                  <label style={labelStyle}>{k}</label>
-                  <AnswerBox value={answers[k]} />
-                </div>
-              ))}
-            </div>
+          {orderedKeys.map(k => (
+            <AnswerField key={k} label={k} value={answers[k]} />
           ))}
         </div>
 
         {/* Director Sign-Off */}
         {showDirector && (
-          <div style={{ borderTop: '2px solid var(--warning)', background: 'rgba(245,166,35,.03)' }}>
-            <div style={{ padding: '14px 32px', borderBottom: '1px solid rgba(245,166,35,.2)', background: 'rgba(245,166,35,.06)', display: 'flex', alignItems: 'center' }}>
-              <span style={{ fontSize: 18, marginRight: 10 }}>🏛</span>
-              <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 14, fontWeight: 700 }}>Director</div>
+          <div style={{ borderTop: '2px solid var(--warning)', background: 'rgba(245,166,35,.04)' }}>
+            <div style={{
+              padding: '12px 32px', borderBottom: '1px solid rgba(245,166,35,.25)',
+              background: 'rgba(245,166,35,.08)', display: 'flex',
+              alignItems: 'center', justifyContent: 'space-between'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 16 }}>🏛</span>
+                <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 13, fontWeight: 700 }}>Director Sign-Off</div>
+              </div>
+              <button className="btn btn-primary btn-sm no-print" onClick={saveDirector}>💾 Save</button>
             </div>
-            <div style={{ padding: '20px 32px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18, alignItems: 'end' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <div style={{ padding: '20px 32px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, marginBottom: 18 }}>
                 <div>
-                  <label style={{ ...labelStyle, color: 'var(--warning)' }}>Qualified By</label>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: 6 }}>Qualified By</label>
                   <input className="input" value={dirData.qualifiedBy}
-                    onChange={e => { setDirData(p => ({ ...p, qualifiedBy: e.target.value })); setDirSaved(false) }}
-                    placeholder="" />
+                    onChange={e => setDirData(p => ({ ...p, qualifiedBy: e.target.value }))}
+                    placeholder="e.g. Mr. Roderick Dela Cruz" />
                 </div>
-                <div style={{ marginTop: 14 }}>
-                  <label style={{ ...labelStyle, color: 'var(--warning)' }}>Date</label>
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: 6 }}>Date</label>
                   <input className="input" type="date" value={dirData.qualifiedDate}
-                    onChange={e => { setDirData(p => ({ ...p, qualifiedDate: e.target.value })); setDirSaved(false) }} />
+                    onChange={e => setDirData(p => ({ ...p, qualifiedDate: e.target.value }))} />
                 </div>
               </div>
-              <div>
-                <label style={{ ...labelStyle, color: 'var(--warning)' }}>Evaluation Remarks</label>
+              <div style={{ marginBottom: 18 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: 6 }}>Evaluation Remarks</label>
                 <textarea className="input" value={dirData.evaluationRemarks}
-                  onChange={e => { setDirData(p => ({ ...p, evaluationRemarks: e.target.value })); setDirSaved(false) }}
-                  placeholder="" style={{ minHeight: 120 }} />
+                  onChange={e => setDirData(p => ({ ...p, evaluationRemarks: e.target.value }))}
+                  placeholder="Evaluation remarks…" style={{ minHeight: 90 }} />
               </div>
               <div>
-                <label style={{ ...labelStyle, color: 'var(--warning)' }}>Recommendation</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: 6 }}>Recommendation</label>
                 <textarea className="input" value={dirData.recommendation}
-                  onChange={e => { setDirData(p => ({ ...p, recommendation: e.target.value })); setDirSaved(false) }}
-                  placeholder="" style={{ minHeight: 120 }} />
+                  onChange={e => setDirData(p => ({ ...p, recommendation: e.target.value }))}
+                  placeholder="Recommendation…" style={{ minHeight: 90 }} />
               </div>
             </div>
           </div>
         )}
 
         {/* Footer */}
-        <div style={{ padding: '16px 32px', borderTop: '1px solid var(--border)', background: 'var(--section-bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{
+          padding: '18px 32px', borderTop: '1px solid var(--border)',
+          background: 'var(--section-bg)', display: 'flex',
+          justifyContent: 'space-between', alignItems: 'center'
+        }}>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 3 }}>PAB Information System</div>
-            <div style={{ fontSize: 11, color: 'var(--text3)' }}>Ref: {ref} · Generated: {new Date().toLocaleString('en-PH')}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 4 }}>PAB Information System</div>
+            <div style={{ fontSize: 11, color: 'var(--text3)' }}>Ref: {ref} · {new Date().toLocaleString('en-PH')}</div>
           </div>
-          <div style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'right' }}>Philippine Accreditation Bureau · DTI</div>
+          <div style={{ fontSize: 11, color: 'var(--text3)' }}>Philippine Accreditation Bureau · DTI</div>
         </div>
       </div>
     </div>
