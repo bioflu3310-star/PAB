@@ -28,6 +28,9 @@ export default function Settings() {
   const [formName, setFormName] = useState('')
   const [formEmail, setFormEmail] = useState('')
   const [formPassword, setFormPassword] = useState('')
+  const [formConfirmPassword, setFormConfirmPassword] = useState('')
+  const [showPw, setShowPw] = useState(false)
+  const [showConfirmPw, setShowConfirmPw] = useState(false)
   const [formRole, setFormRole] = useState('viewer')
   const [formErr, setFormErr] = useState('')
   const [formLoading, setFormLoading] = useState(false)
@@ -91,8 +94,9 @@ export default function Settings() {
 
   async function addAdmin() {
     setFormErr('')
-    if (!formName || !formEmail || !formPassword) { setFormErr('Fill all fields.'); return }
+    if (!formName || !formEmail || !formPassword || !formConfirmPassword) { setFormErr('Fill all fields.'); return }
     if (formPassword.length < 6) { setFormErr('Password must be at least 6 characters.'); return }
+    if (formPassword !== formConfirmPassword) { setFormErr('Passwords do not match.'); return }
     setFormLoading(true)
     try {
       // Try signUp
@@ -186,7 +190,7 @@ export default function Settings() {
   // ── Helpers for modals ──
   function openModal(type, data) {
     setFormName(data?.name || ''); setFormEmail(data?.email || '')
-    setFormPassword(''); setFormRole(data?.role || 'viewer'); setFormErr('')
+    setFormPassword(''); setFormConfirmPassword(''); setShowPw(false); setShowConfirmPw(false); setFormRole(data?.role || 'viewer'); setFormErr('')
     if (type === 'addAsr') setShowAddAsr(true)
     else if (type === 'editAsr') setShowEditAsr(data.id)
     else if (type === 'addAdmin') setShowAddAdmin(true)
@@ -346,10 +350,38 @@ export default function Settings() {
             <input className="input" value={formName} onChange={e => setFormName(e.target.value)} placeholder="Juan Dela Cruz" />
           </div>
           {!showEditAdmin && (
-            <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text2)', display: 'block', marginBottom: 5 }}>Password *</label>
-              <input className="input" type="password" value={formPassword} onChange={e => setFormPassword(e.target.value)} placeholder="Min 6 characters" />
-            </div>
+            <>
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text2)', display: 'block', marginBottom: 5 }}>Password *</label>
+                <div style={{ position: 'relative' }}>
+                  <input className="input" type={showPw ? 'text' : 'password'} value={formPassword}
+                    onChange={e => setFormPassword(e.target.value)} placeholder="Min 6 characters"
+                    style={{ paddingRight: 40 }} />
+                  <button type="button" onClick={() => setShowPw(!showPw)}
+                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', fontSize: 14 }}>
+                    {showPw ? '🙈' : '👁'}
+                  </button>
+                </div>
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text2)', display: 'block', marginBottom: 5 }}>Confirm Password *</label>
+                <div style={{ position: 'relative' }}>
+                  <input className="input" type={showConfirmPw ? 'text' : 'password'} value={formConfirmPassword}
+                    onChange={e => setFormConfirmPassword(e.target.value)} placeholder="Re-enter password"
+                    style={{ paddingRight: 40, borderColor: formConfirmPassword && formPassword !== formConfirmPassword ? 'var(--danger)' : '' }} />
+                  <button type="button" onClick={() => setShowConfirmPw(!showConfirmPw)}
+                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', fontSize: 14 }}>
+                    {showConfirmPw ? '🙈' : '👁'}
+                  </button>
+                </div>
+                {formConfirmPassword && formPassword !== formConfirmPassword && (
+                  <div style={{ fontSize: 11, color: 'var(--danger)', marginTop: 4 }}>⚠️ Passwords do not match</div>
+                )}
+                {formConfirmPassword && formPassword === formConfirmPassword && (
+                  <div style={{ fontSize: 11, color: 'var(--success)', marginTop: 4 }}>✅ Passwords match</div>
+                )}
+              </div>
+            </>
           )}
           <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text2)', display: 'block', marginBottom: 5 }}>Role *</label>
