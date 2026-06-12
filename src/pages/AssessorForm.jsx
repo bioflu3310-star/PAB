@@ -72,8 +72,6 @@ export default function AssessorForm() {
     if (!e || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setError('Enter a valid email.'); return }
     const { data: asr } = await supabase.from('assessors').select('*').eq('email', e).eq('is_active', true).single()
     if (!asr) { setError('Not registered. Contact your admin.'); return }
-    const { data: existing } = await supabase.from('form_submissions').select('id').eq('form_id', formId).eq('assessor_id', asr.id).single()
-    if (existing) { setScreen('done'); return }
     setAssessor(asr)
     setScreen('form')
   }
